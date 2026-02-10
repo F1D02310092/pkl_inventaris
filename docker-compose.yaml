@@ -1,0 +1,44 @@
+services:
+   #  1. Database
+   mongo:
+      image: mongo
+      volumes:
+         - ./mongo-data:/data/db
+
+   #  2. Message Queue
+   rabbitmq:
+      image: rabbitmq:3-management
+      ports:
+         - "15672:15672" # Dashboard admin RabbitMQ
+
+   #  3. Web App
+   web_app:
+      build: . # Build dari folder saat ini
+      command: npm run start # Menjalankan server express
+      ports:
+         - "80:3000" # Map port 80 VPS ke port 3000 container
+      depends_on:
+         - mongo
+         - rabbitmq
+      environment:
+         - MONGO_URI=mongodb://mongo:27017/db_inventaris
+         - RABBITMQ_URI=amqp://rabbitmq
+         - PORT=3000
+      volumes:
+         - temp_uploads:/app/temp # Shared volume buat simpan foto sementara
+
+   #  4. Background Worker
+   worker_service:
+      build: . # Build dari folder yang sama (karena satu repo)
+      command: npm run worker
+      depends_on:
+         - rabbitmq
+         - web_app
+      environment:
+         - MONGO_URI=mongodb://mongo:27017/db_inventaris
+         - RABBITMQ_URI=amqp://rabbitmq
+      volumes:
+         - temp_uploads:/app/temp # Wajib sama persis dengan web_app
+
+volumes:
+   temp_uploads:

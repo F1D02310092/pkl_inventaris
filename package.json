@@ -1,0 +1,18 @@
+{
+   "name": "pkl",
+   "version": "1.0.0",
+   "main": "index.js",
+   "scripts": {
+      "start": "node src/app.js",
+      "worker": "node worker/worker.js"
+   },
+   "keywords": [],
+   "author": "",
+   "license": "ISC",
+   "description": "",
+   "dependencies": {
+      "dotenv": "^17.2.4",
+      "ejs": "^4.0.1",
+      "express": "^5.2.1"
+   }
+}
