@@ -1,0 +1,18 @@
+<% layout('layout/boilerplate.ejs') %>
+
+<h1 class="h1">Inventory List</h1>
+
+<% if(inventories.length === 0){ %>
+<p>Empty</p>
+<% } else if (inventories && inventories.length > 0){ %>
+<div>
+  <% for(let barang of inventories){%>
+  <ul>
+    <li>Nama barang: <%= barang.nama_barang %></li>
+    <li>Nomor seri: <%= barang.nomor_seri %></li>
+    <li>Diinput pada: <%= barang.created_at %></li>
+  </ul>
+  <% }%>
+</div>
+
+<% } %>

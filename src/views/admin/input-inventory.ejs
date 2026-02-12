@@ -1,0 +1,17 @@
+<% layout('layout/boilerplate.ejs') %>
+
+<h1 class="h1">Input Data Barang</h1>
+
+<form action="/admin/input-inventory" method="POST">
+  <div class="mb-3">
+    <label for="nama_barang" class="form-label">Nama Barang</label>
+    <input type="text" class="form-control" id="nama_barang" name="nama_barang" />
+  </div>
+
+  <div class="mb-3">
+    <label for="nomor_seri" class="form-label">Nomor Seri</label>
+    <input type="text" class="form-control" id="nomor_seri" name="nomor_seri" />
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

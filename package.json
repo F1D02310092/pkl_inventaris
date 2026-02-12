@@ -4,7 +4,9 @@
    "main": "index.js",
    "scripts": {
       "start": "node src/app.js",
-      "worker": "node worker/worker.js"
+      "worker": "node worker/worker.js",
+      "dev": "nodemon -L src/app.js -e js,json,ejs",
+      "worker:dev": "nodemon -L worker/worker.js"
    },
    "keywords": [],
    "author": "",
@@ -12,7 +14,9 @@
    "description": "",
    "dependencies": {
       "dotenv": "^17.2.4",
-      "ejs": "^4.0.1",
-      "express": "^5.2.1"
+      "ejs-mate": "^4.0.0",
+      "express": "^5.2.1",
+      "mongoose": "^9.2.1",
+      "nodemon": "^3.1.11"
    }
 }
