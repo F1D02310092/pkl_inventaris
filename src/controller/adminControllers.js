@@ -5,10 +5,27 @@ const getInputPage = (req, res) => {
 };
 
 const postInventory = async (req, res) => {
-   const { nama_barang, nomor_seri } = req.body;
+   const { nama_barang, nomor_seri, detailKey, detailValue } = req.body;
 
    try {
-      await BarangModel.insertOne({ nama_barang, nomor_seri });
+      let detailObj = {};
+
+      if (detailKey) {
+         // convert "paksa" menjadi array
+         const keys = Array.isArray(detailKey) ? detailKey : [detailKey];
+         const values = Array.isArray(detailValue) ? detailValue : [detailValue];
+
+         for (let i = 0; i < keys.length; i++) {
+            const key = keys[i].trim();
+            const val = values[i].trim();
+
+            if (key !== "") {
+               detailObj[key] = val;
+            }
+         }
+      }
+
+      await BarangModel.insertOne({ nama_barang, nomor_seri, detail: detailObj });
 
       return res.redirect("/");
    } catch (error) {

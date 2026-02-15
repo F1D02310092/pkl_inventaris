@@ -1,11 +1,11 @@
 <% layout('layout/boilerplate.ejs') %>
 
-<h1 class="h1">Input Data Barang</h1>
+<h1 class="h1 mb-4">Input Data Barang</h1>
 
 <form action="/admin/input-inventory" method="POST">
   <div class="mb-3">
     <label for="nama_barang" class="form-label">Nama Barang</label>
-    <input type="text" class="form-control" id="nama_barang" name="nama_barang" />
+    <input type="text" class="form-control" id="nama_barang" name="nama_barang" required />
   </div>
 
   <div class="mb-3">
@@ -13,5 +13,37 @@
     <input type="text" class="form-control" id="nomor_seri" name="nomor_seri" />
   </div>
 
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <hr class="my-4" />
+
+  <h4 class="h5 mb-3">Detail Tambahan (Spesifikasi)</h4>
+
+  <div id="dynamic-detail-container"></div>
+
+  <button type="button" id="btn-tambah-detail" class="btn btn-outline-secondary mb-4">+ Tambah Detail</button>
+
+  <br />
+  <button type="submit" class="btn btn-primary w-100">Simpan Barang</button>
 </form>
+
+<script>
+  document.getElementById("btn-tambah-detail").addEventListener("click", function() {
+    const container = document.getElementById("dynamic-detail-container");
+
+    const row = document.createElement("div");
+    row.className = "input-group mb-2";
+
+    row.innerHTML = `
+      <input type="text" class="form-control" name="detailKey" placeholder="Nama Atribut (Contoh: Warna, RAM)">
+      <input type="text" class="form-control" name="detailValue" placeholder="Nilai (Contoh: Hitam, 16GB)">
+      <button class="btn btn-danger btn-hapus" type="button">X</button>
+    `;
+
+    container.appendChild(row);
+  });
+
+  document.getElementById("dynamic-detail-container").addEventListener("click", function(e) {
+    if (e.target.classList.contains("btn-hapus")) {
+      e.target.parentElement.remove();
+    }
+  });
+</script>
