@@ -10,7 +10,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 
 // init mongosh
-const MONGO_URI = process.env.MONGO_URI || "mongodb://mongo:27017/db_inventaris";
+const MONGO_URI = process.env.MONGO_URI;
 const main = async function () {
    try {
       await mongoose.connect(MONGO_URI);
@@ -46,6 +46,13 @@ app.get("/health", (req, res) => {
    });
 });
 
-app.listen(PORT, () => {
-   console.log(`Listening on port: ${PORT}`);
-});
+// entry point
+const { startMQ } = require("./config/mq.js");
+async function startAPI() {
+   await startMQ();
+
+   app.listen(PORT, () => {
+      console.log(`Listening on port: ${PORT}`);
+   });
+}
+startAPI();

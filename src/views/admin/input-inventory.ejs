@@ -2,7 +2,7 @@
 
 <h1 class="h1 mb-4">Input Data Barang</h1>
 
-<form action="/admin/input-inventory" method="POST">
+<form action="/admin/input-inventory" method="POST" enctype="multipart/form-data">
   <div class="mb-3">
     <label for="nama_barang" class="form-label">Nama Barang</label>
     <input type="text" class="form-control" id="nama_barang" name="nama_barang" required />
@@ -12,6 +12,11 @@
     <label for="nomor_seri" class="form-label">Nomor Seri</label>
     <input type="text" class="form-control" id="nomor_seri" name="nomor_seri" />
   </div>
+
+  <!-- <div class="mb-3">
+    <label for="foto" class="form-label">Foto Barang</label>
+    <input type="file" class="form-control" name="foto" accept="image/*" capture="environment" required />
+  </div> -->
 
   <hr class="my-4" />
 

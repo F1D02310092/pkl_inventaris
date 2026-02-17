@@ -44,5 +44,18 @@ services:
          - /app/node_modules
          - temp_uploads:/app/temp
 
+   minio:
+      image: minio/minio
+      ports:
+         - "9000:9000" # Port API (Untuk koneksi backend)
+         - "9001:9001" # Port Console (Untuk buka UI MinIO di browser)
+      environment:
+         MINIO_ROOT_USER: admin
+         MINIO_ROOT_PASSWORD: password123
+      command: server /data --console-address ":9001"
+      volumes:
+         - minio_data:/data
+
 volumes:
    temp_uploads:
+   minio_data:

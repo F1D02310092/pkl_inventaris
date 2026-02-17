@@ -13,6 +13,14 @@ const barangSchema = new mongoose.Schema(
          unique: true,
          trim: true,
       },
+      image_url: {
+         type: String,
+         default: null,
+      },
+      status_upload: {
+         type: String,
+         default: "PENDING",
+      },
       detail: {
          type: mongoose.Schema.Types.Mixed,
          default: {},

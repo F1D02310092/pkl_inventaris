@@ -1,10 +1,12 @@
 const BarangModel = require("../models/Barang.js");
+const { getChannel } = require("../config/mq.js");
 
 const getInputPage = (req, res) => {
    return res.render("admin/input-inventory.ejs");
 };
 
 const postInventory = async (req, res) => {
+   console.log(req.body);
    const { nama_barang, nomor_seri, detailKey, detailValue } = req.body;
 
    try {
@@ -26,6 +28,13 @@ const postInventory = async (req, res) => {
       }
 
       await BarangModel.insertOne({ nama_barang, nomor_seri, detail: detailObj });
+
+      const channel = getChannel();
+      const payload = {
+         nama_barang,
+         nomor_seri,
+      };
+      await channel.sendToQueue("image_processing", Buffer.from(JSON.stringify(payload)));
 
       return res.redirect("/");
    } catch (error) {
