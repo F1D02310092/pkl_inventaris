@@ -39,6 +39,10 @@ services:
       environment:
          - MONGO_URI=mongodb://mongo:27017/db_inventaris
          - RABBITMQ_URI=amqp://rabbitmq
+         - MINIO_ENDPOINT=minio
+         - MINIO_PORT=9000
+         - MINIO_ACCESS_KEY=admin
+         - MINIO_SECRET_KEY=password123
       volumes:
          - .:/app
          - /app/node_modules

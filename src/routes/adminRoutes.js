@@ -4,7 +4,7 @@ const { getInputPage, postInventory, getInventoryPage } = require("../controller
 const { upload } = require("../config/upload.js");
 
 // base url: admin/...
-router.route("/input-inventory").get(getInputPage).post(upload.none(), postInventory);
+router.route("/input-inventory").get(getInputPage).post(upload.single("foto_barang"), postInventory);
 
 router.route("/check-inventory").get(getInventoryPage);
 

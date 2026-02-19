@@ -1,13 +1,18 @@
 const BarangModel = require("../models/Barang.js");
 const { getChannel } = require("../config/mq.js");
+const { v4: uuidv4 } = require("uuid");
 
 const getInputPage = (req, res) => {
    return res.render("admin/input-inventory.ejs");
 };
 
 const postInventory = async (req, res) => {
-   console.log(req.body);
    const { nama_barang, nomor_seri, detailKey, detailValue } = req.body;
+   const foto_barang = req.file;
+
+   if (!nama_barang || !nomor_seri || !foto_barang) {
+      return res.status(400).json({ message: "Missing critical values" });
+   }
 
    try {
       let detailObj = {};
@@ -27,13 +32,25 @@ const postInventory = async (req, res) => {
          }
       }
 
-      await BarangModel.insertOne({ nama_barang, nomor_seri, detail: detailObj });
+      const id_barang = uuidv4();
+      const newBarang = {
+         id_barang,
+         nama_barang,
+         nomor_seri,
+         detail: detailObj,
+      };
+
+      await BarangModel.insertOne(newBarang);
 
       const channel = getChannel();
       const payload = {
-         nama_barang,
+         id_barang: id_barang,
          nomor_seri,
+         file_path: foto_barang.path,
+         file_name: foto_barang.filename,
+         file_mime: foto_barang.mimetype,
       };
+
       await channel.sendToQueue("image_processing", Buffer.from(JSON.stringify(payload)));
 
       return res.redirect("/");
