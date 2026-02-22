@@ -23,6 +23,10 @@ const barangSchema = new mongoose.Schema(
          type: String,
          default: null,
       },
+      image_name: {
+         type: String,
+         default: null,
+      },
       status_upload: {
          type: String,
          default: "PENDING",

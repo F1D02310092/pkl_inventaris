@@ -55,7 +55,7 @@
     color: white;
   }
 
-  /* Styling khusus input form */
+  /* Styling khusus input form & preview */
   .form-label {
     font-weight: 500;
     color: #495057;
@@ -76,44 +76,81 @@
   .required-star {
     color: #dc3545;
   }
+
+  .img-preview {
+    max-width: 150px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    object-fit: cover;
+  }
 </style>
 
 <div class="mb-4">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb mb-1">
       <li class="breadcrumb-item"><a href="/admin/check-inventory" class="text-decoration-none text-success">Inventory</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Input Barang</li>
+      <li class="breadcrumb-item"><a href="/admin/item-detail/<%= barang.id_barang %>" class="text-decoration-none text-success">Detail</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Edit</li>
     </ol>
   </nav>
-  <h2 class="fw-bold mb-0">Input Data Barang</h2>
+  <h2 class="fw-bold mb-0">Edit Data Barang</h2>
 </div>
 
 <div class="inventory-wrapper mb-5">
-  <form action="/admin/input-inventory" method="POST" enctype="multipart/form-data">
+  <form action="/admin/item-detail/<%= barang.id_barang %>?_method=PUT" method="POST" enctype="multipart/form-data">
 
     <h4 class="section-title mb-4">Informasi Dasar</h4>
 
     <div class="row">
       <div class="col-md-6 mb-4">
         <label for="nama_barang" class="form-label">Nama Barang <span class="required-star">*</span></label>
-        <input type="text" class="form-control custom-input" id="nama_barang" name="nama_barang" placeholder="Masukkan nama barang" required />
+        <input type="text" class="form-control custom-input" id="nama_barang" name="nama_barang" value="<%= barang.nama_barang %>" required />
       </div>
 
       <div class="col-md-6 mb-4">
         <label for="nomor_seri" class="form-label">Nomor Seri</label>
-        <input type="text" class="form-control custom-input" id="nomor_seri" name="nomor_seri" placeholder="Kosongkan jika tidak ada" />
+        <input type="text" class="form-control custom-input" id="nomor_seri" name="nomor_seri" value="<%= barang.nomor_seri || '' %>" />
       </div>
 
       <div class="col-md-12 mb-4">
-        <label for="foto" class="form-label">Foto Barang <span class="required-star">*</span></label>
-        <input id="foto" type="file" class="form-control custom-input" name="foto_barang" accept="image/*" capture="environment" required />
-        <div class="form-text mt-1 text-muted small">Format didukung: JPG, PNG, JPEG.</div>
+        <label for="foto" class="form-label">Foto Barang</label>
+        <div class="d-flex align-items-center gap-4">
+          <% if (barang.image_url) { %>
+          <div>
+            <img src="<%= barang.image_url %>" alt="Current Image" class="img-preview mb-2">
+            <div class="text-muted small text-center">Foto Saat Ini</div>
+          </div>
+          <% } %>
+
+          <div class="flex-grow-1">
+            <input id="foto" type="file" class="form-control custom-input" name="foto_barang" accept="image/*" capture="environment" />
+            <div class="form-text mt-1 text-muted small">Biarkan kosong jika tidak ingin mengubah foto.</div>
+            <div class="form-text mt-1 text-muted small">Format: JPG, PNG, JPEG.</div>
+          </div>
+        </div>
       </div>
     </div>
 
     <h4 class="section-title mb-4 mt-3">Detail Tambahan</h4>
 
     <div id="dynamic-detail-container">
+      <% if (barang.detail && Object.keys(barang.detail).length > 0) { %>
+      <% for (let key in barang.detail) { %>
+      <div class="row mb-3 align-items-center detail-row">
+        <div class="col-md-5 mb-2 mb-md-0">
+          <input type="text" class="form-control custom-input" name="detailKey" value="<%= key %>" placeholder="Nama Atribut">
+        </div>
+        <div class="col-md-6 mb-2 mb-md-0">
+          <input type="text" class="form-control custom-input" name="detailValue" value="<%= barang.detail[key] %>" placeholder="Nilai Atribut">
+        </div>
+        <div class="col-md-1 text-end">
+          <button class="btn btn-outline-danger btn-hapus p-2 border-0" type="button" title="Hapus baris">
+            <i class="bi bi-trash fs-5 pointer-events-none"></i>
+          </button>
+        </div>
+      </div>
+      <% } %>
+      <% } %>
     </div>
 
     <button type="button" id="btn-tambah-detail" class="btn btn-outline-green mb-5">
@@ -121,11 +158,11 @@
     </button>
 
     <div class="d-flex justify-content-end gap-3 border-top pt-4">
-      <a href="/admin/check-inventory" class="btn btn-light-custom px-4 py-2">
+      <a href="/admin/item-detail/<%= barang.id_barang %>" class="btn btn-light-custom px-4 py-2">
         Batal
       </a>
       <button type="submit" class="btn btn-green px-5 py-2">
-        <i class="bi bi-save me-2"></i> Simpan Barang
+        <i class="bi bi-check2-circle me-2"></i> Simpan Perubahan
       </button>
     </div>
 
@@ -157,7 +194,7 @@
   });
 
   document.getElementById("dynamic-detail-container").addEventListener("click", function(e) {
-
+    // Mencari elemen terdekat dengan class btn-hapus
     const hapusBtn = e.target.closest('.btn-hapus');
     if (hapusBtn) {
       hapusBtn.closest('.detail-row').remove();

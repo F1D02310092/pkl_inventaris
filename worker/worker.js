@@ -76,7 +76,7 @@ const processMQ = async () => {
 
             const newImageURL = `http://localhost:${MINIO_PORT}/${BUCKET_NAME}/${newImageName}`;
 
-            await BarangModel.findOneAndUpdate({ id_barang: id_barang }, { image_url: newImageURL, status_upload: "DONE" });
+            await BarangModel.findOneAndUpdate({ id_barang: id_barang }, { image_url: newImageURL, image_name: newImageName, status_upload: "DONE" });
 
             if (fs.existsSync(file_path)) {
                fs.unlinkSync(file_path);
@@ -88,6 +88,23 @@ const processMQ = async () => {
             channel.ack(data);
          } catch (error) {
             console.error("Something went wrong with the worker", error);
+            channel.nack(data, false, true);
+         }
+      });
+
+      channel.consume("image_deletion", async (data) => {
+         if (!data) {
+            return;
+         }
+
+         try {
+            const { image_name } = JSON.parse(data.content.toString());
+
+            await minioClient.removeObject(BUCKET_NAME, image_name);
+
+            channel.ack(data);
+         } catch (error) {
+            console.error("Gagal menghapus gambar", error);
             channel.nack(data, false, true);
          }
       });

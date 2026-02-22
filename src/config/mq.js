@@ -10,6 +10,8 @@ const startMQ = async () => {
       channel = await connection.createChannel();
 
       await channel.assertQueue("image_processing", { durable: true });
+      await channel.assertQueue("image_deletion", { durable: true });
+
       console.log("MQ connection is established");
    } catch (error) {
       console.error("Failed to establish MQ connection, trying again in 3 seconds", error);

@@ -71,8 +71,87 @@ const getInventoryPage = async (req, res) => {
    }
 };
 
+const getItemDetailPage = async (req, res) => {
+   const barang = await BarangModel.findOne({ id_barang: req.params.id_barang });
+
+   if (!barang) {
+      return res.status(404).json({ message: "Item not found" });
+   }
+
+   return res.render("admin/detail-item.ejs", { barang });
+};
+
+const getEditItemPage = async (req, res) => {
+   const barang = await BarangModel.findOne({ id_barang: req.params.id_barang });
+
+   if (!barang) {
+      return res.status(404).json({ message: "Item not found" });
+   }
+
+   return res.render("admin/edit-item.ejs", { barang });
+};
+
+const putItemEdit = async (req, res) => {
+   // TODO: handle edit gambar di minio
+
+   const { nama_barang, nomor_seri, detailKey, detailValue } = req.body;
+
+   let detailObj = {};
+
+   if (detailKey) {
+      // convert "paksa" menjadi array
+      const keys = Array.isArray(detailKey) ? detailKey : [detailKey];
+      const values = Array.isArray(detailValue) ? detailValue : [detailValue];
+
+      for (let i = 0; i < keys.length; i++) {
+         const key = keys[i].trim();
+         const val = values[i].trim();
+
+         if (key !== "") {
+            detailObj[key] = val;
+         }
+      }
+   }
+
+   const dataBarang = {
+      nama_barang,
+      nomor_seri,
+      detail: detailObj,
+   };
+
+   const item = await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, dataBarang, { runValidators: true, new: true });
+
+   if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+   }
+
+   return res.redirect(`/admin/item-detail/${req.params.id_barang}`);
+};
+
+const deleteItem = async (req, res) => {
+   const barang = await BarangModel.findOneAndDelete({ id_barang: req.params.id_barang });
+
+   if (!barang) {
+      return res.status(404).json({ message: "Item not found" });
+   }
+
+   const channel = getChannel();
+
+   const payload = {
+      image_name: barang.image_name,
+   };
+
+   await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(payload)));
+
+   return res.redirect("/admin/check-inventory");
+};
+
 module.exports = {
    getInputPage,
    postInventory,
    getInventoryPage,
+   getItemDetailPage,
+   getEditItemPage,
+   putItemEdit,
+   deleteItem,
 };

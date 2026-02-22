@@ -8,6 +8,7 @@ const PORT = process.env.PORT;
 const engine = require("ejs-mate");
 const path = require("path");
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
 
 // init mongosh
 const MONGO_URI = process.env.MONGO_URI;
@@ -29,6 +30,7 @@ app.set("views", path.join(__dirname, "views"));
 // setting req.body parser utk input form
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(methodOverride("_method"));
 
 // home page
 app.get("/", (req, res) => {
