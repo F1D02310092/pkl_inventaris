@@ -37,7 +37,7 @@ const processMQ = async () => {
          }
 
          try {
-            const { id_barang, nomor_seri, file_path, file_name, file_mime } = JSON.parse(data.content.toString());
+            const { id_barang, file_path, file_name, file_mime } = JSON.parse(data.content.toString());
             console.log(`Processing barang dgn id: ${id_barang}`);
 
             const bucketExists = await minioClient.bucketExists(BUCKET_NAME);
@@ -101,6 +101,8 @@ const processMQ = async () => {
             const { image_name } = JSON.parse(data.content.toString());
 
             await minioClient.removeObject(BUCKET_NAME, image_name);
+
+            console.log(`Sukses menghapus gambar: ${image_name}`);
 
             channel.ack(data);
          } catch (error) {

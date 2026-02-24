@@ -47,34 +47,21 @@
     color: #212529;
   }
 
-  /* Mengatur tampilan input agar mirip desain */
   .custom-input {
     border-radius: 8px;
     border: 1px solid #e0e0e0;
   }
 </style>
 
-<div class="mb-4">
-  <h2 class="fw-bold mb-0">Inventory <span class="text-muted fs-5 fw-normal">/ (<%= inventories.length %>)</span></h2>
-</div>
+
 
 <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-  <div class="d-flex gap-3 flex-grow-1">
-    <div style="max-width: 300px; width: 100%;">
-      <label class="form-label text-muted small mb-1">Search</label>
-      <input type="text" class="form-control custom-input" placeholder="Search for inventory....." disabled>
-    </div>
-    <div style="max-width: 150px; width: 100%;">
-      <label class="form-label text-muted small mb-1">Category</label>
-      <select class="form-select custom-input" disabled>
-        <option>All</option>
-      </select>
-    </div>
+  <div class="">
+    <h2 class="fw-bold mb-0">Inventaris <span class="text-muted fs-5 fw-normal">/ (<%= inventories.length %>)</span></h2>
   </div>
-
   <div>
     <a href="/admin/input-inventory" class="btn btn-add px-4 py-2" style="border-radius: 8px;">
-      <i class="bi bi-plus-lg"></i> Add Product
+      <i class="bi bi-plus-lg"></i> Tambah Barang
     </a>
   </div>
 </div>
@@ -88,9 +75,11 @@
       <thead class="table-header border-bottom">
         <tr>
 
-          <th scope="col">Product name</th>
-          <th scope="col">Product ID</th>
-          <th scope="col">Created At</th>
+          <th scope="col">Name Barang</th>
+          <th scope="col">Kategori</th>
+          <th scope="col">Ruangan</th>
+          <th scope="col">Jumlah & Satuan</th>
+          <th scope="col">Merek</th>
           <th scope="col" class="text-end">Action</th>
         </tr>
       </thead>
@@ -102,31 +91,51 @@
           <td>
             <div class="d-flex align-items-center">
               <img src="<%= barang.image_url || '/placeholder.jpg' %>" alt="<%= barang.nama_barang %>" class="product-image">
-              <span class="fw-medium text-dark"><%= barang.nama_barang %></span>
+              <span class="fw-normal text-dark"><%= barang.nama_barang %></span>
             </div>
           </td>
 
-          <td class="text-muted"><%= barang.nomor_seri || '-' %></td>
+          <td>
+            <div class="d-flex align-items-center">
+              <span class="fw-normal text-dark"><%= barang.kategori %></span>
+            </div>
+          </td>
 
-          <td class="text-muted">
-            <%= new Date(barang.createdAt).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) %>
-            <span class="small"><%= new Date(barang.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) %></span>
+          <td>
+            <div class="d-flex align-items-center">
+              <span class="fw-normal text-dark"><%= barang.ruangan %></span>
+            </div>
+          </td>
+
+          <td>
+            <div class="d-flex align-items-center">
+              <span class="fw-normal text-dark"><%= barang.jumlah %> <%= barang.satuan %></span>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex align-items-center">
+              <%if(barang.merek !== ""){%>
+              <span class="fw-normal text-dark"><%= barang.merek %></span>
+              <%} else {%>
+              <span class="fw-normal text-dark">-</span>
+              <%}%>
+            </div>
           </td>
 
           <td class="text-end">
             <a href="/admin/item-detail/<%= barang.id_barang %>" class="action-btn text-decoration-none" title="View Detail">
               <i class="bi bi-eye"></i>
-            </a>
+              </a>
 
-            <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="action-btn text-decoration-none" title="Edit">
-              <i class="bi bi-pencil"></i>
-            </a>
+              <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="action-btn text-decoration-none" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </a>
 
-            <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="d-inline">
-              <button type="submit" class="btn btn-link action-btn p-0 m-0 border-0 text-decoration-none" title="Delete" onclick="return confirm('Yakin ingin menghapus barang ini?')">
-                <i class="bi bi-trash"></i>
-              </button>
-            </form>
+              <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-link action-btn p-0 m-0 border-0 text-decoration-none" title="Delete" onclick="return confirm('Yakin ingin menghapus barang ini?')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
           </td>
         </tr>
         <% } %>
@@ -134,17 +143,6 @@
     </table>
   </div>
 
-  <div class="d-flex justify-content-end mt-4">
-    <nav aria-label="Page navigation">
-      <ul class="pagination pagination-sm mb-0 gap-1">
-        <li class="page-item disabled"><a class="page-link border-0 text-muted bg-transparent" href="#">&lt;</a></li>
-        <li class="page-item active"><a class="page-link border-0 rounded-circle text-success bg-success bg-opacity-10 fw-bold" href="#">1</a></li>
-        <li class="page-item"><a class="page-link border-0 text-muted bg-transparent" href="#">2</a></li>
-        <li class="page-item"><a class="page-link border-0 text-muted bg-transparent" href="#">3</a></li>
-        <li class="page-item"><a class="page-link border-0 text-muted bg-transparent" href="#">...</a></li>
-        <li class="page-item"><a class="page-link border-0 text-muted bg-transparent" href="#">&gt;</a></li>
-      </ul>
-    </nav>
-  </div>
+
   <% } %>
 </div>

@@ -55,7 +55,6 @@
     color: white;
   }
 
-  /* Styling khusus input form */
   .form-label {
     font-weight: 500;
     color: #495057;
@@ -78,20 +77,25 @@
   }
 </style>
 
-<div class="mb-4">
+<div class="py-3 mb-4 d-flex justify-content-between align-items-center">
+  <h2 class="fw-bold mb-0">Input Data Barang</h2>
+
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb mb-1">
-      <li class="breadcrumb-item"><a href="/admin/check-inventory" class="text-decoration-none text-success">Inventory</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Input Barang</li>
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item">
+        <a href="/admin/check-inventory" class="text-success">Inventaris</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Input Barang
+      </li>
     </ol>
   </nav>
-  <h2 class="fw-bold mb-0">Input Data Barang</h2>
 </div>
 
 <div class="inventory-wrapper mb-5">
   <form action="/admin/input-inventory" method="POST" enctype="multipart/form-data">
 
-    <h4 class="section-title mb-4">Informasi Dasar</h4>
+    <h4 class="section-title mb-4">Informasi Utama</h4>
 
     <div class="row">
       <div class="col-md-6 mb-4">
@@ -100,8 +104,63 @@
       </div>
 
       <div class="col-md-6 mb-4">
-        <label for="nomor_seri" class="form-label">Nomor Seri</label>
-        <input type="text" class="form-control custom-input" id="nomor_seri" name="nomor_seri" placeholder="Kosongkan jika tidak ada" />
+        <label for="kategori" class="form-label">Kategori <span class="required-star">*</span></label>
+        <input type="text" class="form-control custom-input" id="kategori" name="kategori" list="kategoriOptions" placeholder="Pilih atau ketik kategori baru" required />
+        <datalist id="kategoriOptions">
+          <% if (typeof daftarKategori !== 'undefined') { %>
+          <% daftarKategori.forEach(kat => { %>
+          <option value="Elektronik"></option>
+          <option value="Meubelair"></option>
+          <option value="<%= kat %>"></option>
+          <% }) }%>
+        </datalist>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label for="merek" class="form-label">Merek</label>
+        <input type="text" class="form-control custom-input" id="merek" name="merek" list="merekOptions" placeholder="Pilih atau ketik merek baru" />
+        <datalist id="merekOptions">
+          <% if (typeof daftarMerek !== 'undefined') { %>
+          <% daftarMerek.forEach(merek => { %>
+          <option value="<%= merek %>"></option>
+          <% }) %>
+          <% } %>
+        </datalist>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label for="ruangan" class="form-label">Ruangan <span class="required-star">*</span></label>
+        <input type="text" class="form-control custom-input" id="ruangan" name="ruangan" list="ruanganOptions" placeholder="Pilih atau ketik ruangan baru" required />
+        <datalist id="ruanganOptions">
+          <% if (typeof daftarRuangan !== 'undefined') { %>
+          <% daftarRuangan.forEach(rng => { %>
+          <option value="Ruang Laktasi"></option>
+          <option value="Ruang Administrasi"></option>
+          <option value="<%= rng %>"></option>
+          <% }) %>
+          <% } %>
+
+        </datalist>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label for="jumlah" class="form-label">Jumlah <span class="required-star">*</span></label>
+        <input type="number" class="form-control custom-input" id="jumlah" name="jumlah" placeholder="Masukkan jumlah barang" min="0" required />
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label for="satuan" class="form-label">Satuan</label>
+        <input type="text" class="form-control custom-input" id="satuan" name="satuan" list="satuanOptions" placeholder="Pilih atau ketik satuan (misal: buah, set)" />
+        <datalist id="satuanOptions">
+          <% if (typeof daftarSatuan !== 'undefined') { %>
+          <% daftarSatuan.forEach(sat => { %>
+          <option value="buah (unit)"></option>
+          <option value="set"></option>
+          <option value="<%= sat %>"></option>
+          <% }) %>
+          <% }  %>
+
+        </datalist>
       </div>
 
       <div class="col-md-12 mb-4">
@@ -111,7 +170,7 @@
       </div>
     </div>
 
-    <h4 class="section-title mb-4 mt-3">Detail Tambahan</h4>
+    <h4 class="section-title mb-4 mt-3">Detail Tambahan (Opsional)</h4>
 
     <div id="dynamic-detail-container">
     </div>
@@ -141,10 +200,10 @@
 
     row.innerHTML = `
       <div class="col-md-5 mb-2 mb-md-0">
-        <input type="text" class="form-control custom-input" name="detailKey" placeholder="Nama Atribut (Contoh: Warna, RAM)">
+        <input type="text" class="form-control custom-input" name="detailKey" placeholder="Contoh: Warna">
       </div>
       <div class="col-md-6 mb-2 mb-md-0">
-        <input type="text" class="form-control custom-input" name="detailValue" placeholder="Nilai (Contoh: Hitam, 16GB)">
+        <input type="text" class="form-control custom-input" name="detailValue" placeholder="Contoh: Hitam">
       </div>
       <div class="col-md-1 text-end">
         <button class="btn btn-outline-danger btn-hapus p-2 border-0" type="button" title="Hapus baris">
@@ -157,7 +216,6 @@
   });
 
   document.getElementById("dynamic-detail-container").addEventListener("click", function(e) {
-
     const hapusBtn = e.target.closest('.btn-hapus');
     if (hapusBtn) {
       hapusBtn.closest('.detail-row').remove();

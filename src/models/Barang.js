@@ -13,12 +13,6 @@ const barangSchema = new mongoose.Schema(
          required: true,
          trim: true,
       },
-      nomor_seri: {
-         type: String,
-         required: true,
-         unique: true,
-         trim: true,
-      },
       image_url: {
          type: String,
          default: null,
@@ -34,6 +28,27 @@ const barangSchema = new mongoose.Schema(
       detail: {
          type: mongoose.Schema.Types.Mixed,
          default: {},
+      },
+      jumlah: {
+         type: Number,
+         required: true,
+         trim: true,
+      },
+      ruangan: {
+         type: String,
+         required: true,
+         trim: true,
+      },
+      merek: {
+         type: String,
+         trim: true,
+      },
+      kategori: {
+         type: String,
+         required: true,
+      },
+      satuan: {
+         type: String,
       },
    },
    {

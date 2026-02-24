@@ -55,7 +55,7 @@
     color: white;
   }
 
-  /* Styling khusus input form & preview */
+
   .form-label {
     font-weight: 500;
     color: #495057;
@@ -88,8 +88,8 @@
 <div class="mb-4">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb mb-1">
-      <li class="breadcrumb-item"><a href="/admin/check-inventory" class="text-decoration-none text-success">Inventory</a></li>
-      <li class="breadcrumb-item"><a href="/admin/item-detail/<%= barang.id_barang %>" class="text-decoration-none text-success">Detail</a></li>
+      <li class="breadcrumb-item"><a href="/admin/check-inventory" class="text-success">Inventory</a></li>
+      <li class="breadcrumb-item"><a href="/admin/item-detail/<%= barang.id_barang %>" class="text-success">Detail</a></li>
       <li class="breadcrumb-item active" aria-current="page">Edit</li>
     </ol>
   </nav>
@@ -104,12 +104,67 @@
     <div class="row">
       <div class="col-md-6 mb-4">
         <label for="nama_barang" class="form-label">Nama Barang <span class="required-star">*</span></label>
-        <input type="text" class="form-control custom-input" id="nama_barang" name="nama_barang" value="<%= barang.nama_barang %>" required />
+        <input type="text" class="form-control custom-input" id="nama_barang" name="nama_barang" placeholder="Masukkan nama barang" required value="<%= barang.nama_barang %>" />
       </div>
 
       <div class="col-md-6 mb-4">
-        <label for="nomor_seri" class="form-label">Nomor Seri</label>
-        <input type="text" class="form-control custom-input" id="nomor_seri" name="nomor_seri" value="<%= barang.nomor_seri || '' %>" />
+        <label for="kategori" class="form-label">Kategori <span class="required-star">*</span></label>
+        <input type="text" class="form-control custom-input" id="kategori" name="kategori" list="kategoriOptions" placeholder="Pilih atau ketik kategori baru" required value="<%= barang.kategori %>" />
+        <datalist id="kategoriOptions">
+          <% if (typeof daftarKategori !== 'undefined') { %>
+          <% daftarKategori.forEach(kat => { %>
+          <option value="Elektronik"></option>
+          <option value="Meubelair"></option>
+          <option value="<%= kat %>"></option>
+          <% }) }%>
+        </datalist>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label for="merek" class="form-label">Merek</label>
+        <input type="text" class="form-control custom-input" id="merek" name="merek" list="merekOptions" placeholder="Pilih atau ketik merek baru" value="<%= barang.merek %>" />
+        <datalist id="merekOptions">
+          <% if (typeof daftarMerek !== 'undefined') { %>
+          <% daftarMerek.forEach(merek => { %>
+          <option value="<%= merek %>"></option>
+          <% }) %>
+          <% } %>
+        </datalist>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label for="ruangan" class="form-label">Ruangan <span class="required-star">*</span></label>
+        <input type="text" class="form-control custom-input" id="ruangan" name="ruangan" list="ruanganOptions" placeholder="Pilih atau ketik ruangan baru" required value="<%= barang.ruangan %>" />
+        <datalist id="ruanganOptions">
+          <% if (typeof daftarRuangan !== 'undefined') { %>
+          <% daftarRuangan.forEach(rng => { %>
+          <option value="Ruang Laktasi"></option>
+          <option value="Ruang Administrasi"></option>
+          <option value="<%= rng %>"></option>
+          <% }) %>
+          <% } %>
+
+        </datalist>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label for="jumlah" class="form-label">Jumlah <span class="required-star">*</span></label>
+        <input type="number" class="form-control custom-input" id="jumlah" name="jumlah" placeholder="Masukkan jumlah barang" min="0" step="1" required value="<%= barang.jumlah %>" />
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label for="satuan" class="form-label">Satuan</label>
+        <input type="text" class="form-control custom-input" id="satuan" name="satuan" list="satuanOptions" placeholder="Pilih atau ketik satuan (misal: buah, set)" value="<%= barang.satuan %>" />
+        <datalist id="satuanOptions">
+          <% if (typeof daftarSatuan !== 'undefined') { %>
+          <% daftarSatuan.forEach(sat => { %>
+          <option value="buah (unit)"></option>
+          <option value="set"></option>
+          <option value="<%= sat %>"></option>
+          <% }) %>
+          <% }  %>
+
+        </datalist>
       </div>
 
       <div class="col-md-12 mb-4">
@@ -125,13 +180,13 @@
           <div class="flex-grow-1">
             <input id="foto" type="file" class="form-control custom-input" name="foto_barang" accept="image/*" capture="environment" />
             <div class="form-text mt-1 text-muted small">Biarkan kosong jika tidak ingin mengubah foto.</div>
-            <div class="form-text mt-1 text-muted small">Format: JPG, PNG, JPEG.</div>
+            <div class="form-text mt-1 text-muted small">Format didukung: JPG, PNG, JPEG.</div>
           </div>
         </div>
       </div>
     </div>
 
-    <h4 class="section-title mb-4 mt-3">Detail Tambahan</h4>
+    <h4 class="section-title mb-4 mt-3">Detail Tambahan (Opsional)</h4>
 
     <div id="dynamic-detail-container">
       <% if (barang.detail && Object.keys(barang.detail).length > 0) { %>
@@ -194,7 +249,6 @@
   });
 
   document.getElementById("dynamic-detail-container").addEventListener("click", function(e) {
-    // Mencari elemen terdekat dengan class btn-hapus
     const hapusBtn = e.target.closest('.btn-hapus');
     if (hapusBtn) {
       hapusBtn.closest('.detail-row').remove();

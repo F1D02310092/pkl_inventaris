@@ -2,16 +2,21 @@ const BarangModel = require("../models/Barang.js");
 const { getChannel } = require("../config/mq.js");
 const { v4: uuidv4 } = require("uuid");
 
-const getInputPage = (req, res) => {
-   return res.render("admin/input-inventory.ejs");
+const getInputPage = async (req, res) => {
+   const daftarKategori = await BarangModel.distinct("kategori");
+   const daftarMerek = await BarangModel.distinct("merek");
+   const daftarSatuan = await BarangModel.distinct("satuan");
+   const daftarRuangan = await BarangModel.distinct("ruangan");
+
+   return res.render("admin/input-inventory.ejs", { daftarKategori, daftarMerek, daftarSatuan, daftarRuangan });
 };
 
 const postInventory = async (req, res) => {
-   const { nama_barang, nomor_seri, detailKey, detailValue } = req.body;
+   const { nama_barang, kategori, jumlah, satuan, ruangan, merek, detailKey, detailValue } = req.body;
    const foto_barang = req.file;
 
-   if (!nama_barang || !nomor_seri || !foto_barang) {
-      return res.status(400).json({ message: "Missing critical values" });
+   if (!nama_barang || !foto_barang || !kategori || !jumlah || !satuan || !ruangan || !merek) {
+      return res.status(400).json({ message: "Mohon lengkapi semua data yang ada!" });
    }
 
    try {
@@ -36,7 +41,11 @@ const postInventory = async (req, res) => {
       const newBarang = {
          id_barang,
          nama_barang,
-         nomor_seri,
+         kategori,
+         jumlah,
+         satuan,
+         ruangan,
+         merek,
          detail: detailObj,
       };
 
@@ -45,7 +54,6 @@ const postInventory = async (req, res) => {
       const channel = getChannel();
       const payload = {
          id_barang: id_barang,
-         nomor_seri,
          file_path: foto_barang.path,
          file_name: foto_barang.filename,
          file_mime: foto_barang.mimetype,
@@ -83,18 +91,23 @@ const getItemDetailPage = async (req, res) => {
 
 const getEditItemPage = async (req, res) => {
    const barang = await BarangModel.findOne({ id_barang: req.params.id_barang });
+   const daftarKategori = await BarangModel.distinct("kategori");
+   const daftarMerek = await BarangModel.distinct("merek");
+   const daftarSatuan = await BarangModel.distinct("satuan");
+   const daftarRuangan = await BarangModel.distinct("ruangan");
 
    if (!barang) {
       return res.status(404).json({ message: "Item not found" });
    }
 
-   return res.render("admin/edit-item.ejs", { barang });
+   return res.render("admin/edit-item.ejs", { barang, daftarKategori, daftarMerek, daftarSatuan, daftarRuangan });
 };
 
 const putItemEdit = async (req, res) => {
    // TODO: handle edit gambar di minio
 
-   const { nama_barang, nomor_seri, detailKey, detailValue } = req.body;
+   const { nama_barang, kategori, jumlah, satuan, ruangan, merek, detailKey, detailValue } = req.body;
+   const foto_barang = req.file;
 
    let detailObj = {};
 
@@ -115,14 +128,43 @@ const putItemEdit = async (req, res) => {
 
    const dataBarang = {
       nama_barang,
-      nomor_seri,
+      kategori,
+      jumlah,
+      satuan,
+      ruangan,
+      merek,
       detail: detailObj,
    };
 
-   const item = await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, dataBarang, { runValidators: true, new: true });
+   try {
+      const item = await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, dataBarang, { runValidators: true, new: true });
 
-   if (!item) {
-      return res.status(404).json({ message: "Item not found" });
+      if (!item) {
+         return res.status(404).json({ message: "Barang tidak ditemukan" });
+      }
+
+      if (foto_barang) {
+         const gambarLama = {
+            image_name: item.image_name,
+         };
+
+         const payload = {
+            id_barang: req.params.id_barang,
+            file_path: foto_barang.path,
+            file_name: foto_barang.filename,
+            file_mime: foto_barang.mimetype,
+         };
+         const channel = getChannel();
+
+         await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(gambarLama)));
+
+         await channel.sendToQueue("image_processing", Buffer.from(JSON.stringify(payload)));
+
+         await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, { status_upload: "PENDING" });
+      }
+   } catch (error) {
+      console.error("Error update barang:", error);
+      return res.status(500).json({ message: "Error update barang" });
    }
 
    return res.redirect(`/admin/item-detail/${req.params.id_barang}`);
