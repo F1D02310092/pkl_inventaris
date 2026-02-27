@@ -20,10 +20,6 @@ services:
       depends_on:
          - mongo
          - rabbitmq
-      environment:
-         - MONGO_URI=mongodb://mongo:27017/db_inventaris
-         - RABBITMQ_URI=amqp://rabbitmq
-         - PORT=3000
       volumes:
          - .:/app
          - /app/node_modules

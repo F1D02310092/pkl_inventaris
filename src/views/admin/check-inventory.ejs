@@ -123,7 +123,9 @@
           </td>
 
           <td class="text-end">
-            <a href="/admin/item-detail/<%= barang.id_barang %>" class="action-btn text-decoration-none" title="View Detail">
+  <div class="d-flex justify-content-end align-items-center">
+    
+    <a href="/admin/item-detail/<%= barang.id_barang %>" class="action-btn text-decoration-none" title="View Detail">
               <i class="bi bi-eye"></i>
               </a>
 
@@ -131,14 +133,19 @@
                 <i class="bi bi-pencil"></i>
               </a>
 
-              <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="d-inline">
-                <button type="submit" class="btn btn-link action-btn p-0 m-0 border-0 text-decoration-none" title="Delete" onclick="return confirm('Yakin ingin menghapus barang ini?')">
+              <a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="action-btn text-decoration-none" title="QR Code">
+                <i class="bi bi-qr-code-scan"></i>
+              </a>
+
+              <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
+                <button type="submit" class="btn btn-link action-btn p-0 m-0 border-0 text-decoration-none d-flex align-items-center" title="Delete" onclick="return confirm('Yakin ingin menghapus barang ini?')">
                   <i class="bi bi-trash"></i>
                 </button>
               </form>
+
+            </div>
           </td>
-        </tr>
-        <% } %>
+          <% } %>
       </tbody>
     </table>
   </div>

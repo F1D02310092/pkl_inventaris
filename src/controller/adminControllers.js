@@ -1,6 +1,7 @@
 const BarangModel = require("../models/Barang.js");
 const { getChannel } = require("../config/mq.js");
 const { v4: uuidv4 } = require("uuid");
+const generateQR = require("../config/qrgenerator.js");
 
 const getInputPage = async (req, res) => {
    const daftarKategori = await BarangModel.distinct("kategori");
@@ -71,6 +72,10 @@ const postInventory = async (req, res) => {
 const getInventoryPage = async (req, res) => {
    try {
       const inventories = await BarangModel.find();
+
+      if (inventories.length === 0) {
+         return res.render("admin/check-inventory.ejs", { inventories });
+      }
 
       return res.render("admin/check-inventory.ejs", { inventories });
    } catch (error) {
@@ -188,6 +193,23 @@ const deleteItem = async (req, res) => {
    return res.redirect("/admin/check-inventory");
 };
 
+const downloadQR = async (req, res) => {
+   const barang = await BarangModel.findOne({ id_barang: req.params.id_barang });
+
+   if (!barang) {
+      return res.status(404).json({ message: "Barang tidak ditemukan" });
+   }
+
+   const qr = await generateQR(barang);
+
+   res.set({
+      "Content-Type": "image/png",
+      "Content-Disposition": `attachment; filename=${barang.nama_barang.trim()}_QR.png`,
+   });
+
+   res.send(qr);
+};
+
 module.exports = {
    getInputPage,
    postInventory,
@@ -196,4 +218,5 @@ module.exports = {
    getEditItemPage,
    putItemEdit,
    deleteItem,
+   downloadQR,
 };
