@@ -1,0 +1,91 @@
+.inventory-wrapper {
+   background-color: #ffffff;
+   border-radius: 12px;
+   border: 1px solid #f0f0f0;
+   padding: 30px;
+}
+
+.section-title {
+   font-size: 1.1rem;
+   font-weight: 600;
+   color: #212529;
+   margin-bottom: 1rem;
+   padding-bottom: 0.5rem;
+   border-bottom: 1px solid #f0f0f0;
+}
+
+.item-image {
+   width: 100%;
+   border-radius: 12px;
+   border: 1px solid #e9ecef;
+   object-fit: cover;
+}
+
+.img-placeholder {
+   height: 350px;
+   border-radius: 12px;
+   background-color: #f8f9fa;
+   border: 1px dashed #dee2e6;
+}
+
+.status-badge {
+   font-size: 0.75rem;
+   padding: 4px 12px;
+   border-radius: 50px;
+   font-weight: 600;
+}
+
+.status-pending {
+   background-color: #fff3cd;
+   color: #856404;
+   border: 1px solid #ffeeba;
+}
+
+.basic-table th {
+   color: #6c757d;
+   font-weight: 500;
+   font-size: 0.95rem;
+   padding-left: 0;
+   width: 200px;
+}
+
+.basic-table td {
+   font-weight: 600;
+   color: #212529;
+}
+
+.btn-green {
+   background-color: #34c759;
+   border-color: #34c759;
+   color: white;
+   font-weight: 500;
+   border-radius: 8px;
+}
+
+.btn-green:hover {
+   background-color: #2db84d;
+   color: white;
+}
+
+.btn-light-custom {
+   background-color: #ffffff;
+   border: 1px solid #dcdfe3;
+   color: #495057;
+   font-weight: 500;
+   border-radius: 8px;
+}
+
+.btn-light-custom:hover {
+   background-color: #f8f9fa;
+   color: #212529;
+}
+
+.table-detail-tambahan {
+   border: 1px solid #e9ecef;
+}
+
+.table-detail-tambahan th {
+   background-color: #fcfcfc;
+   color: #6c757d;
+   font-weight: 600;
+}

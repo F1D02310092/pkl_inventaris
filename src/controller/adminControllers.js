@@ -2,6 +2,7 @@ const BarangModel = require("../models/Barang.js");
 const { getChannel } = require("../config/mq.js");
 const { v4: uuidv4 } = require("uuid");
 const generateQR = require("../config/qrgenerator.js");
+const { capitalEachWord } = require("../helper/textModifer.js");
 
 const getInputPage = async (req, res) => {
    const daftarKategori = await BarangModel.distinct("kategori");
@@ -41,12 +42,12 @@ const postInventory = async (req, res) => {
       const id_barang = uuidv4();
       const newBarang = {
          id_barang,
-         nama_barang,
-         kategori,
+         nama_barang: capitalEachWord(nama_barang),
+         kategori: capitalEachWord(kategori),
          jumlah,
-         satuan,
-         ruangan,
-         merek,
+         satuan: capitalEachWord(satuan),
+         ruangan: capitalEachWord(ruangan),
+         merek: capitalEachWord(merek),
          detail: detailObj,
       };
 
@@ -62,7 +63,7 @@ const postInventory = async (req, res) => {
 
       await channel.sendToQueue("image_processing", Buffer.from(JSON.stringify(payload)));
 
-      return res.redirect("/");
+      return res.redirect("/admin/check-inventory");
    } catch (error) {
       console.error("Error posting inventory", error);
       return res.redirect("/admin/input-inventory");
@@ -71,13 +72,24 @@ const postInventory = async (req, res) => {
 
 const getInventoryPage = async (req, res) => {
    try {
-      const inventories = await BarangModel.find();
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 15;
 
-      if (inventories.length === 0) {
-         return res.render("admin/check-inventory.ejs", { inventories });
-      }
+      const totalBarang = await BarangModel.countDocuments();
+      const totalPages = Math.ceil(totalBarang / limit);
 
-      return res.render("admin/check-inventory.ejs", { inventories });
+      const inventories = await BarangModel.find()
+         .skip((page - 1) * limit)
+         .limit(limit);
+
+      return res.render("admin/check-inventory.ejs", {
+         page,
+         limit,
+         totalPages,
+         totalBarang,
+         currentPage: page,
+         inventories,
+      });
    } catch (error) {
       console.error("Error while querying inventory", error);
       return res.redirect("/");

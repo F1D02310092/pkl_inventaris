@@ -4,34 +4,73 @@ services:
       image: mongo
       volumes:
          - ./mongo-data:/data/db
+      healthcheck:
+         test: echo "db.runCommand('ping').ok" | mongosh localhost:27017/test --quiet
+         interval: 10s
+         timeout: 5s
+         retries: 5
+         start_period: 15s # Memberi waktu ekstra saat Mongo melakukan recovery
 
    #  2. Message Queue
    rabbitmq:
       image: rabbitmq:3-management
       ports:
          - "15672:15672" # Dashboard admin RabbitMQ
+      healthcheck:
+         test: rabbitmq-diagnostics -q ping
+         interval: 10s
+         timeout: 5s
+         retries: 5
+         start_period: 15s
 
-   #  3. Web App
+   #  3. Object Storage
+   minio:
+      image: minio/minio
+      ports:
+         - "9000:9000" # Port API
+         - "9001:9001" # Port Console
+      environment:
+         MINIO_ROOT_USER: admin
+         MINIO_ROOT_PASSWORD: password123
+      command: server /data --console-address ":9001"
+      volumes:
+         - minio_data:/data
+      healthcheck:
+         test: curl -f http://localhost:9000/minio/health/live || exit 1
+         interval: 10s
+         timeout: 5s
+         retries: 5
+         start_period: 10s
+
+   #  4. Web App
    web_app:
       build: . # Build dari folder saat ini
       command: npm run dev # development
       ports:
          - "80:3000" # Map port 80 VPS ke port 3000 container
       depends_on:
-         - mongo
-         - rabbitmq
+         mongo:
+            condition: service_healthy
+         rabbitmq:
+            condition: service_healthy
+         minio:
+            condition: service_healthy
       volumes:
          - .:/app
          - /app/node_modules
          - temp_uploads:/app/temp # Shared volume buat simpan foto sementara
 
-   #  4. Background Worker
+   #  5. Background Worker
    worker_service:
-      build: . # Build dari folder yang sama (karena satu repo)
+      build: . # Build dari folder yang sama
       command: npm run worker:dev # dev
       depends_on:
-         - rabbitmq
-         - web_app
+         mongo:
+            condition: service_healthy
+         rabbitmq:
+            condition: service_healthy
+         minio:
+            condition: service_healthy
       environment:
          - MONGO_URI=mongodb://mongo:27017/db_inventaris
          - RABBITMQ_URI=amqp://rabbitmq
@@ -43,18 +82,6 @@ services:
          - .:/app
          - /app/node_modules
          - temp_uploads:/app/temp
-
-   minio:
-      image: minio/minio
-      ports:
-         - "9000:9000" # Port API (Untuk koneksi backend)
-         - "9001:9001" # Port Console (Untuk buka UI MinIO di browser)
-      environment:
-         MINIO_ROOT_USER: admin
-         MINIO_ROOT_PASSWORD: password123
-      command: server /data --console-address ":9001"
-      volumes:
-         - minio_data:/data
 
 volumes:
    temp_uploads:

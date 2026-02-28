@@ -1,63 +1,11 @@
 <% layout('layout/boilerplate.ejs') %>
-
-<style>
-  .inventory-wrapper {
-    background-color: #ffffff;
-    border-radius: 12px;
-    border: 1px solid #f0f0f0;
-    padding: 20px;
-  }
-
-  .table-header {
-    background-color: #f8f9fa;
-    color: #495057;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-
-  .product-image {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-    margin-right: 15px;
-  }
-
-  .btn-add {
-    background-color: #34c759;
-    border-color: #34c759;
-    color: white;
-    font-weight: 500;
-  }
-
-  .btn-add:hover {
-    background-color: #2db84d;
-    color: white;
-  }
-
-  .action-btn {
-    color: #6c757d;
-    font-size: 1.1rem;
-    margin-right: 10px;
-    transition: color 0.2s;
-  }
-
-  .action-btn:hover {
-    color: #212529;
-  }
-
-  .custom-input {
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-  }
-</style>
+<link rel="stylesheet" href="/style/check-inventory.css">
 
 
 
 <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
   <div class="">
-    <h2 class="fw-bold mb-0">Inventaris <span class="text-muted fs-5 fw-normal">/ (<%= inventories.length %>)</span></h2>
+    <h2 class="fw-bold mb-0">Inventaris <span class="text-muted fs-5 fw-normal">/ (<%= totalBarang %>)</span></h2>
   </div>
   <div>
     <a href="/admin/input-inventory" class="btn btn-add px-4 py-2" style="border-radius: 8px;">
@@ -74,12 +22,10 @@
     <table class="table table-borderless align-middle mb-0">
       <thead class="table-header border-bottom">
         <tr>
-
           <th scope="col">Name Barang</th>
           <th scope="col">Kategori</th>
           <th scope="col">Ruangan</th>
           <th scope="col">Jumlah & Satuan</th>
-          <th scope="col">Merek</th>
           <th scope="col" class="text-end">Action</th>
         </tr>
       </thead>
@@ -112,21 +58,13 @@
               <span class="fw-normal text-dark"><%= barang.jumlah %> <%= barang.satuan %></span>
             </div>
           </td>
-          <td>
-            <div class="d-flex align-items-center">
-              <%if(barang.merek !== ""){%>
-              <span class="fw-normal text-dark"><%= barang.merek %></span>
-              <%} else {%>
-              <span class="fw-normal text-dark">-</span>
-              <%}%>
-            </div>
-          </td>
+
 
           <td class="text-end">
-  <div class="d-flex justify-content-end align-items-center">
-    
-    <a href="/admin/item-detail/<%= barang.id_barang %>" class="action-btn text-decoration-none" title="View Detail">
-              <i class="bi bi-eye"></i>
+            <div class="d-flex justify-content-end align-items-center">
+
+              <a href="/admin/item-detail/<%= barang.id_barang %>" class="action-btn text-decoration-none" title="Lihat Detail">
+                <i class="bi bi-eye"></i>
               </a>
 
               <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="action-btn text-decoration-none" title="Edit">
@@ -138,7 +76,7 @@
               </a>
 
               <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
-                <button type="submit" class="btn btn-link action-btn p-0 m-0 border-0 text-decoration-none d-flex align-items-center" title="Delete" onclick="return confirm('Yakin ingin menghapus barang ini?')">
+                <button type="submit" class="btn btn-link action-btn p-0 m-0 border-0 text-decoration-none d-flex align-items-center" title="Hapus" onclick="return confirm('Yakin ingin menghapus barang ini?')">
                   <i class="bi bi-trash"></i>
                 </button>
               </form>
@@ -150,6 +88,57 @@
     </table>
   </div>
 
+  <% if (totalPages > 1) { %>
+  <div class="d-flex justify-content-end mt-4 pt-3">
+    <nav aria-label="Inventory pagination">
+      <ul class="pagination pagination-custom">
 
+        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="<%= currentPage === 1 ? '#' : '/admin/check-inventory/?page=' + (currentPage - 1) + '&limit=' + limit %>">
+            <i class="bi bi-chevron-left" style="font-size: 0.8rem;"></i>
+          </a>
+        </li>
+
+        <% 
+        let startPage = 1;
+        let endPage = totalPages;
+        
+        // Membatasi tampilan maksimal 5 halaman + elipsis
+        if (totalPages > 5) {
+            if (currentPage <= 3) {
+                endPage = 5;
+            } else if (currentPage >= totalPages - 2) {
+                startPage = totalPages - 4;
+            } else {
+                startPage = currentPage - 2;
+                endPage = currentPage + 2;
+            }
+        }
+        %>
+
+        <% for (let i = startPage; i <= endPage; i++) { %>
+        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+          <a class="page-link" href="/admin/check-inventory/?page=<%= i %>&limit=<%= limit %>">
+            <%= i %>
+          </a>
+        </li>
+        <% } %>
+
+        <% if (endPage < totalPages) { %>
+        <li class="page-item disabled">
+          <span class="page-link border-0 text-secondary bg-transparent">...</span>
+        </li>
+        <% } %>
+
+        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+          <a class="page-link" href="<%= currentPage === totalPages ? '#' : '/admin/check-inventory/?page=' + (currentPage + 1) + '&limit=' + limit %>">
+            <i class="bi bi-chevron-right" style="font-size: 0.8rem;"></i>
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+  <% } %>
   <% } %>
 </div>

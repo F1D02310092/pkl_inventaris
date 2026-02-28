@@ -1,81 +1,5 @@
 <% layout('layout/boilerplate.ejs') %>
-
-<style>
-  .inventory-wrapper {
-    background-color: #ffffff;
-    border-radius: 12px;
-    border: 1px solid #f0f0f0;
-    padding: 30px;
-  }
-
-  .section-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #212529;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .btn-green {
-    background-color: #34c759;
-    border-color: #34c759;
-    color: white;
-    font-weight: 500;
-    border-radius: 8px;
-  }
-
-  .btn-green:hover {
-    background-color: #2db84d;
-    color: white;
-  }
-
-  .btn-light-custom {
-    background-color: #ffffff;
-    border: 1px solid #dcdfe3;
-    color: #495057;
-    font-weight: 500;
-    border-radius: 8px;
-  }
-
-  .btn-light-custom:hover {
-    background-color: #f8f9fa;
-    color: #212529;
-  }
-
-  .btn-outline-green {
-    color: #34c759;
-    border-color: #34c759;
-    font-weight: 500;
-    border-radius: 8px;
-  }
-
-  .btn-outline-green:hover {
-    background-color: #34c759;
-    color: white;
-  }
-
-  .form-label {
-    font-weight: 500;
-    color: #495057;
-    font-size: 0.95rem;
-  }
-
-  .custom-input {
-    border-radius: 8px;
-    border: 1px solid #ced4da;
-    padding: 0.5rem 0.75rem;
-  }
-
-  .custom-input:focus {
-    border-color: #34c759;
-    box-shadow: 0 0 0 0.25rem rgba(52, 199, 89, 0.25);
-  }
-
-  .required-star {
-    color: #dc3545;
-  }
-</style>
+<link rel="stylesheet" href="/style/input-inventory.css">
 
 <div class="py-3 mb-4 d-flex justify-content-between align-items-center">
   <h2 class="fw-bold mb-0">Input Data Barang</h2>
@@ -93,7 +17,7 @@
 </div>
 
 <div class="inventory-wrapper mb-5">
-  <form action="/admin/input-inventory" method="POST" enctype="multipart/form-data">
+  <form action="/admin/input-inventory" method="POST" enctype="multipart/form-data" autocomplete="off">
 
     <h4 class="section-title mb-4">Informasi Utama</h4>
 
@@ -109,8 +33,6 @@
         <datalist id="kategoriOptions">
           <% if (typeof daftarKategori !== 'undefined') { %>
           <% daftarKategori.forEach(kat => { %>
-          <option value="Elektronik"></option>
-          <option value="Meubelair"></option>
           <option value="<%= kat %>"></option>
           <% }) }%>
         </datalist>
@@ -134,8 +56,6 @@
         <datalist id="ruanganOptions">
           <% if (typeof daftarRuangan !== 'undefined') { %>
           <% daftarRuangan.forEach(rng => { %>
-          <option value="Ruang Laktasi"></option>
-          <option value="Ruang Administrasi"></option>
           <option value="<%= rng %>"></option>
           <% }) %>
           <% } %>
@@ -150,12 +70,10 @@
 
       <div class="col-md-6 mb-4">
         <label for="satuan" class="form-label">Satuan</label>
-        <input type="text" class="form-control custom-input" id="satuan" name="satuan" list="satuanOptions" placeholder="Pilih atau ketik satuan (misal: buah, set)" />
+        <input type="text" class="form-control custom-input" id="satuan" name="satuan" list="satuanOptions" placeholder="Pilih atau ketik satuan (misal: unit, set)" />
         <datalist id="satuanOptions">
           <% if (typeof daftarSatuan !== 'undefined') { %>
           <% daftarSatuan.forEach(sat => { %>
-          <option value="buah (unit)"></option>
-          <option value="set"></option>
           <option value="<%= sat %>"></option>
           <% }) %>
           <% }  %>
