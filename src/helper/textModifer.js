@@ -1,4 +1,8 @@
 function capitalEachWord(text) {
+   if (!text) {
+      return "";
+   }
+
    return text
       .toLowerCase()
       .split(" ")

@@ -3,21 +3,54 @@ const { getChannel } = require("../config/mq.js");
 const { v4: uuidv4 } = require("uuid");
 const generateQR = require("../config/qrgenerator.js");
 const { capitalEachWord } = require("../helper/textModifer.js");
+const redisClient = require("../config/redis.js");
 
 const getInputPage = async (req, res) => {
-   const daftarKategori = await BarangModel.distinct("kategori");
-   const daftarMerek = await BarangModel.distinct("merek");
-   const daftarSatuan = await BarangModel.distinct("satuan");
-   const daftarRuangan = await BarangModel.distinct("ruangan");
+   try {
+      let daftarKategori = await redisClient.sMembers("set_kategori");
+      let daftarMerek = await redisClient.sMembers("set_merek");
+      let daftarSatuan = await redisClient.sMembers("set_satuan");
+      let daftarRuangan = await redisClient.sMembers("set_ruangan");
 
-   return res.render("admin/input-inventory.ejs", { daftarKategori, daftarMerek, daftarSatuan, daftarRuangan });
+      if (daftarKategori.length === 0 || daftarRuangan.length === 0) {
+         const [kategori, merek, satuan, ruangan] = await Promise.all([
+            BarangModel.distinct("kategori"),
+            BarangModel.distinct("merek"),
+            BarangModel.distinct("satuan"),
+            BarangModel.distinct("ruangan"),
+            //
+         ]);
+
+         daftarKategori = kategori.filter(Boolean);
+         daftarMerek = merek.filter(Boolean);
+         daftarSatuan = satuan.filter(Boolean);
+         daftarRuangan = ruangan.filter(Boolean);
+
+         if (daftarKategori.length > 0) await redisClient.sAdd("set_kategori", daftarKategori);
+         if (daftarMerek.length > 0) await redisClient.sAdd("set_merek", daftarMerek);
+         if (daftarSatuan.length > 0) await redisClient.sAdd("set_satuan", daftarSatuan);
+         if (daftarRuangan.length > 0) await redisClient.sAdd("set_ruangan", daftarRuangan);
+      }
+
+      return res.render("admin/input-inventory", {
+         daftarKategori: daftarKategori.sort(),
+         daftarMerek: daftarMerek.sort(),
+         daftarSatuan: daftarSatuan.sort(),
+         daftarRuangan: daftarRuangan.sort(),
+      });
+   } catch (error) {
+      console.error("Error:", error);
+      return res.status(500).send("Terjadi kesalahan");
+   }
+
+   // return res.render("admin/input-inventory.ejs", { daftarKategori, daftarMerek, daftarSatuan, daftarRuangan });
 };
 
 const postInventory = async (req, res) => {
    const { nama_barang, kategori, jumlah, satuan, ruangan, merek, detailKey, detailValue } = req.body;
    const foto_barang = req.file;
 
-   if (!nama_barang || !foto_barang || !kategori || !jumlah || !satuan || !ruangan || !merek) {
+   if (!nama_barang || !foto_barang || !kategori || !jumlah || !ruangan) {
       return res.status(400).json({ message: "Mohon lengkapi semua data yang ada!" });
    }
 
@@ -63,6 +96,11 @@ const postInventory = async (req, res) => {
 
       await channel.sendToQueue("image_processing", Buffer.from(JSON.stringify(payload)));
 
+      if (ruangan) await redisClient.sAdd("set_ruangan", capitalEachWord(ruangan));
+      if (kategori) await redisClient.sAdd("set_kategori", capitalEachWord(kategori));
+      if (satuan) await redisClient.sAdd("set_satuan", capitalEachWord(satuan));
+      if (merek) await redisClient.sAdd("set_merek", capitalEachWord(merek));
+
       return res.redirect("/admin/check-inventory");
    } catch (error) {
       console.error("Error posting inventory", error);
@@ -107,17 +145,49 @@ const getItemDetailPage = async (req, res) => {
 };
 
 const getEditItemPage = async (req, res) => {
-   const barang = await BarangModel.findOne({ id_barang: req.params.id_barang });
-   const daftarKategori = await BarangModel.distinct("kategori");
-   const daftarMerek = await BarangModel.distinct("merek");
-   const daftarSatuan = await BarangModel.distinct("satuan");
-   const daftarRuangan = await BarangModel.distinct("ruangan");
+   try {
+      const barang = await BarangModel.findOne({ id_barang: req.params.id_barang });
 
-   if (!barang) {
-      return res.status(404).json({ message: "Item not found" });
+      if (!barang) {
+         return res.status(404).json({ message: "Barang tidak ditemukan" });
+      }
+
+      let daftarKategori = await redisClient.sMembers("set_kategori");
+      let daftarMerek = await redisClient.sMembers("set_merek");
+      let daftarSatuan = await redisClient.sMembers("set_satuan");
+      let daftarRuangan = await redisClient.sMembers("set_ruangan");
+
+      if (daftarKategori.length === 0 || daftarRuangan.length === 0) {
+         const [kategori, merek, satuan, ruangan] = await Promise.all([
+            BarangModel.distinct("kategori"),
+            BarangModel.distinct("merek"),
+            BarangModel.distinct("satuan"),
+            BarangModel.distinct("ruangan"),
+            //
+         ]);
+
+         daftarKategori = kategori.filter(Boolean);
+         daftarMerek = merek.filter(Boolean);
+         daftarSatuan = satuan.filter(Boolean);
+         daftarRuangan = ruangan.filter(Boolean);
+
+         if (daftarKategori.length > 0) await redisClient.sAdd("set_kategori", daftarKategori);
+         if (daftarMerek.length > 0) await redisClient.sAdd("set_merek", daftarMerek);
+         if (daftarSatuan.length > 0) await redisClient.sAdd("set_satuan", daftarSatuan);
+         if (daftarRuangan.length > 0) await redisClient.sAdd("set_ruangan", daftarRuangan);
+      }
+
+      return res.render("admin/edit-item.ejs", {
+         barang,
+         daftarKategori: daftarKategori.sort(),
+         daftarMerek: daftarMerek.sort(),
+         daftarSatuan: daftarSatuan.sort(),
+         daftarRuangan: daftarRuangan.sort(),
+      });
+   } catch (error) {
+      console.error("error", error);
+      return res.status(500).json({ message: "Terjadi kesalahan" });
    }
-
-   return res.render("admin/edit-item.ejs", { barang, daftarKategori, daftarMerek, daftarSatuan, daftarRuangan });
 };
 
 const putItemEdit = async (req, res) => {
@@ -144,17 +214,17 @@ const putItemEdit = async (req, res) => {
    }
 
    const dataBarang = {
-      nama_barang,
-      kategori,
+      nama_barang: capitalEachWord(nama_barang),
+      kategori: capitalEachWord(kategori),
       jumlah,
-      satuan,
-      ruangan,
-      merek,
+      satuan: capitalEachWord(satuan),
+      ruangan: capitalEachWord(ruangan),
+      merek: capitalEachWord(merek),
       detail: detailObj,
    };
 
    try {
-      const item = await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, dataBarang, { runValidators: true, new: true });
+      const item = await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, dataBarang, { runValidators: true });
 
       if (!item) {
          return res.status(404).json({ message: "Barang tidak ditemukan" });
@@ -178,6 +248,11 @@ const putItemEdit = async (req, res) => {
          await channel.sendToQueue("image_processing", Buffer.from(JSON.stringify(payload)));
 
          await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, { status_upload: "PENDING" });
+
+         if (ruangan) await redisClient.sAdd("set_ruangan", capitalEachWord(ruangan));
+         if (kategori) await redisClient.sAdd("set_kategori", capitalEachWord(kategori));
+         if (satuan) await redisClient.sAdd("set_satuan", capitalEachWord(satuan));
+         if (merek) await redisClient.sAdd("set_merek", capitalEachWord(merek));
       }
    } catch (error) {
       console.error("Error update barang:", error);

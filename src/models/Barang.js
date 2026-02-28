@@ -49,7 +49,6 @@ const barangSchema = new mongoose.Schema(
       },
       satuan: {
          type: String,
-         required: true,
       },
    },
    {
