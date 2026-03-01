@@ -5,6 +5,7 @@ const generateQR = require("../config/qrgenerator.js");
 const { capitalEachWord } = require("../helper/textModifer.js");
 const redisClient = require("../config/redis.js");
 const Fuse = require("fuse.js");
+const archiver = require("archiver");
 
 const getInputPage = async (req, res) => {
    try {
@@ -339,6 +340,76 @@ const downloadQR = async (req, res) => {
    res.send(qr);
 };
 
+const bulkDelete = async (req, res) => {
+   try {
+      const { ids } = req.body;
+
+      if (!ids || !Array.isArray(ids) || ids.length === 0) {
+         return res.status(400).json({ message: "Tidak ada barang yang dipilih" });
+      }
+
+      const barang = await BarangModel.find({ id_barang: { $in: ids } });
+
+      if (barang.length === 0) {
+         return res.status(404).json({ message: "Barang tidak ditemukan" });
+      }
+
+      await BarangModel.deleteMany({ id_barang: { $in: ids } });
+
+      const channel = getChannel();
+      for (let b of barang) {
+         const payload = {
+            image_name: b.image_name,
+         };
+         await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(payload)));
+      }
+
+      return res.status(200).json({ message: "Bulk delete berhasil" });
+   } catch (error) {
+      console.error("error", error);
+      return res.status(500).json({ message: "Bulk delete gagal" });
+   }
+};
+
+const bulkDownloadQR = async (req, res) => {
+   try {
+      const ids = req.query.ids;
+
+      if (!ids) {
+         return res.status(404).json({ message: "Tidak ada barang yang dipilih" });
+      }
+
+      const id = ids.split(",");
+      const barang = await BarangModel.find({ id_barang: { $in: id } });
+
+      if (barang.length === 0) {
+         return res.status(404).json({ message: "Barang tidak ditemukan" });
+      }
+
+      const archive = archiver("zip", {
+         zlib: { level: 9 },
+      });
+
+      res.set({
+         "Content-Type": "application/zip",
+         "Content-Disposition": `attachment; filename=QR-CODE_${barang.length}_barang.zip`,
+      });
+
+      archive.pipe(res);
+
+      for (let b of barang) {
+         const buffer = await generateQR(b);
+
+         archive.append(buffer, { name: `${b.nama_barang.trim()}_QR.png` });
+      }
+
+      await archive.finalize();
+   } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Terjadi kesalahan server" });
+   }
+};
+
 module.exports = {
    getInputPage,
    postInventory,
@@ -348,4 +419,6 @@ module.exports = {
    putItemEdit,
    deleteItem,
    downloadQR,
+   bulkDelete,
+   bulkDownloadQR,
 };

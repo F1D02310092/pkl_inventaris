@@ -8,34 +8,27 @@
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-
   <div class="d-flex gap-3 flex-wrap align-items-center flex-grow-1">
     <form action="/admin/check-inventory" method="GET" class="d-flex gap-2 m-0 align-items-center">
-
       <div class="filter-input-group position-relative">
-        <label>Search</label>
         <input type="text" name="search" class="form-control shadow-none" placeholder="Search for inventory....." value="<%= typeof search !== 'undefined' ? search : '' %>">
       </div>
-
       <button type="submit" class="btn btn-search d-flex align-items-center gap-2 px-3 shadow-sm">
         <i class="bi bi-search"></i> Cari
       </button>
-
       <% if (typeof search !== 'undefined' && search && search.trim() !== '') { %>
       <a href="/admin/check-inventory" class="btn text-danger fw-medium d-flex align-items-center px-3 clear-btn">
         <i class="bi bi-x-lg me-1"></i> Hapus
       </a>
       <% } %>
-
     </form>
   </div>
 
-  <div>
+  <div class="d-flex gap-2 align-items-center">
     <a href="/admin/input-inventory" class="btn btn-add d-flex align-items-center gap-2 px-3 shadow-sm">
-      <i class="bi bi-plus-lg"></i> Tambah Barang
+      <i class="bi bi-plus-lg"></i> Add Product
     </a>
   </div>
-
 </div>
 
 <div class="inventory-wrapper p-0 overflow-hidden shadow-sm">
@@ -59,48 +52,37 @@
       <tbody>
         <% for(let barang of inventories){ %>
         <tr class="border-bottom table-row-hover">
-
           <td style="padding-left: 20px;">
-            <input class="form-check-input custom-checkbox" type="checkbox">
+            <input class="form-check-input custom-checkbox row-checkbox" type="checkbox" value="<%= barang.id_barang %>">
           </td>
-
           <td class="py-3">
             <div class="d-flex align-items-center">
               <img src="<%= barang.image_url || '/placeholder.jpg' %>" alt="<%= barang.nama_barang %>" class="product-image">
               <span class="fw-medium text-dark"><%= barang.nama_barang %></span>
             </div>
           </td>
-
           <td class="text-dark py-3"><%= barang.kategori %></td>
-
           <td class="text-dark py-3"><%= barang.ruangan %></td>
-
           <td class="py-3">
             <span class="fw-medium text-dark"><%= barang.jumlah %></span>
             <span class="text-dark"><%= barang.satuan %></span>
           </td>
-
           <td class="text-end py-3" style="padding-right: 20px;">
             <div class="d-flex justify-content-end align-items-center gap-3">
-
               <a href="/admin/item-detail/<%= barang.id_barang %>" class="action-icon" title="Lihat Detail">
                 <i class="bi bi-eye"></i>
               </a>
-
               <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="action-icon" title="Edit">
                 <i class="bi bi-pencil"></i>
               </a>
-
               <a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="action-icon" title="QR Code">
                 <i class="bi bi-qr-code"></i>
               </a>
-
               <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
                 <button type="submit" class="btn btn-link action-icon p-0 m-0 border-0 text-decoration-none" title="Hapus" onclick="return confirm('Yakin ingin menghapus barang ini?')">
                   <i class="bi bi-trash3"></i>
                 </button>
               </form>
-
             </div>
           </td>
         </tr>
@@ -109,47 +91,150 @@
     </table>
   </div>
 
-  <% if (totalPages > 1) { %>
-  <div class="d-flex justify-content-end mt-3 mb-3 pe-4">
-    <nav aria-label="Inventory pagination">
-      <ul class="pagination pagination-custom">
+  <div class="d-flex flex-wrap justify-content-between align-items-center p-3 gap-3  " style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
 
-        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
-          <a class="page-link" href="<%= currentPage === 1 ? '#' : '/admin/check-inventory/?page=' + (currentPage - 1) + '&limit=' + limit %>">
-            <i class="bi bi-chevron-left" style="font-size: 0.8rem;"></i>
-          </a>
-        </li>
+    <div id="bulkActions" class="d-flex gap-2 align-items-center flex-wrap">
+      <button type="button" id="btnDownloadQR" class="btn btn-outline-secondary d-flex align-items-center gap-2" style="height: 42px; border-radius: 8px;" onclick="downloadSelectedQR()" disabled>
+        <i class="bi bi-qr-code"></i> Download All QR
+      </button>
 
-        <% 
-          let startPage = 1; let endPage = totalPages;
-          if (totalPages > 5) {
-              if (currentPage <= 3) { endPage = 5; } 
-              else if (currentPage >= totalPages - 2) { startPage = totalPages - 4; } 
-              else { startPage = currentPage - 2; endPage = currentPage + 2; }
-          }
-          %>
+      <button type="button" id="btnDeleteSelected" class="btn btn-danger d-flex align-items-center gap-2" style="height: 42px; border-radius: 8px;" onclick="deleteSelected()" disabled>
+        <i class="bi bi-trash3"></i> Delete All
+      </button>
 
-        <% for (let i = startPage; i <= endPage; i++) { %>
-        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-          <a class="page-link" href="/admin/check-inventory/?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
-        </li>
-        <% } %>
+      <span id="selectedCount" class="text-secondary fw-medium ms-2" style="font-size: 0.9rem;">0 selected</span>
+    </div>
 
-        <% if (endPage < totalPages) { %>
-        <li class="page-item disabled">
-          <span class="page-link">...</span>
-        </li>
-        <% } %>
+    <% if (totalPages > 1) { %>
+    <div>
+      <nav aria-label="Inventory pagination">
+        <ul class="pagination pagination-custom m-0">
 
-        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
-          <a class="page-link" href="<%= currentPage === totalPages ? '#' : '/admin/check-inventory/?page=' + (currentPage + 1) + '&limit=' + limit %>">
-            <i class="bi bi-chevron-right" style="font-size: 0.8rem;"></i>
-          </a>
-        </li>
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a class="page-link" href="<%= currentPage === 1 ? '#' : '/admin/check-inventory/?page=' + (currentPage - 1) + '&limit=' + limit %>">
+              <i class="bi bi-chevron-left" style="font-size: 0.8rem;"></i>
+            </a>
+          </li>
 
-      </ul>
-    </nav>
+          <% 
+              let startPage = 1; let endPage = totalPages;
+              if (totalPages > 5) {
+                  if (currentPage <= 3) { endPage = 5; } 
+                  else if (currentPage >= totalPages - 2) { startPage = totalPages - 4; } 
+                  else { startPage = currentPage - 2; endPage = currentPage + 2; }
+              }
+            %>
+
+          <% for (let i = startPage; i <= endPage; i++) { %>
+          <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+            <a class="page-link" href="/admin/check-inventory/?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+          </li>
+          <% } %>
+
+          <% if (endPage < totalPages) { %>
+          <li class="page-item disabled">
+            <span class="page-link">...</span>
+          </li>
+          <% } %>
+
+          <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+            <a class="page-link" href="<%= currentPage === totalPages ? '#' : '/admin/check-inventory/?page=' + (currentPage + 1) + '&limit=' + limit %>">
+              <i class="bi bi-chevron-right" style="font-size: 0.8rem;"></i>
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+    <% } %>
+
   </div>
   <% } %>
-  <% } %>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    const selectedCountText = document.getElementById('selectedCount');
+
+    const btnDownloadQR = document.getElementById('btnDownloadQR');
+    const btnDeleteSelected = document.getElementById('btnDeleteSelected');
+
+    const updateBulkActions = () => {
+      const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+      const count = checkedBoxes.length;
+
+      selectedCountText.textContent = `${count} item${count > 1 ? 's' : ''} selected`;
+
+      if (count > 0) {
+        btnDownloadQR.disabled = false;
+        btnDeleteSelected.disabled = false;
+      } else {
+        btnDownloadQR.disabled = true;
+        btnDeleteSelected.disabled = true;
+      }
+
+      if (rowCheckboxes.length > 0) {
+        selectAllCheckbox.checked = count === rowCheckboxes.length;
+      }
+    };
+
+    if (selectAllCheckbox) {
+      selectAllCheckbox.addEventListener('change', (e) => {
+        rowCheckboxes.forEach(cb => {
+          cb.checked = e.target.checked;
+        });
+        updateBulkActions();
+      });
+    }
+
+    rowCheckboxes.forEach(cb => {
+      cb.addEventListener('change', updateBulkActions);
+    });
+  });
+
+  function getSelectedIds() {
+    const checked = document.querySelectorAll('.row-checkbox:checked');
+    return Array.from(checked).map(cb => cb.value);
+  }
+
+  // bulk download qr
+  function downloadSelectedQR() {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+
+    window.location.href = `/admin/check-inventory/bulk-qr?ids=${ids.join(',')}`;
+  }
+
+  // bulk delete
+  async function deleteSelected() {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+
+    if (confirm(`Yakin ingin menghapus ${ids.length} barang sekaligus? Data yang dihapus tidak bisa dikembalikan.`)) {
+      try {
+        const response = await fetch('/admin/check-inventory/bulk-delete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ids: ids
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          alert(`Gagal: ${result.message}`);
+        }
+      } catch (error) {
+        console.error("Error bulk delete:", error);
+        alert("Terjadi kesalahan jaringan.");
+      }
+    }
+  }
+</script>

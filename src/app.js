@@ -54,10 +54,10 @@ app.get("/health", (req, res) => {
 // entry point
 const { startMQ } = require("./config/mq.js");
 async function startAPI() {
-   await startMQ();
-
-   app.listen(PORT, () => {
-      console.log(`Listening on port: ${PORT}`);
-   });
+   await startMQ().then(
+      app.listen(PORT, () => {
+         console.log(`Listening on port: ${PORT}`);
+      }),
+   );
 }
 startAPI();
