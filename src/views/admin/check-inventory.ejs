@@ -1,95 +1,116 @@
 <% layout('layout/boilerplate.ejs') %>
 <link rel="stylesheet" href="/style/check-inventory.css">
 
+<div class="mb-4">
+  <h2 class="fw-bold mb-0 text-dark" style="font-size: 1.5rem;">
+    Inventory <span class="text-muted fw-normal" style="font-size: 1.1rem;">/ (<%= totalBarang %>)</span>
+  </h2>
+</div>
 
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
 
-<div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-  <div class="">
-    <h2 class="fw-bold mb-0">Inventaris <span class="text-muted fs-5 fw-normal">/ (<%= totalBarang %>)</span></h2>
+  <div class="d-flex gap-3 flex-wrap align-items-center flex-grow-1">
+    <form action="/admin/check-inventory" method="GET" class="d-flex gap-2 m-0 align-items-center">
+
+      <div class="filter-input-group position-relative">
+        <label>Search</label>
+        <input type="text" name="search" class="form-control shadow-none" placeholder="Search for inventory....." value="<%= typeof search !== 'undefined' ? search : '' %>">
+      </div>
+
+      <button type="submit" class="btn btn-search d-flex align-items-center gap-2 px-3 shadow-sm">
+        <i class="bi bi-search"></i> Cari
+      </button>
+
+      <% if (typeof search !== 'undefined' && search && search.trim() !== '') { %>
+      <a href="/admin/check-inventory" class="btn text-danger fw-medium d-flex align-items-center px-3 clear-btn">
+        <i class="bi bi-x-lg me-1"></i> Hapus
+      </a>
+      <% } %>
+
+    </form>
   </div>
+
   <div>
-    <a href="/admin/input-inventory" class="btn btn-add px-4 py-2" style="border-radius: 8px;">
+    <a href="/admin/input-inventory" class="btn btn-add d-flex align-items-center gap-2 px-3 shadow-sm">
       <i class="bi bi-plus-lg"></i> Tambah Barang
     </a>
   </div>
+
 </div>
 
-<div class="inventory-wrapper">
+<div class="inventory-wrapper p-0 overflow-hidden shadow-sm">
   <% if(inventories.length === 0){ %>
-  <div class="alert alert-warning text-center mb-0">Belum ada data barang.</div>
+  <div class="alert alert-warning text-center m-4">Belum ada data barang.</div>
   <% } else { %>
   <div class="table-responsive">
-    <table class="table table-borderless align-middle mb-0">
+    <table class="table table-borderless align-middle mb-0 custom-table">
       <thead class="table-header border-bottom">
         <tr>
-          <th scope="col">Name Barang</th>
-          <th scope="col">Kategori</th>
-          <th scope="col">Ruangan</th>
-          <th scope="col">Jumlah & Satuan</th>
-          <th scope="col" class="text-end">Action</th>
+          <th scope="col" style="width: 50px; padding-left: 20px;">
+            <input class="form-check-input custom-checkbox" type="checkbox" id="selectAll">
+          </th>
+          <th scope="col" class="py-3">Product name</th>
+          <th scope="col" class="py-3">Kategori</th>
+          <th scope="col" class="py-3">Ruangan</th>
+          <th scope="col" class="py-3">Jumlah & Satuan</th>
+          <th scope="col" class="py-3 text-end" style="padding-right: 20px;">Action</th>
         </tr>
       </thead>
       <tbody>
         <% for(let barang of inventories){ %>
-        <tr class="border-bottom">
+        <tr class="border-bottom table-row-hover">
 
+          <td style="padding-left: 20px;">
+            <input class="form-check-input custom-checkbox" type="checkbox">
+          </td>
 
-          <td>
+          <td class="py-3">
             <div class="d-flex align-items-center">
               <img src="<%= barang.image_url || '/placeholder.jpg' %>" alt="<%= barang.nama_barang %>" class="product-image">
-              <span class="fw-normal text-dark"><%= barang.nama_barang %></span>
+              <span class="fw-medium text-dark"><%= barang.nama_barang %></span>
             </div>
           </td>
 
-          <td>
-            <div class="d-flex align-items-center">
-              <span class="fw-normal text-dark"><%= barang.kategori %></span>
-            </div>
+          <td class="text-dark py-3"><%= barang.kategori %></td>
+
+          <td class="text-dark py-3"><%= barang.ruangan %></td>
+
+          <td class="py-3">
+            <span class="fw-medium text-dark"><%= barang.jumlah %></span>
+            <span class="text-dark"><%= barang.satuan %></span>
           </td>
 
-          <td>
-            <div class="d-flex align-items-center">
-              <span class="fw-normal text-dark"><%= barang.ruangan %></span>
-            </div>
-          </td>
+          <td class="text-end py-3" style="padding-right: 20px;">
+            <div class="d-flex justify-content-end align-items-center gap-3">
 
-          <td>
-            <div class="d-flex align-items-center">
-              <span class="fw-normal text-dark"><%= barang.jumlah %> <%= barang.satuan %></span>
-            </div>
-          </td>
-
-
-          <td class="text-end">
-            <div class="d-flex justify-content-end align-items-center">
-
-              <a href="/admin/item-detail/<%= barang.id_barang %>" class="action-btn text-decoration-none" title="Lihat Detail">
+              <a href="/admin/item-detail/<%= barang.id_barang %>" class="action-icon" title="Lihat Detail">
                 <i class="bi bi-eye"></i>
               </a>
 
-              <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="action-btn text-decoration-none" title="Edit">
+              <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="action-icon" title="Edit">
                 <i class="bi bi-pencil"></i>
               </a>
 
-              <a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="action-btn text-decoration-none" title="QR Code">
-                <i class="bi bi-qr-code-scan"></i>
+              <a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="action-icon" title="QR Code">
+                <i class="bi bi-qr-code"></i>
               </a>
 
               <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
-                <button type="submit" class="btn btn-link action-btn p-0 m-0 border-0 text-decoration-none d-flex align-items-center" title="Hapus" onclick="return confirm('Yakin ingin menghapus barang ini?')">
-                  <i class="bi bi-trash"></i>
+                <button type="submit" class="btn btn-link action-icon p-0 m-0 border-0 text-decoration-none" title="Hapus" onclick="return confirm('Yakin ingin menghapus barang ini?')">
+                  <i class="bi bi-trash3"></i>
                 </button>
               </form>
 
             </div>
           </td>
-          <% } %>
+        </tr>
+        <% } %>
       </tbody>
     </table>
   </div>
 
   <% if (totalPages > 1) { %>
-  <div class="d-flex justify-content-end mt-4 pt-3">
+  <div class="d-flex justify-content-end mt-3 mb-3 pe-4">
     <nav aria-label="Inventory pagination">
       <ul class="pagination pagination-custom">
 
@@ -100,33 +121,23 @@
         </li>
 
         <% 
-        let startPage = 1;
-        let endPage = totalPages;
-        
-        // Membatasi tampilan maksimal 5 halaman + elipsis
-        if (totalPages > 5) {
-            if (currentPage <= 3) {
-                endPage = 5;
-            } else if (currentPage >= totalPages - 2) {
-                startPage = totalPages - 4;
-            } else {
-                startPage = currentPage - 2;
-                endPage = currentPage + 2;
-            }
-        }
-        %>
+          let startPage = 1; let endPage = totalPages;
+          if (totalPages > 5) {
+              if (currentPage <= 3) { endPage = 5; } 
+              else if (currentPage >= totalPages - 2) { startPage = totalPages - 4; } 
+              else { startPage = currentPage - 2; endPage = currentPage + 2; }
+          }
+          %>
 
         <% for (let i = startPage; i <= endPage; i++) { %>
         <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-          <a class="page-link" href="/admin/check-inventory/?page=<%= i %>&limit=<%= limit %>">
-            <%= i %>
-          </a>
+          <a class="page-link" href="/admin/check-inventory/?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
         </li>
         <% } %>
 
         <% if (endPage < totalPages) { %>
         <li class="page-item disabled">
-          <span class="page-link border-0 text-secondary bg-transparent">...</span>
+          <span class="page-link">...</span>
         </li>
         <% } %>
 
