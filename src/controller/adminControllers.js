@@ -232,43 +232,51 @@ const getEditItemPage = async (req, res) => {
 };
 
 const putItemEdit = async (req, res) => {
-   // TODO: handle edit gambar di minio
-
-   const { nama_barang, kategori, jumlah, satuan, ruangan, merek, detailKey, detailValue } = req.body;
+   const { nama_barang, kategori, jumlah, satuan, ruangan, merek, detailKey, detailValue, kondisi, jadwal_pengecekan, catatan_pengecekan } = req.body;
    const foto_barang = req.file;
+
+   let dataBarang = {};
+
+   if (nama_barang) dataBarang.nama_barang = capitalEachWord(nama_barang);
+   if (kategori) dataBarang.kategori = capitalEachWord(kategori);
+   if (jumlah) dataBarang.jumlah = jumlah;
+   if (satuan) dataBarang.satuan = capitalEachWord(satuan);
+   if (ruangan) dataBarang.ruangan = capitalEachWord(ruangan);
+   if (merek) dataBarang.merek = capitalEachWord(merek);
+   if (kondisi) dataBarang.kondisi = kondisi;
+   if (jadwal_pengecekan) dataBarang.jadwal_pengecekan = jadwal_pengecekan;
 
    let detailObj = {};
 
    if (detailKey) {
-      // convert "paksa" menjadi array
       const keys = Array.isArray(detailKey) ? detailKey : [detailKey];
       const values = Array.isArray(detailValue) ? detailValue : [detailValue];
-
       for (let i = 0; i < keys.length; i++) {
          const key = keys[i].trim();
          const val = values[i].trim();
-
-         if (key !== "") {
-            detailObj[key] = val;
-         }
+         if (key !== "") detailObj[key] = val;
       }
+      dataBarang.detail = detailObj;
    }
 
-   const dataBarang = {
-      nama_barang: capitalEachWord(nama_barang),
-      kategori: capitalEachWord(kategori),
-      jumlah,
-      satuan: capitalEachWord(satuan),
-      ruangan: capitalEachWord(ruangan),
-      merek: capitalEachWord(merek),
-      detail: detailObj,
-   };
-
    try {
-      const item = await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, dataBarang, { runValidators: true });
+      const item = await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, { $set: dataBarang }, { runValidators: true, new: true });
 
-      if (!item) {
-         return res.status(404).json({ message: "Barang tidak ditemukan" });
+      if (!item) return res.status(404).json({ message: "Barang tidak ditemukan" });
+
+      if (kondisi || catatan_pengecekan) {
+         await BarangModel.findOneAndUpdate(
+            { id_barang: req.params.id_barang },
+            {
+               $push: {
+                  riwayat_pengecekan: {
+                     tanggal: new Date(),
+                     kondisi: kondisi || item.kondisi,
+                     catatan: catatan_pengecekan || "Pengecekkan Rutin",
+                  },
+               },
+            },
+         );
       }
 
       if (foto_barang) {

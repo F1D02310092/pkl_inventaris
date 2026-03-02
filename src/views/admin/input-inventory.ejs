@@ -79,6 +79,26 @@
         </datalist>
       </div>
 
+      <div class="col-md-6 mb-4">
+        <label for="kondisi" class="form-label modern-label">Kondisi Awal <span class="required-star">*</span></label>
+        <select class="form-select modern-input" id="kondisi" name="kondisi" required>
+          <option value="Belum Dicek" selected>Belum Dicek</option>
+          <option value="Baik">Baik</option>
+          <option value="Rusak Ringan">Rusak Ringan</option>
+          <option value="Rusak Berat">Rusak Berat</option>
+        </select>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label for="jadwal_pengecekan" class="form-label modern-label">Jadwal Cek Rutin <span class="required-star">*</span></label>
+        <select class="form-select modern-input" id="jadwal_pengecekan" name="jadwal_pengecekan" required>
+          <option value="Tidak Ada" selected>Tak Terjadwal</option>
+          <option value="Harian">Harian</option>
+          <option value="Mingguan">Mingguan</option>
+          <option value="Bulanan">Bulanan</option>
+          <option value="Tahunan">Tahunan</option>
+        </select>
+      </div>
       <div class="col-md-12 mb-4">
         <label for="foto" class="form-label modern-label">Foto Barang <span class="required-star">*</span></label>
         <div class="p-3 border rounded-3 bg-light-modern">

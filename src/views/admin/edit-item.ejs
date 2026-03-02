@@ -86,6 +86,31 @@
         </datalist>
       </div>
 
+      <div class="col-md-6 mb-4">
+        <label for="kondisi" class="form-label modern-label">Kondisi Terkini <span class="required-star">*</span></label>
+        <select class="form-select modern-input" id="kondisi" name="kondisi" required>
+          <option value="Belum Dicek" <%= barang.kondisi === 'Belum Dicek' ? 'selected' : '' %>>Belum Dicek</option>
+          <option value="Baik" <%= barang.kondisi === 'Baik' ? 'selected' : '' %>>Baik</option>
+          <option value="Rusak Ringan" <%= barang.kondisi === 'Rusak Ringan' ? 'selected' : '' %>>Rusak Ringan</option>
+          <option value="Rusak Berat" <%= barang.kondisi === 'Rusak Berat' ? 'selected' : '' %>>Rusak Berat</option>
+        </select>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <label for="jadwal_pengecekan" class="form-label modern-label">Jadwal Cek Rutin <span class="required-star">*</span></label>
+        <select class="form-select modern-input" id="jadwal_pengecekan" name="jadwal_pengecekan" required>
+          <option value="Tidak Ada" <%= barang.jadwal_pengecekan === 'Tidak Ada' ? 'selected' : '' %>>Tak Terjadwal</option>
+          <option value="Harian" <%= barang.jadwal_pengecekan === 'Harian' ? 'selected' : '' %>>Harian</option>
+          <option value="Mingguan" <%= barang.jadwal_pengecekan === 'Mingguan' ? 'selected' : '' %>>Mingguan</option>
+          <option value="Bulanan" <%= barang.jadwal_pengecekan === 'Bulanan' ? 'selected' : '' %>>Bulanan</option>
+          <option value="Tahunan" <%= barang.jadwal_pengecekan === 'Tahunan' ? 'selected' : '' %>>Tahunan</option>
+        </select>
+      </div>
+
+      <div class="col-md-12 mb-4">
+        <label for="catatan_pengecekan" class="form-label modern-label">Catatan Pengecekkan (Opsional)</label>
+        <input type="text" class="form-control modern-input" id="catatan_pengecekan" name="catatan_pengecekan" placeholder="Tambahkan catatan jika ada perubahan kondisi pada edit kali ini..." />
+      </div>
       <div class="col-md-12 mb-4">
         <label for="foto" class="form-label modern-label">Foto Barang</label>
         <div class="d-flex flex-wrap align-items-center gap-4 p-3 border rounded-3 bg-light-modern">

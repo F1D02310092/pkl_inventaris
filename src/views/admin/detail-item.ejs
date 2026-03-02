@@ -8,131 +8,247 @@
       <li class="breadcrumb-item active" aria-current="page" style="color: #64748b;">Detail Barang</li>
     </ol>
   </nav>
-  <div class="d-flex justify-content-between align-items-center">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3 fw-bold mb-0" style="color: #1e293b;">Detail Barang</h1>
   </div>
+
+  <ul class="nav nav-tabs modern-tabs" id="itemTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">
+        <i class="bi bi-info-circle me-2"></i>Informasi Detail
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="cek-tab" data-bs-toggle="tab" data-bs-target="#cek" type="button" role="tab" aria-controls="cek" aria-selected="false">
+        <i class="bi bi-clipboard2-check me-2"></i>Pengecekkan & Riwayat
+      </button>
+    </li>
+  </ul>
 </div>
 
-<div class="card-modern mb-4 p-4 p-lg-5">
-  <div class="row gx-lg-5 align-items-center">
-    <div class="col-md-5 mb-4 mb-md-0 text-center">
-      <% if (barang.status_upload === 'DONE' && barang.image_url) { %>
-      <div class="image-wrapper shadow-sm">
-        <img src="<%= barang.image_url %>" class="item-image-modern" alt="<%= barang.nama_barang %>">
+<div class="tab-content" id="itemTabsContent">
+
+  <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+    <div class="card-modern mb-4 p-4 p-lg-5">
+      <div class="row gx-lg-5 align-items-center">
+        <div class="col-md-5 mb-4 mb-md-0 text-center">
+          <% if (barang.status_upload === 'DONE' && barang.image_url) { %>
+          <div class="image-wrapper shadow-sm">
+            <img src="<%= barang.image_url %>" class="item-image-modern" alt="<%= barang.nama_barang %>">
+          </div>
+          <% } else if (barang.status_upload === 'PENDING') { %>
+          <div class="d-flex flex-column align-items-center justify-content-center img-placeholder-modern">
+            <div class="spinner-border text-primary-modern mb-3" role="status"></div>
+            <span class="text-muted-modern fw-medium">Memproses gambar...</span>
+          </div>
+          <% } else { %>
+          <div class="d-flex flex-column align-items-center justify-content-center img-placeholder-modern">
+            <div class="icon-shape bg-soft-secondary mb-3" style="width: 64px; height: 64px; border-radius: 50%;">
+              <i class="bi bi-image" style="font-size: 1.75rem; color: #94a3b8;"></i>
+            </div>
+            <span class="text-muted-modern fw-medium">Tidak ada gambar</span>
+          </div>
+          <% } %>
+        </div>
+
+        <div class="col-md-7">
+          <h2 class="fw-bold mb-4" style="color: #0f172a; font-size: 1.75rem;"><%= barang.nama_barang %></h2>
+
+          <table class="table table-borderless modern-basic-table mb-0">
+            <tbody>
+              <tr>
+                <th>Kategori</th>
+                <td><span class="text-modern fw-medium ms-1">: <%= barang.kategori || '-' %></span></td>
+              </tr>
+              <tr>
+                <th>Merek</th>
+                <td><span class="text-modern fw-medium ms-1">: <%= barang.merek || '-' %></span></td>
+              </tr>
+              <tr>
+                <th>Ruangan</th>
+                <td><span class="text-modern fw-medium ms-1">: <%= barang.ruangan || '-' %></span></td>
+              </tr>
+              <tr>
+                <th>Kuantitas</th>
+                <td>
+                  <span class="text-modern fw-medium ms-1">: <%= barang.jumlah %></span>
+                  <span class="text-modern fw-medium ms-1"><%= barang.satuan %></span>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="py-2">
+                  <hr class="m-0" style="border-color: #848484;">
+                </td>
+              </tr>
+              <tr>
+                <th>Kondisi Terkini</th>
+                <td>
+                  <span class="ms-1">:
+                    <% if(barang.kondisi === 'Baik') { %>
+                    <span class="badge bg-success-soft text-success px-3 py-2 rounded-pill">Baik</span>
+                    <% } else if(barang.kondisi === 'Rusak Ringan') { %>
+                    <span class="badge bg-warning-soft text-warning px-3 py-2 rounded-pill">Rusak Ringan</span>
+                    <% } else if(barang.kondisi === 'Rusak Berat') { %>
+                    <span class="badge bg-danger-soft text-danger px-3 py-2 rounded-pill">Rusak Berat</span>
+                    <% } else { %>
+                    <span class="badge bg-secondary-soft text-secondary px-2 py-1 rounded-pill">Belum Dicek</span>
+                    <% } %>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <th>Cek Terakhir</th>
+                <td>
+                  <span class="text-modern fw-medium ms-1">:
+                    <% if(barang.riwayat_pengecekan && barang.riwayat_pengecekan.length > 0) { %>
+                    <%= new Date(barang.riwayat_pengecekan[barang.riwayat_pengecekan.length - 1].tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %>
+                    <% } else { %>
+                    <em class="text-muted">Belum pernah dicek</em>
+                    <% } %>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="py-2">
+                  <hr class="m-0" style="border-color: #848484;">
+                </td>
+              </tr>
+              <tr>
+                <th>Waktu Input</th>
+                <td class="text-modern fw-medium ms-1">
+                  <i class="bi bi-calendar3 me-2"></i><%= new Date(barang.createdAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+                </td>
+              </tr>
+              <tr>
+                <th>Update terakhir</th>
+                <td class="text-modern fw-medium ms-1">
+                  <i class="bi bi-calendar3 me-2"></i><%= new Date(barang.updatedAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <% } else if (barang.status_upload === 'PENDING') { %>
-      <div class="d-flex flex-column align-items-center justify-content-center img-placeholder-modern">
-        <div class="spinner-border text-primary-modern mb-3" role="status"></div>
-        <span class="text-muted-modern fw-medium">Memproses gambar...</span>
+    </div>
+
+    <%if(barang.detail && Object.keys(barang.detail).length > 0){%>
+    <div class="card-modern mb-4 p-4 p-lg-5">
+      <div class="d-flex align-items-center mb-4">
+        <div class="icon-shape bg-soft-primary me-3" style="width: 40px; height: 40px; border-radius: 10px;">
+          <i class="bi bi-card-list" style="color: #4f46e5;"></i>
+        </div>
+        <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Spesifikasi Tambahan</h4>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table modern-detail-table mb-0">
+          <tbody>
+            <% for (let key in barang.detail) { %>
+            <tr>
+              <th style="width: 35%;"><%= key %></th>
+              <td><%= barang.detail[key] %></td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <%}%>
+  </div> <div class="tab-pane fade" id="cek" role="tabpanel" aria-labelledby="cek-tab">
+    <div class="card-modern mb-4 p-4 p-lg-5">
+      <div class="row">
+        <div class="col-lg-5 border-end-lg pe-lg-4 mb-5 mb-lg-0">
+          <div class="d-flex align-items-center mb-4">
+            <div class="icon-shape bg-soft-info me-3" style="width: 40px; height: 40px; border-radius: 10px;">
+              <i class="bi bi-pencil-square" style="color: #0284c7;"></i>
+            </div>
+            <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Form Pengecekkan</h4>
+          </div>
+          
+          <form action="/admin/item-detail/<%= barang.id_barang %>?_method=PUT" method="POST">
+    <div class="mb-3">
+      <label class="form-label fw-medium text-modern" style="color: #475569;">Kondisi Terkini</label>
+      <select name="kondisi" class="form-select form-control-modern" required>
+        <option value="Baik" <%= barang.kondisi === 'Baik' ? 'selected' : '' %>>Baik</option>
+        <option value="Rusak Ringan" <%= barang.kondisi === 'Rusak Ringan' ? 'selected' : '' %>>Rusak Ringan</option>
+        <option value="Rusak Berat" <%= barang.kondisi === 'Rusak Berat' ? 'selected' : '' %>>Rusak Berat</option>
+        <option value="Belum Dicek" <%= barang.kondisi === 'Belum Dicek' ? 'selected' : '' %>>Belum Dicek</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label class="form-label fw-medium text-modern" style="color: #475569;">Keterangan (Opsional)</label>
+      <textarea name="catatan_pengecekan" class="form-control form-control-modern" rows="3" placeholder="Tulis kerusakan atau keterangan lainnya di sini..."></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary-modern w-100 d-flex align-items-center justify-content-center shadow-sm">
+      <i class="bi bi-send me-2"></i> Simpan
+    </button>
+    </form>
+  </div>
+
+  <div class="col-lg-7 ps-lg-5">
+    <div class="d-flex align-items-center mb-4">
+      <div class="icon-shape bg-soft-primary me-3" style="width: 40px; height: 40px; border-radius: 10px;">
+        <i class="bi bi-clock-history" style="color: #4f46e5;"></i>
+      </div>
+      <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Riwayat Pengecekkan</h4>
+    </div>
+
+    <div class="timeline-container mt-2">
+      <% 
+              
+              const riwayat = barang.riwayat_pengecekan ? [...barang.riwayat_pengecekan].reverse() : []; 
+            %>
+
+      <% if(riwayat.length > 0) { %>
+      <div class="timeline-modern">
+        <% riwayat.forEach(function(r) { %>
+        <div class="timeline-item">
+          <div class="timeline-marker <%= r.kondisi === 'Baik' ? 'marker-success' : (r.kondisi === 'Rusak Berat' ? 'marker-danger' : 'marker-warning') %>"></div>
+          <div class="timeline-content">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="fw-bold" style="color: #334155;"><%= r.kondisi %></span>
+              <span class="text-sm text-muted-modern"><%= new Date(r.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour:'2-digit', minute:'2-digit' }) %></span>
+            </div>
+            <p class="mb-0 text-muted-modern text-sm" style="line-height: 1.5;">
+              <%= r.catatan && r.catatan !== '' ? r.catatan : 'Tidak ada catatan tambahan.' %>
+            </p>
+          </div>
+        </div>
+        <% }) %>
       </div>
       <% } else { %>
-      <div class="d-flex flex-column align-items-center justify-content-center img-placeholder-modern">
-        <div class="icon-shape bg-soft-secondary mb-3" style="width: 64px; height: 64px; border-radius: 50%;">
-          <i class="bi bi-image" style="font-size: 1.75rem; color: #94a3b8;"></i>
-        </div>
-        <span class="text-muted-modern fw-medium">Tidak ada gambar</span>
+      <div class="text-center py-5 rounded" style="background-color: #f8fafc; border: 1px dashed #cbd5e1;">
+        <i class="bi bi-inbox text-muted-modern mb-2" style="font-size: 2rem;"></i>
+        <p class="text-muted-modern mb-0">Belum ada riwayat pengecekkan.</p>
       </div>
       <% } %>
     </div>
 
-    <div class="col-md-7">
-      <h2 class="fw-bold mb-4" style="color: #0f172a; font-size: 1.75rem;"><%= barang.nama_barang %></h2>
-
-      <table class="table table-borderless modern-basic-table mb-0">
-        <tbody>
-          <tr>
-            <th>Kategori</th>
-            <td><span class="text-modern fw-medium ms-1">: <%= barang.kategori || '-' %></span></td>
-          </tr>
-          <tr>
-            <th>Merek</th>
-            <td><span class="text-modern fw-medium ms-1">: <%= barang.merek || '-' %></span></td>
-          </tr>
-          <tr>
-            <th>Ruangan</th>
-            <td><span class="text-modern fw-medium ms-1">: <%= barang.ruangan || '-' %></span></td>
-          </tr>
-          <tr>
-            <th>Kuantitas</th>
-            <td>
-              <span class="text-modern fw-medium ms-1">: <%= barang.jumlah %></span>
-              <span class="text-modern fw-medium ms-1"><%= barang.satuan %></span>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2" class="py-3">
-              <hr class="m-0" style="border-color: #e2e8f0; opacity: 1;">
-            </td>
-          </tr>
-          <tr>
-            <th>Waktu Input</th>
-            <td class="text-muted-modern text-sm">
-              <i class="bi bi-calendar3 me-2"></i><%= new Date(barang.createdAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
-            </td>
-          </tr>
-          <tr>
-            <th>Update Terakhir</th>
-            <td class="text-muted-modern text-sm">
-              <i class="bi bi-clock-history me-2"></i><%= new Date(barang.updatedAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %> • <%= new Date(barang.updatedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) %>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </div>
 </div>
-
-<%if(barang.detail && Object.keys(barang.detail).length > 0){%>
-<div class="card-modern mb-4 p-4 p-lg-5">
-  <div class="d-flex align-items-center mb-4">
-    <div class="icon-shape bg-soft-primary me-3" style="width: 40px; height: 40px; border-radius: 10px;">
-      <i class="bi bi-card-list" style="color: #4f46e5;"></i>
-    </div>
-    <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Spesifikasi Tambahan</h4>
-  </div>
-
-  <div class="table-responsive">
-    <table class="table modern-detail-table mb-0">
-      <tbody>
-        <% for (let key in barang.detail) { %>
-        <tr>
-          <th style="width: 35%;"><%= key %></th>
-          <td><%= barang.detail[key] %></td>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
-  </div>
 </div>
-<%}%>
-
-<div class="d-flex flex-wrap gap-3 mb-5 mt-4">
+</div>
+</div>
+<div class="d-flex flex-wrap gap-3 mb-5 mt-3 justify-content-between align-items-center">
   <a href="/admin/check-inventory" class="btn btn-outline-modern d-flex align-items-center px-4">
     <i class="bi bi-arrow-left me-2"></i> Kembali
   </a>
 
-
-
-<div class="ms-auto d-flex gap-3">
-
+  <div class="d-flex gap-2 flex-wrap">
     <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
-<button type="submit" class="btn btn-danger-soft-modern d-flex align-items-center px-4 shadow-sm" onclick="return confirm('Yakin ingin menghapus barang ini?')">
-  <i class="bi bi-trash3 me-2"></i> Hapus
-</button>
-</form>
+      <button type="submit" class="btn btn-danger-soft-modern d-flex align-items-center px-3 px-md-4 shadow-sm" onclick="return confirm('Yakin ingin menghapus barang ini?')">
+        <i class="bi bi-trash3 me-2"></i> <span class="d-none d-md-inline">Hapus</span>
+      </button>
+    </form>
 
+    <a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="btn btn-secondary-modern d-flex align-items-center px-3 px-md-4">
+      <i class="bi bi-qr-code me-2"></i> <span class="d-none d-md-inline">Unduh QR</span>
+    </a>
 
-<a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="btn btn-secondary-modern d-flex align-items-center px-4">
-  <i class="bi bi-qr-code me-2"></i> Unduh QR Code
-</a>
-
-
-
-
-<a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="btn btn-primary-modern d-flex align-items-center px-4 shadow-sm">
-  <i class="bi bi-pencil-square me-2"></i> Edit Barang
-</a>
-</div>
+    <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="btn btn-primary-modern d-flex align-items-center px-3 px-md-4 shadow-sm">
+      <i class="bi bi-pencil-square me-2"></i> <span class="d-none d-md-inline">Edit Barang</span>
+    </a>
+  </div>
 </div>
 
 <% if (barang.status_upload === 'PENDING') { %>

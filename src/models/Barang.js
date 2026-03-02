@@ -52,6 +52,28 @@ const barangSchema = new mongoose.Schema(
          type: String,
          trim: true,
       },
+
+      // pengecekkan kondisi barang
+      kondisi: {
+         type: String,
+         enum: ["Baik", "Rusak Ringan", "Rusak Berat", "Belum Dicek"],
+         default: "Belum Dicek",
+      },
+      jadwal_pengecekan: {
+         type: String,
+         enum: ["Harian", "Mingguan", "Bulanan", "Tahunan", "Tak Terjadwal"],
+         default: "Tak Terjadwal",
+      },
+      riwayat_pengecekan: [
+         {
+            tanggal: { type: Date, default: Date.now },
+            kondisi: {
+               type: String,
+               enum: ["Baik", "Rusak Ringan", "Rusak Berat", "Belum Dicek"],
+            },
+            catatan: String,
+         },
+      ],
    },
    {
       timestamps: true,
