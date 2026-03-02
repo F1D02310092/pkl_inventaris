@@ -1,3 +1,260 @@
 <% layout('layout/boilerplate.ejs') %>
 
-<h1 class="h1">TES-TES-TES</h1>
+<style>
+  body {
+    background-color: #f8fafc;
+
+  }
+
+  .card-modern {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    background: #ffffff;
+  }
+
+  .card-modern:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  }
+
+  .icon-shape {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+  }
+
+
+  .bg-soft-primary {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+  }
+
+  .bg-soft-success {
+    background-color: #d1fae5;
+    color: #059669;
+  }
+
+  .bg-soft-info {
+    background-color: #e0f2fe;
+    color: #0284c7;
+  }
+
+  .text-muted-modern {
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .value-modern {
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 1.75rem;
+  }
+</style>
+
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0" style="color: #1e293b; font-weight: 700;">Dashboard Inventaris</h1>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="card card-modern h-100 p-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-xs text-uppercase text-muted-modern mb-2">Total Record Sistem</div>
+              <div class="value-modern"><%= stats.totalJenisBarang %></div>
+            </div>
+            <div class="icon-shape bg-soft-primary">
+              <i class="fas fa-database"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="card card-modern h-100 p-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-xs text-uppercase text-muted-modern mb-2">Total Aset Fisik</div>
+              <div class="value-modern"><%= stats.totalKuantitasFisik %> <span style="font-size: 1rem; color: #64748b;">Unit</span></div>
+            </div>
+            <div class="icon-shape bg-soft-success">
+              <i class="fas fa-boxes"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="card card-modern h-100 p-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-xs text-uppercase text-muted-modern mb-2">Total Ruangan</div>
+              <div class="value-modern"><%= stats.totalRuangan %></div>
+            </div>
+            <div class="icon-shape bg-soft-info">
+              <i class="fas fa-door-open"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-lg-7 mb-4">
+      <div class="card card-modern h-100">
+        <div class="card-header bg-white border-0 pt-4 pb-0">
+          <h6 class="m-0 font-weight-bold" style="color: #334155;">Kuantitas Aset Fisik per Ruangan</h6>
+        </div>
+        <div class="card-body">
+          <div style="height: 300px;">
+            <canvas id="ruanganChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5 mb-4">
+      <div class="card card-modern h-100">
+        <div class="card-header bg-white border-0 pt-4 pb-0">
+          <h6 class="m-0 font-weight-bold" style="color: #334155;">Distribusi per Kategori</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center">
+          <div style="height: 300px; width: 100%;">
+            <canvas id="kategoriChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const rawRuangan = <%- chartData.ruangan %>;
+  const rawKategori = <%- chartData.kategori %>;
+
+
+  Chart.defaults.font.family = "'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+  Chart.defaults.color = '#64748b';
+
+
+  const ruanganLabels = rawRuangan.map(item => item._id || 'Tanpa Ruangan');
+  const ruanganData = rawRuangan.map(item => item.total);
+
+  new Chart(document.getElementById('ruanganChart'), {
+    type: 'bar',
+    data: {
+      labels: ruanganLabels,
+      datasets: [{
+        label: 'Kuantitas Fisik',
+        data: ruanganData,
+        backgroundColor: '#6366f1',
+        hoverBackgroundColor: '#4f46e5',
+        borderRadius: 6,
+        borderSkipped: false,
+        barThickness: 30
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          padding: 12,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(context) {
+              return ' ' + context.raw + ' unit';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              weight: '500'
+            }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          border: {
+            display: false
+          },
+          grid: {
+            color: '#e2e8f0',
+            borderDash: [5, 5]
+          },
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+
+
+  const kategoriLabels = rawKategori.map(item => item._id || 'Lainnya');
+  const kategoriData = rawKategori.map(item => item.total);
+
+  new Chart(document.getElementById('kategoriChart'), {
+    type: 'doughnut',
+    data: {
+      labels: kategoriLabels,
+      datasets: [{
+        data: kategoriData,
+
+        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#14b8a6', '#64748b'],
+        borderWidth: 0,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '75%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 20,
+            usePointStyle: true,
+            pointStyle: 'circle'
+          }
+        },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          padding: 12,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(context) {
+              return ' ' + context.label + ': ' + context.raw + ' unit';
+            }
+          }
+        }
+      }
+    }
+  });
+</script>

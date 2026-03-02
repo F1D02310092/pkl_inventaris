@@ -1,31 +1,36 @@
 <% layout('layout/boilerplate.ejs') %>
 <link rel="stylesheet" href="/style/edit-item.css">
 
-<div class="mb-4">
+<div class="mb-4 mt-2">
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb mb-1">
-      <li class="breadcrumb-item"><a href="/admin/check-inventory" class="text-success">Inventory</a></li>
-      <li class="breadcrumb-item"><a href="/admin/item-detail/<%= barang.id_barang %>" class="text-success">Detail</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    <ol class="breadcrumb mb-2" style="font-size: 0.9rem; font-weight: 500;">
+      <li class="breadcrumb-item"><a href="/admin/check-inventory" class="text-decoration-none" style="color: #4f46e5;">Inventaris</a></li>
+      <li class="breadcrumb-item"><a href="/admin/item-detail/<%= barang.id_barang %>" class="text-decoration-none" style="color: #4f46e5;">Detail</a></li>
+      <li class="breadcrumb-item active" aria-current="page" style="color: #64748b;">Edit Barang</li>
     </ol>
   </nav>
-  <h2 class="fw-bold mb-0">Edit Data Barang</h2>
+  <h1 class="h3 fw-bold mb-0" style="color: #1e293b;">Edit Data Barang</h1>
 </div>
 
-<div class="inventory-wrapper mb-5">
+<div class="card-modern p-4 p-lg-5 mb-5">
   <form action="/admin/item-detail/<%= barang.id_barang %>?_method=PUT" method="POST" enctype="multipart/form-data">
 
-    <h4 class="section-title mb-4">Informasi Dasar</h4>
+    <div class="d-flex align-items-center mb-4">
+      <div class="icon-shape bg-soft-primary me-3" style="width: 40px; height: 40px; border-radius: 10px;">
+        <i class="bi bi-info-circle" style="color: #4f46e5;"></i>
+      </div>
+      <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Informasi Dasar</h4>
+    </div>
 
     <div class="row">
       <div class="col-md-6 mb-4">
-        <label for="nama_barang" class="form-label">Nama Barang <span class="required-star">*</span></label>
-        <input type="text" class="form-control custom-input" id="nama_barang" name="nama_barang" placeholder="Masukkan nama barang" required value="<%= barang.nama_barang %>" />
+        <label for="nama_barang" class="form-label modern-label">Nama Barang <span class="required-star">*</span></label>
+        <input type="text" class="form-control modern-input" id="nama_barang" name="nama_barang" placeholder="Masukkan nama barang" required value="<%= barang.nama_barang %>" />
       </div>
 
       <div class="col-md-6 mb-4">
-        <label for="kategori" class="form-label">Kategori <span class="required-star">*</span></label>
-        <input type="text" class="form-control custom-input" id="kategori" name="kategori" list="kategoriOptions" placeholder="Pilih atau ketik kategori baru" required value="<%= barang.kategori %>" />
+        <label for="kategori" class="form-label modern-label">Kategori <span class="required-star">*</span></label>
+        <input type="text" class="form-control modern-input" id="kategori" name="kategori" list="kategoriOptions" placeholder="Pilih atau ketik kategori baru" required value="<%= barang.kategori %>" />
         <datalist id="kategoriOptions">
           <% if (typeof daftarKategori !== 'undefined') { %>
           <% daftarKategori.forEach(kat => { %>
@@ -37,8 +42,8 @@
       </div>
 
       <div class="col-md-6 mb-4">
-        <label for="merek" class="form-label">Merek</label>
-        <input type="text" class="form-control custom-input" id="merek" name="merek" list="merekOptions" placeholder="Pilih atau ketik merek baru" value="<%= barang.merek %>" />
+        <label for="merek" class="form-label modern-label">Merek</label>
+        <input type="text" class="form-control modern-input" id="merek" name="merek" list="merekOptions" placeholder="Pilih atau ketik merek baru" value="<%= barang.merek %>" />
         <datalist id="merekOptions">
           <% if (typeof daftarMerek !== 'undefined') { %>
           <% daftarMerek.forEach(merek => { %>
@@ -49,8 +54,8 @@
       </div>
 
       <div class="col-md-6 mb-4">
-        <label for="ruangan" class="form-label">Ruangan <span class="required-star">*</span></label>
-        <input type="text" class="form-control custom-input" id="ruangan" name="ruangan" list="ruanganOptions" placeholder="Pilih atau ketik ruangan baru" required value="<%= barang.ruangan %>" />
+        <label for="ruangan" class="form-label modern-label">Ruangan <span class="required-star">*</span></label>
+        <input type="text" class="form-control modern-input" id="ruangan" name="ruangan" list="ruanganOptions" placeholder="Pilih atau ketik ruangan baru" required value="<%= barang.ruangan %>" />
         <datalist id="ruanganOptions">
           <% if (typeof daftarRuangan !== 'undefined') { %>
           <% daftarRuangan.forEach(rng => { %>
@@ -59,64 +64,75 @@
           <option value="<%= rng %>"></option>
           <% }) %>
           <% } %>
-
         </datalist>
       </div>
 
       <div class="col-md-6 mb-4">
-        <label for="jumlah" class="form-label">Jumlah <span class="required-star">*</span></label>
-        <input type="number" class="form-control custom-input" id="jumlah" name="jumlah" placeholder="Masukkan jumlah barang" min="0" step="1" required value="<%= barang.jumlah %>" />
+        <label for="jumlah" class="form-label modern-label">Kuantitas <span class="required-star">*</span></label>
+        <input type="number" class="form-control modern-input" id="jumlah" name="jumlah" placeholder="0" min="0" step="1" required value="<%= barang.jumlah %>" />
       </div>
 
       <div class="col-md-6 mb-4">
-        <label for="satuan" class="form-label">Satuan</label>
-        <input type="text" class="form-control custom-input" id="satuan" name="satuan" list="satuanOptions" placeholder="Pilih atau ketik satuan (misal: buah, set)" value="<%= barang.satuan %>" />
+        <label for="satuan" class="form-label modern-label">Satuan</label>
+        <input type="text" class="form-control modern-input" id="satuan" name="satuan" list="satuanOptions" placeholder="Pilih satuan (misal: unit, set)" value="<%= barang.satuan %>" />
         <datalist id="satuanOptions">
           <% if (typeof daftarSatuan !== 'undefined') { %>
           <% daftarSatuan.forEach(sat => { %>
-          <option value="buah (unit)"></option>
+          <option value="unit"></option>
           <option value="set"></option>
           <option value="<%= sat %>"></option>
           <% }) %>
-          <% }  %>
-
+          <% } %>
         </datalist>
       </div>
 
       <div class="col-md-12 mb-4">
-        <label for="foto" class="form-label">Foto Barang</label>
-        <div class="d-flex align-items-center gap-4">
+        <label for="foto" class="form-label modern-label">Foto Barang</label>
+        <div class="d-flex flex-wrap align-items-center gap-4 p-3 border rounded-3 bg-light-modern">
           <% if (barang.image_url) { %>
-          <div>
-            <img src="<%= barang.image_url %>" alt="Current Image" class="img-preview mb-2">
-            <div class="text-muted small text-center">Foto Saat Ini</div>
+          <div class="text-center">
+            <div class="image-preview-wrapper shadow-sm mb-2">
+              <img src="<%= barang.image_url %>" alt="Current Image" class="img-preview">
+            </div>
+            <span class="badge bg-soft-info px-2 py-1 text-info rounded-pill" style="font-size: 0.75rem;">Foto Saat Ini</span>
           </div>
           <% } %>
 
           <div class="flex-grow-1">
-            <input id="foto" type="file" class="form-control custom-input" name="foto_barang" accept="image/*" capture="environment" />
-            <div class="form-text mt-1 text-muted small">Biarkan kosong jika tidak ingin mengubah foto.</div>
-            <div class="form-text mt-1 text-muted small">Format didukung: JPG, PNG, JPEG.</div>
+            <input id="foto" type="file" class="form-control modern-input file-input-modern" name="foto_barang" accept="image/*" capture="environment" />
+            <p class="form-text mt-2 text-muted-modern mb-0" style="font-size: 0.85rem;">
+              <i class="bi bi-info-circle me-1"></i> Biarkan kosong jika tidak ingin mengubah foto. Format didukung: JPG, PNG.
+            </p>
           </div>
         </div>
       </div>
     </div>
 
-    <h4 class="section-title mb-4 mt-3">Detail Tambahan (Opsional)</h4>
+    <hr class="my-5" style="border-color: #e2e8f0; opacity: 1;">
+
+    <div class="d-flex align-items-center mb-4">
+      <div class="icon-shape bg-soft-info me-3" style="width: 40px; height: 40px; border-radius: 10px;">
+        <i class="bi bi-card-list text-info"></i>
+      </div>
+      <div>
+        <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Spesifikasi Tambahan</h4>
+        <span class="text-muted-modern" style="font-size: 0.85rem;">Opsional - Tambahkan atribut khusus (contoh: RAM, Warna)</span>
+      </div>
+    </div>
 
     <div id="dynamic-detail-container">
       <% if (barang.detail && Object.keys(barang.detail).length > 0) { %>
       <% for (let key in barang.detail) { %>
       <div class="row mb-3 align-items-center detail-row">
         <div class="col-md-5 mb-2 mb-md-0">
-          <input type="text" class="form-control custom-input" name="detailKey" value="<%= key %>" placeholder="Nama Atribut">
+          <input type="text" class="form-control modern-input" name="detailKey" value="<%= key %>" placeholder="Nama Atribut">
         </div>
         <div class="col-md-6 mb-2 mb-md-0">
-          <input type="text" class="form-control custom-input" name="detailValue" value="<%= barang.detail[key] %>" placeholder="Nilai Atribut">
+          <input type="text" class="form-control modern-input" name="detailValue" value="<%= barang.detail[key] %>" placeholder="Nilai Atribut">
         </div>
         <div class="col-md-1 text-end">
-          <button class="btn btn-outline-danger btn-hapus p-2 border-0" type="button" title="Hapus baris">
-            <i class="bi bi-trash fs-5 pointer-events-none"></i>
+          <button class="btn btn-icon-only bg-soft-danger text-danger btn-hapus border-0 shadow-sm" type="button" title="Hapus baris">
+            <i class="bi bi-trash3 pointer-events-none"></i>
           </button>
         </div>
       </div>
@@ -124,15 +140,15 @@
       <% } %>
     </div>
 
-    <button type="button" id="btn-tambah-detail" class="btn btn-outline-green mb-5">
-      <i class="bi bi-plus-lg me-1"></i> Tambah Detail
+    <button type="button" id="btn-tambah-detail" class="btn btn-outline-dashed mt-2 mb-5 w-100">
+      <i class="bi bi-plus-lg me-2"></i> Tambah Atribut Baru
     </button>
 
     <div class="d-flex justify-content-end gap-3 border-top pt-4">
-      <a href="/admin/item-detail/<%= barang.id_barang %>" class="btn btn-light-custom px-4 py-2">
+      <a href="/admin/item-detail/<%= barang.id_barang %>" class="btn btn-outline-modern px-4 py-2">
         Batal
       </a>
-      <button type="submit" class="btn btn-green px-5 py-2">
+      <button type="submit" class="btn btn-primary-modern px-5 py-2 shadow-sm">
         <i class="bi bi-check2-circle me-2"></i> Simpan Perubahan
       </button>
     </div>
@@ -149,14 +165,14 @@
 
     row.innerHTML = `
       <div class="col-md-5 mb-2 mb-md-0">
-        <input type="text" class="form-control custom-input" name="detailKey" placeholder="Nama Atribut (Contoh: Warna, RAM)">
+        <input type="text" class="form-control modern-input" name="detailKey" placeholder="Nama Atribut (Contoh: Warna, RAM)">
       </div>
       <div class="col-md-6 mb-2 mb-md-0">
-        <input type="text" class="form-control custom-input" name="detailValue" placeholder="Nilai (Contoh: Hitam, 16GB)">
+        <input type="text" class="form-control modern-input" name="detailValue" placeholder="Nilai (Contoh: Hitam, 16GB)">
       </div>
       <div class="col-md-1 text-end">
-        <button class="btn btn-outline-danger btn-hapus p-2 border-0" type="button" title="Hapus baris">
-          <i class="bi bi-trash fs-5 pointer-events-none"></i>
+        <button class="btn btn-icon-only bg-soft-danger text-danger btn-hapus border-0 shadow-sm" type="button" title="Hapus baris">
+          <i class="bi bi-trash3 pointer-events-none"></i>
         </button>
       </div>
     `;

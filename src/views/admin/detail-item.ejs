@@ -1,72 +1,80 @@
 <% layout('layout/boilerplate.ejs') %>
 <link rel="stylesheet" href="/style/detail-item.css">
 
-<div class="mb-4">
+<div class="mb-4 mt-2">
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb mb-1">
-      <li class="breadcrumb-item"><a href="/admin/check-inventory" class="text-success">Inventaris</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Detail</li>
+    <ol class="breadcrumb mb-2" style="font-size: 0.9rem; font-weight: 500;">
+      <li class="breadcrumb-item"><a href="/admin/check-inventory" class="text-decoration-none" style="color: #4f46e5;">Inventaris</a></li>
+      <li class="breadcrumb-item active" aria-current="page" style="color: #64748b;">Detail Barang</li>
     </ol>
   </nav>
   <div class="d-flex justify-content-between align-items-center">
-    <h2 class="fw-bold mb-0">Detail Barang</h2>
-
+    <h1 class="h3 fw-bold mb-0" style="color: #1e293b;">Detail Barang</h1>
   </div>
 </div>
 
-<div class="inventory-wrapper mb-4">
-  <div class="row gx-lg-5">
-    <div class="col-md-5 mb-4 mb-md-0">
+<div class="card-modern mb-4 p-4 p-lg-5">
+  <div class="row gx-lg-5 align-items-center">
+    <div class="col-md-5 mb-4 mb-md-0 text-center">
       <% if (barang.status_upload === 'DONE' && barang.image_url) { %>
-      <img src="<%= barang.image_url %>" class="item-image" alt="<%= barang.nama_barang %>" style="max-height: 400px;">
+      <div class="image-wrapper shadow-sm">
+        <img src="<%= barang.image_url %>" class="item-image-modern" alt="<%= barang.nama_barang %>">
+      </div>
       <% } else if (barang.status_upload === 'PENDING') { %>
-      <div class="d-flex flex-column align-items-center justify-content-center img-placeholder">
-        <div class="spinner-grow text-success mb-3" role="status"></div>
-        <span class="text-muted">Sedang mengunggah gambar...</span>
+      <div class="d-flex flex-column align-items-center justify-content-center img-placeholder-modern">
+        <div class="spinner-border text-primary-modern mb-3" role="status"></div>
+        <span class="text-muted-modern fw-medium">Memproses gambar...</span>
       </div>
       <% } else { %>
-      <div class="d-flex align-items-center justify-content-center img-placeholder">
-        <div class="text-center text-muted">
-          <i class="bi bi-image fs-1 mb-2 d-block" style="color: #ced4da;"></i>
-          <span>Tidak ada gambar</span>
+      <div class="d-flex flex-column align-items-center justify-content-center img-placeholder-modern">
+        <div class="icon-shape bg-soft-secondary mb-3" style="width: 64px; height: 64px; border-radius: 50%;">
+          <i class="bi bi-image" style="font-size: 1.75rem; color: #94a3b8;"></i>
         </div>
+        <span class="text-muted-modern fw-medium">Tidak ada gambar</span>
       </div>
       <% } %>
     </div>
 
     <div class="col-md-7">
-      <h3 class="fw-bold text-dark mb-4"><%= barang.nama_barang %></h3>
+      <h2 class="fw-bold mb-4" style="color: #0f172a; font-size: 1.75rem;"><%= barang.nama_barang %></h2>
 
-      <table class="table table-borderless basic-table">
+      <table class="table table-borderless modern-basic-table mb-0">
         <tbody>
           <tr>
             <th>Kategori</th>
-            <td>: <%= barang.kategori || '-' %></td>
+            <td><span class="text-modern fw-medium ms-1">: <%= barang.kategori || '-' %></span></td>
           </tr>
           <tr>
             <th>Merek</th>
-            <td>: <%= barang.merek || '-' %></td>
+            <td><span class="text-modern fw-medium ms-1">: <%= barang.merek || '-' %></span></td>
           </tr>
           <tr>
             <th>Ruangan</th>
-            <td>: <%= barang.ruangan || '-' %></td>
+            <td><span class="text-modern fw-medium ms-1">: <%= barang.ruangan || '-' %></span></td>
           </tr>
           <tr>
-            <th>Stok / Jumlah</th>
-            <td>: <%= barang.jumlah %> <%= barang.satuan %></td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <hr class="my-1" style="color: #eee;">
+            <th>Kuantitas</th>
+            <td>
+              <span class="text-modern fw-medium ms-1">: <%= barang.jumlah %></span>
+              <span class="text-modern fw-medium ms-1"><%= barang.satuan %></span>
             </td>
           </tr>
           <tr>
-            <th>Di-input pada</th>
-            <td>: <%= new Date(barang.createdAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></td>
+            <td colspan="2" class="py-3">
+              <hr class="m-0" style="border-color: #e2e8f0; opacity: 1;">
+            </td>
+          </tr>
+          <tr>
+            <th>Waktu Input</th>
+            <td class="text-muted-modern text-sm">
+              <i class="bi bi-calendar3 me-2"></i><%= new Date(barang.createdAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+            </td>
           </tr>
           <tr>
             <th>Update Terakhir</th>
-            <td>: <%= new Date(barang.updatedAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %> pukul <%= new Date(barang.updatedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) %></td>
+            <td class="text-muted-modern text-sm">
+              <i class="bi bi-clock-history me-2"></i><%= new Date(barang.updatedAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %> • <%= new Date(barang.updatedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) %>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -75,37 +83,56 @@
 </div>
 
 <%if(barang.detail && Object.keys(barang.detail).length > 0){%>
-<div class="inventory-wrapper mb-4">
-  <h4 class="section-title mb-4">Detail Tambahan</h4>
+<div class="card-modern mb-4 p-4 p-lg-5">
+  <div class="d-flex align-items-center mb-4">
+    <div class="icon-shape bg-soft-primary me-3" style="width: 40px; height: 40px; border-radius: 10px;">
+      <i class="bi bi-card-list" style="color: #4f46e5;"></i>
+    </div>
+    <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Spesifikasi Tambahan</h4>
+  </div>
 
   <div class="table-responsive">
-    <table class="table table-bordered table-detail-tambahan mb-0">
+    <table class="table modern-detail-table mb-0">
       <tbody>
         <% for (let key in barang.detail) { %>
         <tr>
-          <th style="width: 30%" class="py-3 px-3"><%= key %></th>
-          <td class="py-3 px-3"><%= barang.detail[key] %></td>
+          <th style="width: 35%;"><%= key %></th>
+          <td><%= barang.detail[key] %></td>
         </tr>
         <% } %>
       </tbody>
     </table>
   </div>
-
 </div>
 <%}%>
 
-
-<div class="d-flex gap-3 mb-5">
-  <a href="/admin/check-inventory" class="btn btn-light-custom px-4 py-2">
+<div class="d-flex flex-wrap gap-3 mb-5 mt-4">
+  <a href="/admin/check-inventory" class="btn btn-outline-modern d-flex align-items-center px-4">
     <i class="bi bi-arrow-left me-2"></i> Kembali
   </a>
-  <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="btn btn-green px-4 py-2">
-<i class="bi bi-pencil me-2"></i> Edit
+
+
+
+<div class="ms-auto d-flex gap-3">
+
+    <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
+<button type="submit" class="btn btn-danger-soft-modern d-flex align-items-center px-4 shadow-sm" onclick="return confirm('Yakin ingin menghapus barang ini?')">
+  <i class="bi bi-trash3 me-2"></i> Hapus
+</button>
+</form>
+
+
+<a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="btn btn-secondary-modern d-flex align-items-center px-4">
+  <i class="bi bi-qr-code me-2"></i> Unduh QR Code
 </a>
 
-<a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="btn btn-green px-4 py-2">
-  <i class="bi bi-pencil me-2"></i> QR Code
+
+
+
+<a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="btn btn-primary-modern d-flex align-items-center px-4 shadow-sm">
+  <i class="bi bi-pencil-square me-2"></i> Edit Barang
 </a>
+</div>
 </div>
 
 <% if (barang.status_upload === 'PENDING') { %>
@@ -115,7 +142,6 @@
       const response = await fetch('/admin/api/status-barang/<%= barang.id_barang %>');
       const data = await response.json();
 
-      // Jika sudah DONE, baru refresh halaman
       if (data.status === 'DONE') {
         clearInterval(pollInterval);
         window.location.reload();

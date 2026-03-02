@@ -1,85 +1,104 @@
 <% layout('layout/boilerplate.ejs') %>
 <link rel="stylesheet" href="/style/check-inventory.css">
 
-<div class="mb-4">
-  <h2 class="fw-bold mb-0 text-dark" style="font-size: 1.5rem;">
-    Inventory <span class="text-muted fw-normal" style="font-size: 1.1rem;">/ (<%= totalBarang %>)</span>
-  </h2>
+<div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+  <h1 class="h3 mb-0" style="color: #1e293b; font-weight: 700;">
+    Inventory <span style="color: #64748b; font-weight: 500; font-size: 1.1rem; margin-left: 4px;">(<%= totalBarang %> item)</span>
+  </h1>
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
   <div class="d-flex gap-3 flex-wrap align-items-center flex-grow-1">
     <form action="/admin/check-inventory" method="GET" class="d-flex gap-2 m-0 align-items-center">
       <div class="filter-input-group position-relative">
-        <input type="text" name="search" class="form-control shadow-none" placeholder="Search for inventory....." value="<%= typeof search !== 'undefined' ? search : '' %>">
+        <i class="bi bi-search position-absolute text-muted" style="left: 14px; top: 50%; transform: translateY(-50%);"></i>
+        <input type="text" name="search" class="form-control shadow-none modern-input" placeholder="Cari barang..." value="<%= typeof search !== 'undefined' ? search : '' %>">
       </div>
       <button type="submit" class="btn btn-search d-flex align-items-center gap-2 px-3 shadow-sm">
-        <i class="bi bi-search"></i> Cari
+        Cari
       </button>
       <% if (typeof search !== 'undefined' && search && search.trim() !== '') { %>
-      <a href="/admin/check-inventory" class="btn text-danger fw-medium d-flex align-items-center px-3 clear-btn">
-        <i class="bi bi-x-lg me-1"></i> Hapus
+      <a href="/admin/check-inventory" class="btn btn-clear-modern d-flex align-items-center px-3">
+        <i class="bi bi-x-lg"></i>
       </a>
       <% } %>
     </form>
   </div>
 
   <div class="d-flex gap-2 align-items-center">
-    <a href="/admin/input-inventory" class="btn btn-add d-flex align-items-center gap-2 px-3 shadow-sm">
-      <i class="bi bi-plus-lg"></i> Add Product
+    <a href="/admin/input-inventory" class="btn btn-add-modern d-flex align-items-center gap-2 px-4 shadow-sm">
+      <i class="bi bi-plus-lg"></i> Tambah Barang
     </a>
   </div>
 </div>
 
-<div class="inventory-wrapper p-0 overflow-hidden shadow-sm">
+<div class="inventory-wrapper p-0 overflow-hidden mb-5">
   <% if(inventories.length === 0){ %>
-  <div class="alert alert-warning text-center m-4">Belum ada data barang.</div>
+  <div class="text-center py-5">
+    <div class="mb-3">
+      <div class="empty-state-icon mx-auto bg-soft-primary d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; border-radius: 20px;">
+        <i class="bi bi-inbox" style="font-size: 2.5rem; color: #4f46e5;"></i>
+      </div>
+    </div>
+    <h5 class="text-dark fw-bold mt-4" style="color: #1e293b;">Belum ada data barang</h5>
+    <p class="text-muted-modern mb-4">Mulai kelola inventaris dengan menambahkan produk baru ke sistem.</p>
+  </div>
   <% } else { %>
   <div class="table-responsive">
     <table class="table table-borderless align-middle mb-0 custom-table">
-      <thead class="table-header border-bottom">
+      <thead class="table-header">
         <tr>
-          <th scope="col" style="width: 50px; padding-left: 20px;">
+          <th scope="col" style="width: 50px; padding-left: 24px;">
             <input class="form-check-input custom-checkbox" type="checkbox" id="selectAll">
           </th>
-          <th scope="col" class="py-3">Product name</th>
+          <th scope="col" class="py-3">Produk</th>
           <th scope="col" class="py-3">Kategori</th>
           <th scope="col" class="py-3">Ruangan</th>
-          <th scope="col" class="py-3">Jumlah & Satuan</th>
-          <th scope="col" class="py-3 text-end" style="padding-right: 20px;">Action</th>
+          <th scope="col" class="py-3">Kuantitas</th>
+          <th scope="col" class="py-3 text-end" style="padding-right: 24px;">Action</th>
         </tr>
       </thead>
       <tbody>
         <% for(let barang of inventories){ %>
-        <tr class="border-bottom table-row-hover">
-          <td style="padding-left: 20px;">
+        <tr class="table-row-hover" style="border-bottom: 1px solid #f1f5f9;">
+          <td style="padding-left: 24px;">
             <input class="form-check-input custom-checkbox row-checkbox" type="checkbox" value="<%= barang.id_barang %>">
           </td>
           <td class="py-3">
             <div class="d-flex align-items-center">
-              <img src="<%= barang.image_url || '/placeholder.jpg' %>" alt="<%= barang.nama_barang %>" class="product-image">
-              <span class="fw-medium text-dark"><%= barang.nama_barang %></span>
+              <% if (barang.image_url) { %>
+              <img src="<%= barang.image_url %>" alt="<%= barang.nama_barang %>" class="product-image shadow-sm">
+              <% } else { %>
+              <div class="product-image-placeholder shadow-sm">
+                <i class="bi bi-image text-muted"></i>
+              </div>
+              <% } %>
+              <span class="fw-bold" style="color: #334155;"><%= barang.nama_barang %></span>
             </div>
           </td>
-          <td class="text-dark py-3"><%= barang.kategori %></td>
-          <td class="text-dark py-3"><%= barang.ruangan %></td>
           <td class="py-3">
-            <span class="fw-medium text-dark"><%= barang.jumlah %></span>
-            <span class="text-dark"><%= barang.satuan %></span>
+            <span class="badge badge-soft-primary px-3 py-2 rounded-pill"><%= barang.kategori %></span>
           </td>
-          <td class="text-end py-3" style="padding-right: 20px;">
-            <div class="d-flex justify-content-end align-items-center gap-3">
-              <a href="/admin/item-detail/<%= barang.id_barang %>" class="action-icon" title="Lihat Detail">
+          <td class="py-3">
+            <span class="badge badge-soft-info px-3 py-2 rounded-pill"><%= barang.ruangan %></span>
+          </td>
+          <td class="py-3">
+            <span class="fw-bold" style="color: #1e293b;"><%= barang.jumlah %></span>
+            <span style="color: #64748b; font-size: 0.9rem; margin-left: 2px;"><%= barang.satuan %></span>
+          </td>
+          <td class="text-end py-3" style="padding-right: 24px;">
+            <div class="d-flex justify-content-end align-items-center gap-2">
+              <a href="/admin/item-detail/<%= barang.id_barang %>" class="btn btn-icon-only bg-soft-info" title="Lihat Detail">
                 <i class="bi bi-eye"></i>
               </a>
-              <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="action-icon" title="Edit">
+              <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="btn btn-icon-only bg-soft-warning" title="Edit">
                 <i class="bi bi-pencil"></i>
               </a>
-              <a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="action-icon" title="QR Code">
+              <a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="btn btn-icon-only bg-soft-primary" title="QR Code">
                 <i class="bi bi-qr-code"></i>
               </a>
               <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
-                <button type="submit" class="btn btn-link action-icon p-0 m-0 border-0 text-decoration-none" title="Hapus" onclick="return confirm('Yakin ingin menghapus barang ini?')">
+                <button type="submit" class="btn btn-icon-only bg-soft-danger border-0" title="Hapus" onclick="return confirm('Yakin ingin menghapus barang ini?')">
                   <i class="bi bi-trash3"></i>
                 </button>
               </form>
@@ -91,27 +110,25 @@
     </table>
   </div>
 
-  <div class="d-flex flex-wrap justify-content-between align-items-center p-3 gap-3  " style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
-
+  <div class="d-flex flex-wrap justify-content-between align-items-center p-3 gap-3" style="background-color: #f8fafc; border-top: 1px solid #f1f5f9;">
     <div id="bulkActions" class="d-flex gap-2 align-items-center flex-wrap">
-      <button type="button" id="btnDownloadQR" class="btn btn-outline-secondary d-flex align-items-center gap-2" style="height: 42px; border-radius: 8px;" onclick="downloadSelectedQR()" disabled>
+      <button type="button" id="btnDownloadQR" class="btn btn-outline-modern d-flex align-items-center gap-2" onclick="downloadSelectedQR()" disabled>
         <i class="bi bi-qr-code"></i> Download All QR
       </button>
 
-      <button type="button" id="btnDeleteSelected" class="btn btn-danger d-flex align-items-center gap-2" style="height: 42px; border-radius: 8px;" onclick="deleteSelected()" disabled>
+      <button type="button" id="btnDeleteSelected" class="btn btn-danger-modern d-flex align-items-center gap-2" onclick="deleteSelected()" disabled>
         <i class="bi bi-trash3"></i> Delete All
       </button>
 
-      <span id="selectedCount" class="text-secondary fw-medium ms-2" style="font-size: 0.9rem;">0 selected</span>
+      <span id="selectedCount" class="text-muted-modern ms-2" style="font-size: 0.85rem;">0 terpilih</span>
     </div>
 
     <% if (totalPages > 1) { %>
     <div>
       <nav aria-label="Inventory pagination">
         <ul class="pagination pagination-custom m-0">
-
           <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
-            <a class="page-link" href="<%= currentPage === 1 ? '#' : '/admin/check-inventory/?page=' + (currentPage - 1) + '&limit=' + limit %>">
+            <a class="page-link shadow-sm" href="<%= currentPage === 1 ? '#' : '/admin/check-inventory/?page=' + (currentPage - 1) + '&limit=' + limit %>">
               <i class="bi bi-chevron-left" style="font-size: 0.8rem;"></i>
             </a>
           </li>
@@ -127,27 +144,25 @@
 
           <% for (let i = startPage; i <= endPage; i++) { %>
           <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-            <a class="page-link" href="/admin/check-inventory/?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+            <a class="page-link shadow-sm" href="/admin/check-inventory/?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
           </li>
           <% } %>
 
           <% if (endPage < totalPages) { %>
           <li class="page-item disabled">
-            <span class="page-link">...</span>
+            <span class="page-link shadow-sm border-0">...</span>
           </li>
           <% } %>
 
           <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
-            <a class="page-link" href="<%= currentPage === totalPages ? '#' : '/admin/check-inventory/?page=' + (currentPage + 1) + '&limit=' + limit %>">
+            <a class="page-link shadow-sm" href="<%= currentPage === totalPages ? '#' : '/admin/check-inventory/?page=' + (currentPage + 1) + '&limit=' + limit %>">
               <i class="bi bi-chevron-right" style="font-size: 0.8rem;"></i>
             </a>
           </li>
-
         </ul>
       </nav>
     </div>
     <% } %>
-
   </div>
   <% } %>
 </div>
@@ -157,7 +172,6 @@
     const selectAllCheckbox = document.getElementById('selectAll');
     const rowCheckboxes = document.querySelectorAll('.row-checkbox');
     const selectedCountText = document.getElementById('selectedCount');
-
     const btnDownloadQR = document.getElementById('btnDownloadQR');
     const btnDeleteSelected = document.getElementById('btnDeleteSelected');
 
@@ -165,7 +179,7 @@
       const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
       const count = checkedBoxes.length;
 
-      selectedCountText.textContent = `${count} item${count > 1 ? 's' : ''} selected`;
+      selectedCountText.textContent = `${count} terpilih`;
 
       if (count > 0) {
         btnDownloadQR.disabled = false;
@@ -182,38 +196,36 @@
 
     if (selectAllCheckbox) {
       selectAllCheckbox.addEventListener('change', (e) => {
-        rowCheckboxes.forEach(cb => {
-          cb.checked = e.target.checked;
-        });
+        rowCheckboxes.forEach(cb => cb.checked = e.target.checked);
         updateBulkActions();
       });
     }
 
-    rowCheckboxes.forEach(cb => {
-      cb.addEventListener('change', updateBulkActions);
-    });
+    rowCheckboxes.forEach(cb => cb.addEventListener('change', updateBulkActions));
   });
 
   function getSelectedIds() {
-    const checked = document.querySelectorAll('.row-checkbox:checked');
-    return Array.from(checked).map(cb => cb.value);
+    return Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.value);
   }
 
-  // bulk download qr
   function downloadSelectedQR() {
     const ids = getSelectedIds();
     if (ids.length === 0) return;
-
     window.location.href = `/admin/check-inventory/bulk-qr?ids=${ids.join(',')}`;
   }
 
-  // bulk delete
   async function deleteSelected() {
     const ids = getSelectedIds();
     if (ids.length === 0) return;
 
     if (confirm(`Yakin ingin menghapus ${ids.length} barang sekaligus? Data yang dihapus tidak bisa dikembalikan.`)) {
+      const btnDelete = document.getElementById('btnDeleteSelected');
+      const originalText = btnDelete.innerHTML;
+
       try {
+        btnDelete.disabled = true;
+        btnDelete.innerHTML = '<i class="bi bi-hourglass-split"></i> Menghapus...';
+
         const response = await fetch('/admin/check-inventory/bulk-delete', {
           method: 'POST',
           headers: {
@@ -230,10 +242,14 @@
           window.location.reload();
         } else {
           alert(`Gagal: ${result.message}`);
+          btnDelete.disabled = false;
+          btnDelete.innerHTML = originalText;
         }
       } catch (error) {
         console.error("Error bulk delete:", error);
         alert("Terjadi kesalahan jaringan.");
+        btnDelete.disabled = false;
+        btnDelete.innerHTML = originalText;
       }
     }
   }

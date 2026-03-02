@@ -1,91 +1,187 @@
-.inventory-wrapper {
+
+.card-modern {
    background-color: #ffffff;
-   border-radius: 12px;
-   border: 1px solid #f0f0f0;
-   padding: 30px;
+   border-radius: 1rem;
+   border: none;
+   box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.05),
+      0 2px 4px -1px rgba(0, 0, 0, 0.03);
+   transition: all 0.3s ease;
 }
 
-.section-title {
-   font-size: 1.1rem;
-   font-weight: 600;
-   color: #212529;
-   margin-bottom: 1rem;
-   padding-bottom: 0.5rem;
-   border-bottom: 1px solid #f0f0f0;
+.card-modern:hover {
+   box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.08),
+      0 4px 6px -2px rgba(0, 0, 0, 0.04);
 }
 
-.item-image {
+
+.image-wrapper {
+   border-radius: 1rem;
+   overflow: hidden;
+   background-color: #f8fafc;
+   display: inline-block;
+   border: 1px solid #f1f5f9;
+}
+
+.item-image-modern {
    width: 100%;
-   border-radius: 12px;
-   border: 1px solid #e9ecef;
-   object-fit: cover;
+   max-width: 400px;
+   max-height: 400px;
+   object-fit: contain;
+   display: block;
 }
 
-.img-placeholder {
+.img-placeholder-modern {
    height: 350px;
-   border-radius: 12px;
-   background-color: #f8f9fa;
-   border: 1px dashed #dee2e6;
+   width: 100%;
+   max-width: 400px;
+   margin: 0 auto;
+   border-radius: 1rem;
+   background-color: #f8fafc;
+   border: 2px dashed #cbd5e1;
 }
 
-.status-badge {
-   font-size: 0.75rem;
-   padding: 4px 12px;
-   border-radius: 50px;
-   font-weight: 600;
-}
 
-.status-pending {
-   background-color: #fff3cd;
-   color: #856404;
-   border: 1px solid #ffeeba;
-}
-
-.basic-table th {
-   color: #6c757d;
+.modern-basic-table th {
+   color: #64748b;
    font-weight: 500;
    font-size: 0.95rem;
-   padding-left: 0;
-   width: 200px;
+   padding: 12px 0;
+   width: 160px;
+   vertical-align: middle;
 }
 
-.basic-table td {
+.modern-basic-table td {
+   padding: 12px 0;
+   vertical-align: middle;
+}
+
+.modern-detail-table {
+   border: 1px solid #e2e8f0;
+   border-radius: 0.5rem;
+   border-collapse: separate;
+   border-spacing: 0;
+   overflow: hidden;
+}
+
+.modern-detail-table tr:not(:last-child) td,
+.modern-detail-table tr:not(:last-child) th {
+   border-bottom: 1px solid #e2e8f0;
+}
+
+.modern-detail-table th {
+   background-color: #f8fafc;
+   color: #475569;
    font-weight: 600;
-   color: #212529;
+   padding: 16px 20px;
+   border-right: 1px solid #e2e8f0;
 }
 
-.btn-green {
-   background-color: #34c759;
-   border-color: #34c759;
+.modern-detail-table td {
+   color: #1e293b;
+   font-weight: 500;
+   padding: 16px 20px;
+}
+
+
+.text-primary-modern {
+   color: #4f46e5 !important;
+}
+.text-muted-modern {
+   color: #64748b;
+}
+.text-sm {
+   font-size: 0.875rem;
+}
+
+
+.badge-soft-primary {
+   background-color: #e0e7ff;
+   color: #4f46e5;
+   font-weight: 600;
+   border: 1px solid #c7d2fe;
+}
+.badge-soft-info {
+   background-color: #e0f2fe;
+   color: #0284c7;
+   font-weight: 600;
+   border: 1px solid #bae6fd;
+}
+.bg-soft-primary {
+   background-color: #e0e7ff;
+}
+.bg-soft-secondary {
+   background-color: #f1f5f9;
+}
+
+.icon-shape {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+
+.btn-primary-modern {
+   background-color: #4f46e5;
+   border: none;
    color: white;
    font-weight: 500;
-   border-radius: 8px;
+   height: 44px;
+   border-radius: 0.5rem;
+   transition: all 0.2s ease;
 }
 
-.btn-green:hover {
-   background-color: #2db84d;
+.btn-primary-modern:hover {
+   background-color: #4338ca;
    color: white;
+   transform: translateY(-1px);
 }
 
-.btn-light-custom {
-   background-color: #ffffff;
-   border: 1px solid #dcdfe3;
-   color: #495057;
+.btn-secondary-modern {
+   background-color: #f1f5f9;
+   border: 1px solid #e2e8f0;
+   color: #334155;
    font-weight: 500;
-   border-radius: 8px;
+   height: 44px;
+   border-radius: 0.5rem;
+   transition: all 0.2s ease;
 }
 
-.btn-light-custom:hover {
-   background-color: #f8f9fa;
-   color: #212529;
+.btn-secondary-modern:hover {
+   background-color: #e2e8f0;
+   color: #0f172a;
 }
 
-.table-detail-tambahan {
-   border: 1px solid #e9ecef;
+.btn-outline-modern {
+   border: 1px solid #cbd5e1;
+   color: #475569;
+   background: white;
+   height: 44px;
+   border-radius: 0.5rem;
+   font-weight: 500;
+   transition: all 0.2s;
 }
 
-.table-detail-tambahan th {
-   background-color: #fcfcfc;
-   color: #6c757d;
-   font-weight: 600;
+.btn-outline-modern:hover {
+   background-color: #f8fafc;
+   border-color: #94a3b8;
+   color: #0f172a;
+}
+
+.btn-danger-soft-modern {
+   background-color: #fee2e2;
+   color: #dc2626;
+   border: 1px solid #fecaca;
+   height: 42px;
+   border-radius: 0.5rem;
+   font-weight: 500;
+   font-size: 0.9rem;
+   transition: all 0.2s ease;
+}
+
+.btn-danger-soft-modern:hover {
+   background-color: #fecaca;
+   color: #991b1b;
+   transform: translateY(-1px);
 }

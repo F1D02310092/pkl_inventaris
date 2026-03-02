@@ -35,10 +35,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
 
-// home page
-app.get("/", (req, res) => {
-   return res.render("home.ejs");
+// middleware
+app.use((req, res, next) => {
+   res.locals.currentPath = req.path;
+   next();
 });
+
+// home page
+const { getDashboardPage } = require("../src/controller/dashboard.js");
+app.get("/", getDashboardPage);
 
 // admin routes
 const adminRoutes = require("./routes/adminRoutes.js");

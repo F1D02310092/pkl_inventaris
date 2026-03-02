@@ -46,9 +46,11 @@ const barangSchema = new mongoose.Schema(
       kategori: {
          type: String,
          required: true,
+         trim: true,
       },
       satuan: {
          type: String,
+         trim: true,
       },
    },
    {

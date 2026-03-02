@@ -148,7 +148,7 @@ const getInventoryPage = async (req, res) => {
 
       const fuseOptions = {
          keys: ["nama_barang"],
-         threshold: 0.5,
+         threshold: 0.3,
       };
 
       const fuse = new Fuse(daftarBarang, fuseOptions);
@@ -314,11 +314,13 @@ const deleteItem = async (req, res) => {
 
    const channel = getChannel();
 
-   const payload = {
-      image_name: barang.image_name,
-   };
+   if (barang.image_name !== null) {
+      const payload = {
+         image_name: barang.image_name,
+      };
 
-   await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(payload)));
+      await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(payload)));
+   }
 
    return res.redirect("/admin/check-inventory");
 };
@@ -334,7 +336,7 @@ const downloadQR = async (req, res) => {
 
    res.set({
       "Content-Type": "image/png",
-      "Content-Disposition": `attachment; filename=${barang.nama_barang.trim()}_QR.png`,
+      "Content-Disposition": `attachment; filename=${barang.nama_barang.trim()}_${barang.ruangan}_QR.png`,
    });
 
    res.send(qr);
@@ -357,11 +359,14 @@ const bulkDelete = async (req, res) => {
       await BarangModel.deleteMany({ id_barang: { $in: ids } });
 
       const channel = getChannel();
+
       for (let b of barang) {
-         const payload = {
-            image_name: b.image_name,
-         };
-         await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(payload)));
+         if (b.image_name !== null) {
+            const payload = {
+               image_name: b.image_name,
+            };
+            await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(payload)));
+         }
       }
 
       return res.status(200).json({ message: "Bulk delete berhasil" });
@@ -400,7 +405,7 @@ const bulkDownloadQR = async (req, res) => {
       for (let b of barang) {
          const buffer = await generateQR(b);
 
-         archive.append(buffer, { name: `${b.nama_barang.trim()}_QR.png` });
+         archive.append(buffer, { name: `${b.nama_barang.trim()}_${b.ruangan}_QR.png` });
       }
 
       await archive.finalize();
