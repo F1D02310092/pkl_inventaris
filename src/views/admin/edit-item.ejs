@@ -25,29 +25,27 @@
     <div class="row">
       <div class="col-md-6 mb-4">
         <label for="nama_barang" class="form-label modern-label">Nama Barang <span class="required-star">*</span></label>
-        <input type="text" class="form-control modern-input" id="nama_barang" name="nama_barang" placeholder="Masukkan nama barang" required value="<%= barang.nama_barang %>" />
+        <input type="text" class="form-control modern-input" id="nama_barang" name="nama_barang" placeholder="Masukkan nama barang" required value="<%= capitalizeEachWord(barang.nama_barang) %>" />
       </div>
 
       <div class="col-md-6 mb-4">
         <label for="kategori" class="form-label modern-label">Kategori <span class="required-star">*</span></label>
-        <input type="text" class="form-control modern-input" id="kategori" name="kategori" list="kategoriOptions" placeholder="Pilih atau ketik kategori baru" required value="<%= barang.kategori %>" />
+        <input type="text" class="form-control modern-input" id="kategori" name="kategori" list="kategoriOptions" placeholder="Pilih atau ketik kategori baru" required value="<%= capitalizeEachWord(barang.kategori) %>" />
         <datalist id="kategoriOptions">
           <% if (typeof daftarKategori !== 'undefined') { %>
           <% daftarKategori.forEach(kat => { %>
-          <option value="Elektronik"></option>
-          <option value="Meubelair"></option>
-          <option value="<%= kat %>"></option>
+          <option value="<%= capitalizeEachWord(kat) %>"></option>
           <% }) }%>
         </datalist>
       </div>
 
       <div class="col-md-6 mb-4">
         <label for="merek" class="form-label modern-label">Merek</label>
-        <input type="text" class="form-control modern-input" id="merek" name="merek" list="merekOptions" placeholder="Pilih atau ketik merek baru" value="<%= barang.merek %>" />
+        <input type="text" class="form-control modern-input" id="merek" name="merek" list="merekOptions" placeholder="Pilih atau ketik merek baru" value="<%= capitalizeEachWord(barang.merek) %>" />
         <datalist id="merekOptions">
           <% if (typeof daftarMerek !== 'undefined') { %>
           <% daftarMerek.forEach(merek => { %>
-          <option value="<%= merek %>"></option>
+          <option value="<%= capitalizeEachWord(merek) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -55,13 +53,11 @@
 
       <div class="col-md-6 mb-4">
         <label for="ruangan" class="form-label modern-label">Ruangan <span class="required-star">*</span></label>
-        <input type="text" class="form-control modern-input" id="ruangan" name="ruangan" list="ruanganOptions" placeholder="Pilih atau ketik ruangan baru" required value="<%= barang.ruangan %>" />
+        <input type="text" class="form-control modern-input" id="ruangan" name="ruangan" list="ruanganOptions" placeholder="Pilih atau ketik ruangan baru" required value="<%= capitalizeEachWord(barang.ruangan) %>" />
         <datalist id="ruanganOptions">
           <% if (typeof daftarRuangan !== 'undefined') { %>
           <% daftarRuangan.forEach(rng => { %>
-          <option value="Ruang Laktasi"></option>
-          <option value="Ruang Administrasi"></option>
-          <option value="<%= rng %>"></option>
+          <option value="<%= capitalizeEachWord(rng) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -74,13 +70,11 @@
 
       <div class="col-md-6 mb-4">
         <label for="satuan" class="form-label modern-label">Satuan</label>
-        <input type="text" class="form-control modern-input" id="satuan" name="satuan" list="satuanOptions" placeholder="Pilih satuan (misal: unit, set)" value="<%= barang.satuan %>" />
+        <input type="text" class="form-control modern-input" id="satuan" name="satuan" list="satuanOptions" placeholder="Pilih satuan (misal: unit, set)" value="<%= capitalizeEachWord(barang.satuan) %>" />
         <datalist id="satuanOptions">
           <% if (typeof daftarSatuan !== 'undefined') { %>
           <% daftarSatuan.forEach(sat => { %>
-          <option value="unit"></option>
-          <option value="set"></option>
-          <option value="<%= sat %>"></option>
+          <option value="<%= capitalizeEachWord(sat) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -99,7 +93,7 @@
       <div class="col-md-6 mb-4">
         <label for="jadwal_pengecekan" class="form-label modern-label">Jadwal Cek Rutin <span class="required-star">*</span></label>
         <select class="form-select modern-input" id="jadwal_pengecekan" name="jadwal_pengecekan" required>
-          <option value="Tidak Ada" <%= barang.jadwal_pengecekan === 'Tidak Ada' ? 'selected' : '' %>>Tak Terjadwal</option>
+          <option value="Tak Terjadwal" <%= barang.jadwal_pengecekan === 'Tidak Terjadwal' ? 'selected' : '' %>>Tak Terjadwal</option>
           <option value="Harian" <%= barang.jadwal_pengecekan === 'Harian' ? 'selected' : '' %>>Harian</option>
           <option value="Mingguan" <%= barang.jadwal_pengecekan === 'Mingguan' ? 'selected' : '' %>>Mingguan</option>
           <option value="Bulanan" <%= barang.jadwal_pengecekan === 'Bulanan' ? 'selected' : '' %>>Bulanan</option>
@@ -114,15 +108,6 @@
       <div class="col-md-12 mb-4">
         <label for="foto" class="form-label modern-label">Foto Barang</label>
         <div class="d-flex flex-wrap align-items-center gap-4 p-3 border rounded-3 bg-light-modern">
-          <% if (barang.image_url) { %>
-          <div class="text-center">
-            <div class="image-preview-wrapper shadow-sm mb-2">
-              <img src="<%= barang.image_url %>" alt="Current Image" class="img-preview">
-            </div>
-            <span class="badge bg-soft-info px-2 py-1 text-info rounded-pill" style="font-size: 0.75rem;">Foto Saat Ini</span>
-          </div>
-          <% } %>
-
           <div class="flex-grow-1">
             <input id="foto" type="file" class="form-control modern-input file-input-modern" name="foto_barang" accept="image/*" capture="environment" />
             <p class="form-text mt-2 text-muted-modern mb-0" style="font-size: 0.85rem;">
@@ -140,8 +125,8 @@
         <i class="bi bi-card-list text-info"></i>
       </div>
       <div>
-        <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Spesifikasi Tambahan</h4>
-        <span class="text-muted-modern" style="font-size: 0.85rem;">Opsional - Tambahkan atribut khusus (contoh: RAM, Warna)</span>
+        <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Detail Tambahan</h4>
+        <span class="text-muted-modern" style="font-size: 0.85rem;">Opsional</span>
       </div>
     </div>
 
@@ -150,10 +135,10 @@
       <% for (let key in barang.detail) { %>
       <div class="row mb-3 align-items-center detail-row">
         <div class="col-md-5 mb-2 mb-md-0">
-          <input type="text" class="form-control modern-input" name="detailKey" value="<%= key %>" placeholder="Nama Atribut">
+          <input type="text" class="form-control modern-input" name="detailKey" value="<%= capitalizeEachWord(key) %>" placeholder="Nama Atribut">
         </div>
         <div class="col-md-6 mb-2 mb-md-0">
-          <input type="text" class="form-control modern-input" name="detailValue" value="<%= barang.detail[key] %>" placeholder="Nilai Atribut">
+          <input type="text" class="form-control modern-input" name="detailValue" value="<%= capitalizeEachWord(barang.detail[key]) %>" placeholder="Nilai Atribut">
         </div>
         <div class="col-md-1 text-end">
           <button class="btn btn-icon-only bg-soft-danger text-danger btn-hapus border-0 shadow-sm" type="button" title="Hapus baris">
@@ -190,10 +175,10 @@
 
     row.innerHTML = `
       <div class="col-md-5 mb-2 mb-md-0">
-        <input type="text" class="form-control modern-input" name="detailKey" placeholder="Nama Atribut (Contoh: Warna, RAM)">
+        <input type="text" class="form-control modern-input" name="detailKey" placeholder="Nama Atribut (Contoh: Bahan, Warna)">
       </div>
       <div class="col-md-6 mb-2 mb-md-0">
-        <input type="text" class="form-control modern-input" name="detailValue" placeholder="Nilai (Contoh: Hitam, 16GB)">
+        <input type="text" class="form-control modern-input" name="detailValue" placeholder="Nilai (Contoh: Kayu, Hitam)">
       </div>
       <div class="col-md-1 text-end">
         <button class="btn btn-icon-only bg-soft-danger text-danger btn-hapus border-0 shadow-sm" type="button" title="Hapus baris">

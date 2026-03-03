@@ -59,7 +59,7 @@ services:
       build: . # Build dari folder saat ini
       command: npm run dev # development
       ports:
-         - "80:3000" # Map port 80 VPS ke port 3000 container
+         - "80:3000" # Map port 80 VPS ke port 3000 container (komen jika expose localhost)
       depends_on:
          mongo:
             condition: service_healthy
@@ -96,6 +96,16 @@ services:
          - .:/app
          - /app/node_modules
          - temp_uploads:/app/temp
+
+   nginx:
+      image: nginx:alpine
+      ports:
+         - "80:80" # Nginx jalan di port 80 laptop kamu
+      volumes:
+         - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      depends_on:
+         - web_app
+         - minio
 
 volumes:
    temp_uploads:

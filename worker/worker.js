@@ -91,6 +91,7 @@ const processMQ = async () => {
             });
 
             const newImageURL = `http://localhost:${MINIO_PORT}/${BUCKET_NAME}/${newImageName}`;
+            // const newImageURL = `/${BUCKET_NAME}/${newImageName}`;
 
             await BarangModel.findOneAndUpdate({ id_barang: id_barang }, { image_url: newImageURL, image_name: newImageName, status_upload: "DONE" });
 

@@ -3,7 +3,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
   <h1 class="h3 mb-0" style="color: #1e293b; font-weight: 700;">
-    Inventory <span style="color: #64748b; font-weight: 500; font-size: 1.1rem; margin-left: 4px;">(<%= totalBarang %> item)</span>
+    Inventaris <span style="color: #64748b; font-weight: 500; font-size: 1.1rem; margin-left: 4px;">(<%= totalBarang %> record)</span>
   </h1>
 </div>
 
@@ -55,7 +55,8 @@
           <th scope="col" class="py-3">Kategori</th>
           <th scope="col" class="py-3">Ruangan</th>
           <th scope="col" class="py-3">Kuantitas</th>
-          <th scope="col" class="py-3 text-end" style="padding-right: 24px;">Action</th>
+          <th scope="col" class="py-3">Kondisi</th>
+          <th scope="col" class="py-3 text-end" style="padding-right: 24px;"></th>
         </tr>
       </thead>
       <tbody>
@@ -73,18 +74,31 @@
                 <i class="bi bi-image text-muted"></i>
               </div>
               <% } %>
-              <span class="fw-bold" style="color: #334155;"><%= barang.nama_barang %></span>
+              <span class="fw-bold" style="color: #334155;"><%= capitalizeEachWord(barang.nama_barang) %></span>
             </div>
           </td>
           <td class="py-3">
-            <span class="badge badge-soft-primary px-3 py-2 rounded-pill"><%= barang.kategori %></span>
+            <span class="badge badge-soft-primary px-3 py-2 rounded-pill"><%= capitalizeEachWord(barang.kategori) %></span>
           </td>
           <td class="py-3">
-            <span class="badge badge-soft-info px-3 py-2 rounded-pill"><%= barang.ruangan %></span>
+            <span class="badge badge-soft-info px-3 py-2 rounded-pill"><%= capitalizeEachWord(barang.ruangan) %></span>
           </td>
           <td class="py-3">
             <span class="fw-bold" style="color: #1e293b;"><%= barang.jumlah %></span>
-            <span style="color: #64748b; font-size: 0.9rem; margin-left: 2px;"><%= barang.satuan %></span>
+            <span style="color: #64748b; font-size: 0.9rem; margin-left: 2px;"><%= capitalizeEachWord(barang.satuan) %></span>
+          </td>
+          <td class="py-3">
+            <span class="ms-1">
+              <% if(barang.kondisi === 'Baik') { %>
+              <span class="badge bg-success-soft text-success px-3 py-2 rounded-pill">Baik</span>
+              <% } else if(barang.kondisi === 'Rusak Ringan') { %>
+              <span class="badge bg-warning-soft text-warning px-3 py-2 rounded-pill">Rusak Ringan</span>
+              <% } else if(barang.kondisi === 'Rusak Berat') { %>
+              <span class="badge bg-danger-soft text-danger px-3 py-2 rounded-pill">Rusak Berat</span>
+              <% } else { %>
+              <span class="badge bg-secondary-soft text-secondary px-2 py-1 rounded-pill">Belum Dicek</span>
+              <% } %>
+            </span>
           </td>
           <td class="text-end py-3" style="padding-right: 24px;">
             <div class="d-flex justify-content-end align-items-center gap-2">

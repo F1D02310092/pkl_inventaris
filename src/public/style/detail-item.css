@@ -180,9 +180,6 @@
    transform: translateY(-1px);
 }
 
-/* ================= TAMBAHAN MULTI-TAB & RIWAYAT ================= */
-
-/* Styling untuk Nav Tabs */
 .modern-tabs {
    border-bottom: 2px solid #e2e8f0;
    gap: 1rem;
@@ -209,14 +206,12 @@
    border-bottom: 3px solid #4f46e5;
 }
 
-/* Pemisah Garis untuk mode Desktop (Layar Lebar) di Form & Riwayat */
 @media (min-width: 992px) {
    .border-end-lg {
       border-right: 1px solid #e2e8f0;
    }
 }
 
-/* Input Form Modern */
 .form-control-modern {
    border: 1px solid #cbd5e1;
    border-radius: 0.5rem;
@@ -234,7 +229,6 @@
    outline: none;
 }
 
-/* Soft Badge Colors (Untuk Kondisi) */
 .bg-success-soft {
    background-color: #dcfce7;
 }
@@ -261,14 +255,12 @@
    color: #64748b !important;
 }
 
-/* Timeline / Riwayat Pengecekkan */
 .timeline-container {
    max-height: 400px;
    overflow-y: auto;
    padding-right: 10px;
 }
 
-/* Custom Scrollbar untuk riwayat */
 .timeline-container::-webkit-scrollbar {
    width: 6px;
 }
@@ -317,7 +309,7 @@
    width: 12px;
    height: 12px;
    border-radius: 50%;
-   transform: translateX(-5px); /* menyesuaikan posisi garis */
+   transform: translateX(-5px);
    border: 2px solid #ffffff;
    box-shadow: 0 0 0 2px #e2e8f0;
 }
@@ -340,4 +332,103 @@
    padding: 1rem;
    border-radius: 0.5rem;
    border: 1px solid #e2e8f0;
+}
+
+@media (max-width: 991px) {
+   .border-end-lg {
+      border-right: none !important;
+   }
+
+   .ps-lg-5 {
+      padding-left: 0 !important;
+      margin-top: 2rem;
+   }
+
+   .card-modern {
+      padding: 1.5rem !important;
+   }
+}
+
+@media (max-width: 768px) {
+   .modern-basic-table,
+   .modern-basic-table tbody,
+   .modern-basic-table tr,
+   .modern-basic-table th,
+   .modern-basic-table td {
+      display: block;
+      width: 100%;
+   }
+
+   .modern-basic-table th {
+      padding-bottom: 0;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+   }
+
+   .modern-basic-table td {
+      padding-top: 4px;
+      padding-left: 0 !important;
+      margin-bottom: 8px;
+   }
+
+   .modern-basic-table td .ms-1:first-child {
+      margin-left: 0 !important;
+   }
+   .modern-basic-table td span:first-child::before {
+      content: none !important;
+   }
+
+   .modern-basic-table hr {
+      display: none;
+   }
+
+   .modern-detail-table th,
+   .modern-detail-table td {
+      padding: 12px;
+   }
+
+   .item-image-modern,
+   .img-placeholder-modern {
+      height: 250px;
+   }
+
+   .modern-tabs {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 5px;
+   }
+
+   .modern-tabs::-webkit-scrollbar {
+      display: none;
+   }
+
+   .d-flex.flex-wrap.gap-3.mb-5.mt-3.justify-content-between.align-items-center {
+      flex-direction: column;
+      align-items: stretch !important;
+   }
+
+   .d-flex.gap-2.flex-wrap {
+      flex-direction: column;
+      width: 100%;
+   }
+
+   .btn-outline-modern,
+   .btn-danger-soft-modern,
+   .btn-secondary-modern,
+   .btn-primary-modern {
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 8px;
+   }
+
+   .btn-danger-soft-modern span.d-none,
+   .btn-secondary-modern span.d-none,
+   .btn-primary-modern span.d-none {
+      display: inline !important;
+   }
 }

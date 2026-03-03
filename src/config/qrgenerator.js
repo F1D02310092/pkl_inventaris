@@ -1,7 +1,7 @@
 const QRCode = require("qrcode");
 const { createCanvas, loadImage } = require("canvas");
 
-const BASE_URL = process.env.BASE_URL || "http://localhost";
+const BASE_URL = process.env.BASE_URL;
 
 const generateQR = async (barang, res) => {
    const urlBarang = `${BASE_URL}/admin/item-detail/${barang.id_barang}`;

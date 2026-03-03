@@ -3,6 +3,8 @@ function capitalEachWord(text) {
       return "";
    }
 
+   text = String(text);
+
    return text
       .toLowerCase()
       .split(" ")

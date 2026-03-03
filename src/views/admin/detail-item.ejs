@@ -52,27 +52,27 @@
         </div>
 
         <div class="col-md-7">
-          <h2 class="fw-bold mb-4" style="color: #0f172a; font-size: 1.75rem;"><%= barang.nama_barang %></h2>
+          <h2 class="fw-bold mb-4" style="color: #0f172a; font-size: 1.75rem;"><%= capitalizeEachWord(barang.nama_barang) %></h2>
 
           <table class="table table-borderless modern-basic-table mb-0">
             <tbody>
               <tr>
                 <th>Kategori</th>
-                <td><span class="text-modern fw-medium ms-1">: <%= barang.kategori || '-' %></span></td>
+                <td><span class="text-modern fw-medium ms-1">: <%= capitalizeEachWord(barang.kategori )|| '-' %></span></td>
               </tr>
               <tr>
                 <th>Merek</th>
-                <td><span class="text-modern fw-medium ms-1">: <%= barang.merek || '-' %></span></td>
+                <td><span class="text-modern fw-medium ms-1">: <%= capitalizeEachWord(barang.merek )|| '-' %></span></td>
               </tr>
               <tr>
                 <th>Ruangan</th>
-                <td><span class="text-modern fw-medium ms-1">: <%= barang.ruangan || '-' %></span></td>
+                <td><span class="text-modern fw-medium ms-1">: <%= capitalizeEachWord(barang.ruangan )|| '-' %></span></td>
               </tr>
               <tr>
                 <th>Kuantitas</th>
                 <td>
                   <span class="text-modern fw-medium ms-1">: <%= barang.jumlah %></span>
-                  <span class="text-modern fw-medium ms-1"><%= barang.satuan %></span>
+                  <span class="text-modern fw-medium ms-1"><%= capitalizeEachWord(barang.satuan )%></span>
                 </td>
               </tr>
               <tr>
@@ -137,7 +137,7 @@
         <div class="icon-shape bg-soft-primary me-3" style="width: 40px; height: 40px; border-radius: 10px;">
           <i class="bi bi-card-list" style="color: #4f46e5;"></i>
         </div>
-        <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Spesifikasi Tambahan</h4>
+        <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Detail Tambahan</h4>
       </div>
 
       <div class="table-responsive">
@@ -145,8 +145,8 @@
           <tbody>
             <% for (let key in barang.detail) { %>
             <tr>
-              <th style="width: 35%;"><%= key %></th>
-              <td><%= barang.detail[key] %></td>
+              <th style="width: 35%;"><%= capitalizeEachWord(key) %></th>
+              <td><%= capitalizeEachWord(barang.detail[key]) %></td>
             </tr>
             <% } %>
           </tbody>

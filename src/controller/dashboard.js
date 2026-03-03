@@ -14,6 +14,9 @@ const getDashboardPage = async (req, res) => {
 
       const recentItems = await BarangModel.find().sort({ createdAt: -1 }).limit(5).lean();
 
+      console.log(chartRuangan);
+      console.log(chartKategori);
+
       return res.render("home.ejs", {
          stats: {
             totalJenisBarang,

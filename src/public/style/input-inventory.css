@@ -1,4 +1,3 @@
-
 .card-modern {
    background-color: #ffffff;
    border-radius: 1rem;
@@ -7,7 +6,6 @@
       0 4px 6px -1px rgba(0, 0, 0, 0.05),
       0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
-
 
 .modern-label {
    font-weight: 600;
@@ -21,9 +19,8 @@
 }
 
 .required-star {
-   color: #ef4444; 
+   color: #ef4444;
 }
-
 
 .modern-input {
    border-radius: 0.5rem;
@@ -44,7 +41,6 @@
 .modern-input::placeholder {
    color: #94a3b8;
 }
-
 
 .bg-light-modern {
    background-color: #f8fafc;
@@ -102,7 +98,6 @@
    background-color: #f8fafc;
 }
 
-
 .icon-shape {
    display: flex;
    align-items: center;
@@ -143,4 +138,76 @@
 
 .pointer-events-none {
    pointer-events: none;
+}
+
+@media (max-width: 991px) {
+   .card-modern {
+      padding: 1.5rem !important;
+   }
+}
+
+@media (max-width: 768px) {
+   .bg-light-modern {
+      padding: 1rem !important;
+   }
+
+   .file-input-modern {
+      font-size: 0.85rem;
+   }
+
+   .detail-row {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 1rem !important;
+      position: relative;
+      margin-left: 0;
+      margin-right: 0;
+   }
+
+   .detail-row .col-md-5,
+   .detail-row .col-md-6,
+   .detail-row .col-md-1 {
+      padding-left: 0;
+      padding-right: 0;
+   }
+
+   .detail-row .col-md-5 {
+      margin-bottom: 0.75rem !important;
+   }
+
+   .detail-row .col-md-1.text-end {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: auto;
+      text-align: right;
+   }
+
+   .btn-icon-only.bg-soft-danger {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+      background-color: #ef4444;
+      color: white !important;
+   }
+
+   .btn-icon-only.bg-soft-danger i {
+      color: white !important;
+      font-size: 0.85rem;
+   }
+
+   .border-top.pt-4 {
+      flex-direction: column-reverse;
+      gap: 0.75rem !important;
+   }
+
+   .border-top.pt-4 .btn {
+      width: 100%;
+      justify-content: center;
+      padding-top: 0.7rem !important;
+      padding-bottom: 0.7rem !important;
+   }
 }

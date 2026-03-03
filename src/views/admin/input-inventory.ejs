@@ -33,7 +33,7 @@
         <datalist id="kategoriOptions">
           <% if (typeof daftarKategori !== 'undefined') { %>
           <% daftarKategori.forEach(kat => { %>
-          <option value="<%= kat %>"></option>
+          <option value="<%= capitalizeEachWord(kat) %>"></option>
           <% }) }%>
         </datalist>
       </div>
@@ -44,7 +44,7 @@
         <datalist id="merekOptions">
           <% if (typeof daftarMerek !== 'undefined') { %>
           <% daftarMerek.forEach(merek => { %>
-          <option value="<%= merek %>"></option>
+          <option value="<%= capitalizeEachWord(merek) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -56,7 +56,7 @@
         <datalist id="ruanganOptions">
           <% if (typeof daftarRuangan !== 'undefined') { %>
           <% daftarRuangan.forEach(rng => { %>
-          <option value="<%= rng %>"></option>
+          <option value="<%= capitalizeEachWord(rng) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -73,7 +73,7 @@
         <datalist id="satuanOptions">
           <% if (typeof daftarSatuan !== 'undefined') { %>
           <% daftarSatuan.forEach(sat => { %>
-          <option value="<%= sat %>"></option>
+          <option value="<%= capitalizeEachWord(sat) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -92,7 +92,7 @@
       <div class="col-md-6 mb-4">
         <label for="jadwal_pengecekan" class="form-label modern-label">Jadwal Cek Rutin <span class="required-star">*</span></label>
         <select class="form-select modern-input" id="jadwal_pengecekan" name="jadwal_pengecekan" required>
-          <option value="Tidak Ada" selected>Tak Terjadwal</option>
+          <option value="Tak Terjadwal" selected>Tak Terjadwal</option>
           <option value="Harian">Harian</option>
           <option value="Mingguan">Mingguan</option>
           <option value="Bulanan">Bulanan</option>
@@ -100,9 +100,9 @@
         </select>
       </div>
       <div class="col-md-12 mb-4">
-        <label for="foto" class="form-label modern-label">Foto Barang <span class="required-star">*</span></label>
+        <label for="foto" class="form-label modern-label">Foto Barang <span class="required-star"></span></label>
         <div class="p-3 border rounded-3 bg-light-modern">
-          <input id="foto" type="file" class="form-control modern-input file-input-modern bg-white" name="foto_barang" accept="image/*" capture="environment" required />
+          <input id="foto" type="file" class="form-control modern-input file-input-modern bg-white" name="foto_barang" accept="image/*" capture="environment" />
           <p class="form-text mt-2 text-muted-modern mb-0" style="font-size: 0.85rem;">
             <i class="bi bi-info-circle me-1"></i> Format didukung: JPG, PNG, JPEG.
           </p>
@@ -117,8 +117,8 @@
         <i class="bi bi-card-list text-info"></i>
       </div>
       <div>
-        <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Spesifikasi Tambahan</h4>
-        <span class="text-muted-modern" style="font-size: 0.85rem;">Opsional - Tambahkan atribut khusus (contoh: RAM, Warna)</span>
+        <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Detail Tambahan</h4>
+        <span class="text-muted-modern" style="font-size: 0.85rem;">Opsional</span>
       </div>
     </div>
 
@@ -149,10 +149,10 @@
 
     row.innerHTML = `
       <div class="col-md-5 mb-2 mb-md-0">
-        <input type="text" class="form-control modern-input" name="detailKey" placeholder="Nama Atribut (Contoh: Warna, RAM)">
+        <input type="text" class="form-control modern-input" name="detailKey" placeholder="Nama Atribut (Contoh: Bahan, Warna)">
       </div>
       <div class="col-md-6 mb-2 mb-md-0">
-        <input type="text" class="form-control modern-input" name="detailValue" placeholder="Nilai (Contoh: Hitam, 16GB)">
+        <input type="text" class="form-control modern-input" name="detailValue" placeholder="Nilai (Contoh: Kayu, Hitam)">
       </div>
       <div class="col-md-1 text-end">
         <button class="btn btn-icon-only bg-soft-danger text-danger btn-hapus border-0 shadow-sm" type="button" title="Hapus baris">
