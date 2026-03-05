@@ -1,5 +1,6 @@
 const QRCode = require("qrcode");
 const { createCanvas, loadImage } = require("canvas");
+const { capitalEachWord } = require("../helper/textModifer");
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -148,10 +149,10 @@ const generateQR = async (barang, res) => {
       return returnY + 20;
    };
 
-   nextY = drawRow("RUANGAN", barang.ruangan, nextY);
-   nextY = drawRow("KATEGORI", barang.kategori, nextY);
-   nextY = drawRow("MEREK", barang.merek, nextY);
-   nextY = drawRow("JUMLAH ASSET", `${barang.jumlah || 0} ${barang.satuan || "Unit"}`, nextY);
+   nextY = drawRow("RUANGAN", capitalEachWord(barang.ruangan), nextY);
+   nextY = drawRow("KATEGORI", capitalEachWord(barang.kategori), nextY);
+   nextY = drawRow("MEREK", capitalEachWord(barang.merek), nextY);
+   nextY = drawRow("JUMLAH ASET FISIK", `${barang.jumlah || 0} ${capitalEachWord(barang.satuan) || "Barang"}`, nextY);
 
    drawDynamicText(`ID: ${barang.id_barang}`, width / 2, 445, width - 60, 2, 13, 9, false, "#bdc3c7", "center");
 

@@ -101,10 +101,19 @@
         </select>
       </div>
 
+      <div class="col-md-6 mb-3" id="container-tanggal-pengecekan">
+        <label for="tanggal_pengecekan" class="form-label modern-label">Tanggal Pengecekan</label>
+        <input type="datetime-local" class="form-control modern-input" id="tanggal_pengecekan" name="tanggal_pengecekan" value="<%= tanggalPengecekan %>">
+        <div class="form-text mt-1 text-muted-modern" style="font-size: 0.8rem;">
+          <em><i class="bi bi-calendar-event me-1"></i>Default: Tanggal Hari ini. Ubah melalui menu di atas jika diperlukan.</em>
+        </div>
+      </div>
+
       <div class="col-md-12 mb-4">
         <label for="catatan_pengecekan" class="form-label modern-label">Catatan Pengecekkan (Opsional)</label>
         <input type="text" class="form-control modern-input" id="catatan_pengecekan" name="catatan_pengecekan" placeholder="Tambahkan catatan jika ada perubahan kondisi pada edit kali ini..." />
       </div>
+
       <div class="col-md-12 mb-4">
         <label for="foto" class="form-label modern-label">Foto Barang</label>
         <div class="d-flex flex-wrap align-items-center gap-4 p-3 border rounded-3 bg-light-modern">

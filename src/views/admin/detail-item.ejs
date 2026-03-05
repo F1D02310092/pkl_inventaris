@@ -81,6 +81,14 @@
                 </td>
               </tr>
               <tr>
+                <th>Jadwal Cek</th>
+                <td>
+                  <span class="text-modern fw-medium ms-1">:
+                    <%= capitalizeEachWord(barang.jadwal_pengecekan) %>
+                  </span>
+                </td>
+              </tr>
+              <tr>
                 <th>Kondisi Terkini</th>
                 <td>
                   <span class="ms-1">:
@@ -108,10 +116,9 @@
                   </span>
                 </td>
               </tr>
-              <tr>
-                <td colspan="2" class="py-2">
-                  <hr class="m-0" style="border-color: #848484;">
-                </td>
+              <td colspan="2" class="py-2">
+                <hr class="m-0" style="border-color: #848484;">
+              </td>
               </tr>
               <tr>
                 <th>Waktu Input</th>
@@ -165,7 +172,7 @@
             <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.25rem;">Form Pengecekkan</h4>
           </div>
           
-          <form action="/admin/item-detail/<%= barang.id_barang %>?_method=PUT" method="POST">
+    <form action="/admin/item-detail/<%= barang.id_barang %>?_method=PUT" method="POST">
     <div class="mb-3">
       <label class="form-label fw-medium text-modern" style="color: #475569;">Kondisi Terkini</label>
       <select name="kondisi" class="form-select form-control-modern" required>
@@ -175,9 +182,12 @@
         <option value="Belum Dicek" <%= barang.kondisi === 'Belum Dicek' ? 'selected' : '' %>>Belum Dicek</option>
       </select>
     </div>
-    <div class="mb-4">
-      <label class="form-label fw-medium text-modern" style="color: #475569;">Keterangan (Opsional)</label>
-      <textarea name="catatan_pengecekan" class="form-control form-control-modern" rows="3" placeholder="Tulis kerusakan atau keterangan lainnya di sini..."></textarea>
+    <div class="mb-3" id="container-tanggal-pengecekan">
+      <label for="tanggal_pengecekan" class="form-label modern-label">Tanggal Pengecekan</label>
+      <input type="datetime-local" class="form-control modern-input" id="tanggal_pengecekan" name="tanggal_pengecekan">
+      <div class="form-text mt-1 text-muted-modern" style="font-size: 0.8rem;">
+        <em><i class="bi bi-calendar-event me-1"></i>Default: Tanggal Hari ini. Ubah melalui menu di atas jika diperlukan.</em>
+      </div>
     </div>
     <button type="submit" class="btn btn-primary-modern w-100 d-flex align-items-center justify-content-center shadow-sm">
       <i class="bi bi-send me-2"></i> Simpan
@@ -268,3 +278,37 @@
   }, 2000);
 </script>
 <% } %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // 1. Set Default Tanggal ke Hari Ini
+    const dateInput = document.getElementById('tanggal_pengecekan');
+    if (dateInput) {
+      // Dapatkan tanggal hari ini dengan format YYYY-MM-DD
+      const today = new Date();
+      today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+      dateInput.value = today.toISOString().split('T')[0];
+    }
+
+    // 2. Logika Sembunyikan Tanggal Jika "Belum Dicek" (Khusus halaman Input/Edit)
+    const kondisiSelect = document.querySelector('select[name="kondisi_terkini"]');
+    const containerTanggal = document.getElementById('container-tanggal-pengecekan');
+
+    if (kondisiSelect && containerTanggal) {
+      // Fungsi untuk mengecek status
+      const toggleTanggal = () => {
+        if (kondisiSelect.value === 'Belum Dicek') {
+          containerTanggal.style.display = 'none';
+        } else {
+          containerTanggal.style.display = 'block';
+        }
+      };
+
+      // Jalankan saat pertama kali dimuat
+      toggleTanggal();
+
+      // Jalankan setiap kali pilihan dropdown diubah
+      kondisiSelect.addEventListener('change', toggleTanggal);
+    }
+  });
+</script>

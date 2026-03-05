@@ -58,8 +58,8 @@ services:
    web_app:
       build: . # Build dari folder saat ini
       command: npm run dev # development
-      ports:
-         - "80:3000" # Map port 80 VPS ke port 3000 container (komen jika expose localhost)
+      # ports:
+      #    - "80:3000" # Map port 80 VPS ke port 3000 container (komen jika expose localhost)
       depends_on:
          mongo:
             condition: service_healthy

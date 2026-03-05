@@ -71,7 +71,6 @@ const barangSchema = new mongoose.Schema(
                type: String,
                enum: ["Baik", "Rusak Ringan", "Rusak Berat", "Belum Dicek"],
             },
-            catatan: String,
          },
       ],
    },

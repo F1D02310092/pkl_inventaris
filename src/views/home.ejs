@@ -86,7 +86,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
             <div>
-              <div class="text-xs text-uppercase text-muted-modern mb-2">Total Record Sistem</div>
+              <div class="text-xs text-uppercase text-muted-modern mb-2">Total Catatan Sistem</div>
               <div class="value-modern"><%= stats.totalJenisBarang %></div>
             </div>
             <div class="icon-shape bg-soft-primary">
@@ -103,7 +103,7 @@
           <div class="d-flex justify-content-between align-items-center">
             <div>
               <div class="text-xs text-uppercase text-muted-modern mb-2">Total Aset Fisik</div>
-              <div class="value-modern"><%= stats.totalKuantitasFisik %> <span style="font-size: 1rem; color: #64748b;">Unit</span></div>
+              <div class="value-modern"><%= stats.totalKuantitasFisik %> <span style="font-size: 1rem; color: #64748b;"> Barang</span></div>
             </div>
             <div class="icon-shape bg-soft-success">
               <i class="fas fa-boxes"></i>
@@ -161,13 +161,20 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  function capitalizeEachWord(str) {
+    if (!str) return str;
+    return str.replace(/\b\w/g, char => char.toUpperCase());
+  }
+
   const rawRuangan = <%- chartData.ruangan %>;
   const rawKategori = <%- chartData.kategori %>;
 
   Chart.defaults.font.family = "'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
   Chart.defaults.color = '#64748b';
 
-  const ruanganLabels = rawRuangan.map(item => item._id || 'Tanpa Ruangan');
+  const ruanganLabels = rawRuangan.map(item =>
+    item._id ? capitalizeEachWord(item._id) : 'Tanpa Ruangan'
+  );
   const ruanganData = rawRuangan.map(item => item.total);
 
   const scalesVertical = {
@@ -237,7 +244,7 @@
           cornerRadius: 8,
           callbacks: {
             label: function(context) {
-              return ' ' + context.raw + ' unit';
+              return ' ' + context.raw + ' barang';
             }
           }
         }
@@ -274,7 +281,9 @@
     }
   });
 
-  const kategoriLabels = rawKategori.map(item => item._id || 'Lainnya');
+  const kategoriLabels = rawKategori.map(item =>
+    item._id ? capitalizeEachWord(item._id) : 'Lainnya'
+  );
   const kategoriData = rawKategori.map(item => item.total);
 
   new Chart(document.getElementById('kategoriChart'), {
@@ -307,7 +316,7 @@
           cornerRadius: 8,
           callbacks: {
             label: function(context) {
-              return ' ' + context.label + ': ' + context.raw + ' unit';
+              return ' ' + context.label + ': ' + context.raw + ' barang';
             }
           }
         }

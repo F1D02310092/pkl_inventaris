@@ -99,6 +99,15 @@
           <option value="Tahunan">Tahunan</option>
         </select>
       </div>
+
+      <div class="col-md-6 mb-3" id="container-tanggal-pengecekan">
+        <label for="tanggal_pengecekan" class="form-label modern-label">Tanggal Pengecekan</label>
+        <input type="datetime-local" class="form-control modern-input" id="tanggal_pengecekan" name="tanggal_pengecekan">
+        <div class="form-text mt-1 text-muted-modern" style="font-size: 0.8rem;">
+          <em><i class="bi bi-calendar-event me-1"></i>Default: Tanggal Hari ini. Ubah melalui menu di atas jika diperlukan.</em>
+        </div>
+      </div>
+
       <div class="col-md-12 mb-4">
         <label for="foto" class="form-label modern-label">Foto Barang <span class="required-star"></span></label>
         <div class="p-3 border rounded-3 bg-light-modern">
@@ -168,6 +177,38 @@
     const hapusBtn = e.target.closest('.btn-hapus');
     if (hapusBtn) {
       hapusBtn.closest('.detail-row').remove();
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    // 1. Set Default Tanggal ke Hari Ini
+    const dateInput = document.getElementById('tanggal_pengecekan');
+    if (dateInput) {
+      // Dapatkan tanggal hari ini dengan format YYYY-MM-DD
+      const today = new Date();
+      today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+      dateInput.value = today.toISOString().split('T')[0];
+    }
+
+    // 2. Logika Sembunyikan Tanggal Jika "Belum Dicek" (Khusus halaman Input/Edit)
+    const kondisiSelect = document.querySelector('select[name="kondisi_terkini"]');
+    const containerTanggal = document.getElementById('container-tanggal-pengecekan');
+
+    if (kondisiSelect && containerTanggal) {
+      // Fungsi untuk mengecek status
+      const toggleTanggal = () => {
+        if (kondisiSelect.value === 'Belum Dicek') {
+          containerTanggal.style.display = 'none';
+        } else {
+          containerTanggal.style.display = 'block';
+        }
+      };
+
+      // Jalankan saat pertama kali dimuat
+      toggleTanggal();
+
+      // Jalankan setiap kali pilihan dropdown diubah
+      kondisiSelect.addEventListener('change', toggleTanggal);
     }
   });
 </script>
