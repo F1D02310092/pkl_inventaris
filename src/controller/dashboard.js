@@ -9,8 +9,10 @@ const getDashboardPage = async (req, res) => {
 
       const totalRuangan = (await BarangModel.distinct("ruangan")).length;
 
-      const chartRuangan = await BarangModel.aggregate([{ $group: { _id: "$ruangan", total: { $sum: "$jumlah" } } }, { $sort: { total: -1 } }]); //
+      const chartRuangan = await BarangModel.aggregate([{ $group: { _id: "$ruangan", total: { $sum: "$jumlah" } } }, { $sort: { total: -1 } }]);
       const chartKategori = await BarangModel.aggregate([{ $group: { _id: "$kategori", total: { $sum: "$jumlah" } } }, { $sort: { total: -1 } }]);
+
+      const chartKondisi = await BarangModel.aggregate([{ $group: { _id: "$kondisi", total: { $sum: "$jumlah" } } }, { $sort: { total: -1 } }]);
 
       const recentItems = await BarangModel.find().sort({ createdAt: -1 }).limit(5).lean();
 
@@ -23,7 +25,9 @@ const getDashboardPage = async (req, res) => {
          chartData: {
             ruangan: JSON.stringify(chartRuangan),
             kategori: JSON.stringify(chartKategori),
+            kondisi: JSON.stringify(chartKondisi),
          },
+         rawRuangan: chartRuangan,
          recentItems,
       });
    } catch (error) {

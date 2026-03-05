@@ -55,20 +55,36 @@
     font-size: 1.75rem;
   }
 
-  /* KELAS BARU UNTUK RESPONSIVITAS CHART */
+
   .chart-container {
     position: relative;
     height: 300px;
     width: 100%;
   }
 
+
+  .ruangan-item-link {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .ruangan-item-link:hover {
+    background-color: #f8fafc;
+    transform: translateX(4px);
+
+  }
+
+  .text-capitalize-custom {
+    text-transform: capitalize;
+  }
+
   @media (max-width: 768px) {
     .value-modern {
       font-size: 1.5rem;
-      /* Menyesuaikan ukuran font stat card di mobile */
+
     }
 
-    /* Memberikan ruang vertikal lebih untuk chart horizontal agar label ruangan tidak bertumpuk */
+
     .chart-container-bar {
       height: 400px;
     }
@@ -114,9 +130,9 @@
     </div>
 
     <div class="col-xl-4 col-md-6 mb-4">
-      <div class="card card-modern h-100 p-3">
+      <div class="card card-modern h-100 p-3" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalRuangan" title="Klik untuk melihat detail per ruangan">
         <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex justify-content-between align-items-center mb-1">
             <div>
               <div class="text-xs text-uppercase text-muted-modern mb-2">Total Ruangan</div>
               <div class="value-modern"><%= stats.totalRuangan %></div>
@@ -125,6 +141,7 @@
               <i class="fas fa-door-open"></i>
             </div>
           </div>
+          <small class="text-primary fw-medium" style="font-size: 0.75rem;"><i class="me-1"></i>Detail ruangan</small>
         </div>
       </div>
     </div>
@@ -155,6 +172,67 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-lg-6 mb-4">
+        <div class="card card-modern h-100">
+          <div class="card-header bg-white border-0 pt-4 pb-0">
+            <h6 class="m-0 font-weight-bold" style="color: #334155;">Kondisi Aset Fisik</h6>
+          </div>
+          <div class="card-body d-flex justify-content-center">
+            <div class="chart-container">
+              <canvas id="kondisiChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<div class="modal fade" id="modalRuangan" tabindex="-1" aria-labelledby="modalRuanganLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius: 1rem; border: none;">
+
+      <div class="modal-header border-0 pb-0 mt-2 mx-2">
+        <h5 class="modal-title fw-bold" id="modalRuanganLabel" style="color: #1e293b;">
+          <i class="fas fa-door-open text-info me-2"></i>Distribusi Aset per Ruangan
+        </h5>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <div class="list-group list-group-flush">
+          <% rawRuangan.forEach(function(ruang) { %>
+          <% const namaRuang = ruang._id || 'Tanpa Ruangan' %>
+
+          <a href="/admin/check-inventory?ruangan=<%= encodeURIComponent(namaRuang) %>" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3 border-0 ruangan-item-link text-decoration-none">
+
+            <div class="d-flex align-items-center">
+              <div class="icon-shape bg-soft-info me-3" style="width: 36px; height: 36px; font-size: 1rem;">
+                <i class="bi bi-building"></i>
+              </div>
+              <span class="fw-bold text-capitalize-custom" style="color: #334155;">
+                <%= namaRuang %>
+              </span>
+            </div>
+
+            <span class="badge bg-soft-primary px-3 py-2 rounded-pill" style="font-size: 0.85rem;">
+              <%= ruang.total %> Item
+            </span>
+
+          </a>
+          <% }) %>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 pt-0 mx-2 mb-2">
+        <button type="button" class="btn btn-outline-modern w-100" data-bs-dismiss="modal" style="border-radius: 0.5rem; height: 42px;">Tutup</button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -304,6 +382,61 @@
       plugins: {
         legend: {
           position: 'bottom',
+          labels: {
+            padding: 20,
+            usePointStyle: true,
+            pointStyle: 'circle'
+          }
+        },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          padding: 12,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(context) {
+              return ' ' + context.label + ': ' + context.raw + ' barang';
+            }
+          }
+        }
+      }
+    }
+  });
+
+  const rawKondisi = <%- chartData.kondisi %>;
+
+  const kondisiLabels = rawKondisi.map(item =>
+    item._id ? capitalizeEachWord(item._id) : 'Belum Dicek'
+  );
+  const kondisiData = rawKondisi.map(item => item.total);
+
+
+  const getKondisiColors = (labels) => {
+    return labels.map(label => {
+      const lowerLabel = label.toLowerCase();
+      if (lowerLabel.includes('baik')) return '#10b981';
+      if (lowerLabel.includes('rusak ringan')) return '#f59e0b';
+      if (lowerLabel.includes('rusak berat')) return '#ef4444';
+      return '#94a3b8';
+    });
+  };
+
+  new Chart(document.getElementById('kondisiChart'), {
+    type: 'pie',
+    data: {
+      labels: kondisiLabels,
+      datasets: [{
+        data: kondisiData,
+        backgroundColor: getKondisiColors(kondisiLabels),
+        borderWidth: 0,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right',
           labels: {
             padding: 20,
             usePointStyle: true,
