@@ -9,6 +9,11 @@ const engine = require("ejs-mate");
 const path = require("path");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
+const flash = require("connect-flash");
+const session = require("express-session");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const MongoStore = require("connect-mongo");
 
 // init mongosh
 const MONGO_URI = process.env.MONGO_URI;
@@ -35,15 +40,59 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
 
+const SESSION_SECRET = process.env.SESSION_SECRET;
+const store = MongoStore.create({
+   mongoUrl: MONGO_URI,
+   touchAfter: 24 * 3600,
+   crypto: {
+      SESSION_SECRET,
+   },
+});
+
+store.on("error", (err) => {
+   console.log(err);
+});
+
+const sessionObject = {
+   store,
+   name: "inventorysys",
+   secret: SESSION_SECRET,
+   resave: false,
+   saveUninitialized: true,
+   rolling: true,
+   cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+   },
+};
+
+app.use(session(sessionObject));
+app.set("trust proxy", 1);
+
+// passport
+require("./config/passport")(passport);
+app.use(passport.initialize());
+app.use(passport.session());
+
 // middleware
+app.use(flash());
 app.use((req, res, next) => {
    res.locals.currentPath = req.path;
+
+   res.locals.currUser = req.user;
+   res.locals.successFlashMsg = req.flash("success");
+   res.locals.errorFlashMsg = req.flash("error");
    next();
 });
 
 // home page
 const { getDashboardPage } = require("../src/controller/dashboard.js");
 app.get("/", getDashboardPage);
+
+const authRoutes = require("../src/routes/authRoutes.js");
+app.use("/", authRoutes);
 
 // admin routes
 const adminRoutes = require("./routes/adminRoutes.js");

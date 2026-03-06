@@ -126,9 +126,13 @@ const postInventory = async (req, res) => {
       if (merek) await redisClient.sAdd("set_merek", merek.toLowerCase());
       if (nama_barang) await redisClient.sAdd("set_nama_barang", nama_barang.toLowerCase());
 
+      req.flash("success", "Berhasil menambah barang!");
+
       return res.redirect("/admin/check-inventory");
    } catch (error) {
       console.error("Error posting inventory", error);
+      req.flash("error", "Gagal menambah barang, terjadi kesalahan server!");
+
       return res.redirect("/admin/input-inventory");
    }
 };
@@ -350,8 +354,11 @@ const putItemEdit = async (req, res) => {
       if (nama_barang) await redisClient.sAdd("set_nama_barang", nama_barang.toLowerCase());
    } catch (error) {
       console.error("Error update barang:", error);
-      return res.status(500).json({ message: "Error update barang" });
+      req.flash("error", "Gagal menyunting data barang, terjadi kesalahan server!");
+      return res.redirect("/admin/item-detail");
    }
+
+   req.flash("success", "Berhasil menyunting data barang!");
 
    return res.redirect(`/admin/item-detail/${req.params.id_barang}`);
 };
@@ -376,9 +383,10 @@ const deleteItem = async (req, res) => {
       await redisClient.sRem("set_nama_barang", barang.nama_barang.toLowerCase());
    } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: "Terjadi kesalahan" });
+      req.flash("error", "Gagal menghapus barang, terjadi kesalahan server!");
+      return res.redirect("/admin/check-inventory");
    }
-
+   req.flash("success", "Berhasil menghapus barang!");
    return res.redirect("/admin/check-inventory");
 };
 
@@ -425,10 +433,11 @@ const bulkDelete = async (req, res) => {
             await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(payload)));
          }
       }
-
+      req.flash("success", "Berhasil menghapus barang!");
       return res.status(200).json({ message: "Bulk delete berhasil" });
    } catch (error) {
       console.error("error", error);
+      // req.flash("error", "Gagal menghapus barang, terjadi kesalahan server!");
       return res.status(500).json({ message: "Bulk delete gagal" });
    }
 };

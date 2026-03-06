@@ -1,0 +1,135 @@
+/* =========================================
+   FLASH MESSAGES STYLE (MODERN DASHBOARD)
+   ========================================= */
+
+/* Wrapper untuk mengatur posisi flash message melayang di kanan atas */
+.flash-wrapper {
+   position: fixed;
+   top: 24px;
+   right: 24px;
+   z-index: 1050; /* Memastikan tampil di atas elemen lain seperti navbar/modal */
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+   max-width: 380px;
+   width: calc(100% - 48px); /* Responsif di layar kecil */
+}
+
+/* Base style untuk alert menyesuaikan card-modern */
+.custom-alert {
+   background-color: #ffffff;
+   border: none;
+   border-radius: 1rem;
+   box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.08),
+      0 4px 6px -2px rgba(0, 0, 0, 0.04);
+   padding: 1.25rem 1.5rem;
+   position: relative;
+   overflow: hidden;
+   margin-bottom: 0;
+
+   /* Animasi masuk saat elemen dirender */
+   animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Aksen garis tebal di sebelah kiri alert */
+.custom-alert::before {
+   content: "";
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 6px;
+   height: 100%;
+}
+
+/* --- TEMA SUCCESS --- */
+.custom-alert.alert-success {
+   color: #0f172a; /* Override warna default bootstrap */
+}
+.custom-alert.alert-success::before {
+   background-color: #10b981; /* Hijau sesuai chart */
+}
+.custom-alert.alert-success i {
+   color: #10b981;
+}
+
+/* --- TEMA DANGER/ERROR --- */
+.custom-alert.alert-danger {
+   color: #0f172a;
+}
+.custom-alert.alert-danger::before {
+   background-color: #ef4444; /* Merah sesuai chart */
+}
+.custom-alert.alert-danger i {
+   color: #ef4444;
+}
+
+/* --- TYPOGRAPHY --- */
+.custom-alert .alert-heading {
+   color: #1e293b;
+   font-weight: 700;
+   font-size: 1.05rem;
+   letter-spacing: -0.01em;
+}
+
+.custom-alert .alert-body {
+   color: #64748b; /* text-muted-modern */
+   font-size: 0.875rem;
+   font-weight: 500;
+   margin-top: 0.25rem;
+}
+
+/* Modifikasi tombol close (X) */
+.custom-alert .btn-close {
+   padding: 0.5rem;
+   margin-top: -0.5rem; /* Posisi sedikit ke atas sejajar dengan heading */
+   box-shadow: none;
+   opacity: 0.4;
+   transition: opacity 0.2s ease;
+}
+.custom-alert .btn-close:hover {
+   opacity: 1;
+}
+
+/* =========================================
+   ANIMASI KEYFRAMES
+   ========================================= */
+
+@keyframes slideInRight {
+   0% {
+      opacity: 0;
+      transform: translateX(100%);
+   }
+   100% {
+      opacity: 1;
+      transform: translateX(0);
+   }
+}
+
+@keyframes slideOutRight {
+   0% {
+      opacity: 1;
+      transform: translateX(0);
+      margin-bottom: 0;
+   }
+   100% {
+      opacity: 0;
+      transform: translateX(100%);
+      margin-bottom: -100px; /* Membuat efek elemen di bawahnya naik dengan mulus */
+   }
+}
+
+/* Class ini dipicu oleh JavaScript di file EJS Anda */
+.custom-alert.hiding {
+   animation: slideOutRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Penyesuaian untuk layar mobile */
+@media (max-width: 576px) {
+   .flash-wrapper {
+      top: 16px;
+      right: 16px;
+      left: 16px;
+      width: auto;
+   }
+}

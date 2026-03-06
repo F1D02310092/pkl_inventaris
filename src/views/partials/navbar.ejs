@@ -199,6 +199,19 @@
     </ul>
   </div>
 
+  <%if(currUser){%>
+  <div>
+    <a class="nav-link-modern <%= currentPath.includes('/admin/input-inventory') ? 'active' : '' %>" href="/logout">
+      <i class="bi bi-plus-circle"></i> <span>Keluar</span>
+    </a>
+  </div>
+  <%} else if (!currUser){%>
+  <div>
+    <a class="nav-link-modern <%= currentPath.includes('/admin/input-inventory') ? 'active' : '' %>" href="/login">
+      <i class="bi bi-plus-circle"></i> <span>Login</span>
+    </a>
+  </div>
+  <% }%>
 
 
 </div>
