@@ -129,9 +129,23 @@
               <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="btn btn-icon-only bg-soft-warning" title="Edit">
                 <i class="bi bi-pencil"></i>
               </a>
-              <a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="btn btn-icon-only bg-soft-primary" title="QR Code">
-                <i class="bi bi-qr-code"></i>
-              </a>
+              <div class="dropdown d-inline-block">
+                <button class="btn btn-icon-only bg-soft-primary border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Unduh QR Code">
+                  <i class="bi bi-qr-code"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="border-radius: 0.5rem; font-size: 0.9rem;">
+                  <li>
+                    <a class="dropdown-item py-2" href="/admin/item-detail/<%= barang.id_barang %>/qr-code?type=small">
+                      <i class="bi bi-qr-code-scan me-2 text-primary"></i>QR Small
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item py-2" href="/admin/item-detail/<%= barang.id_barang %>/qr-code?type=normal">
+                      <i class="bi bi-card-text me-2 text-info"></i>QR Large
+                    </a>
+                  </li>
+                </ul>
+              </div>
               <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
                 <button type="submit" class="btn btn-icon-only bg-soft-danger border-0" title="Hapus" onclick="return confirm('Yakin ingin menghapus barang ini?')">
                   <i class="bi bi-trash3"></i>
@@ -147,9 +161,23 @@
 
   <div class="d-flex flex-wrap justify-content-between align-items-center p-3 gap-3" style="background-color: #f8fafc; border-top: 1px solid #f1f5f9;">
     <div id="bulkActions" class="d-flex gap-2 align-items-center flex-wrap">
-      <button type="button" id="btnDownloadQR" class="btn btn-outline-modern d-flex align-items-center gap-2" onclick="downloadSelectedQR()" disabled>
-        <i class="bi bi-qr-code"></i> Unduh QR
-      </button>
+      <div class="dropdown d-inline-block">
+        <button type="button" id="btnDownloadQR" class="btn btn-outline-modern d-flex align-items-center gap-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" disabled>
+          <i class="bi bi-qr-code"></i> Unduh QR
+        </button>
+        <ul class="dropdown-menu shadow-sm border-0" style="border-radius: 0.5rem; font-size: 0.9rem;">
+          <li>
+            <button class="dropdown-item py-2" type="button" onclick="downloadSelectedQR('small')">
+              <i class="bi bi-qr-code-scan me-2 text-primary"></i>QR Small
+            </button>
+          </li>
+          <li>
+            <button class="dropdown-item py-2" type="button" onclick="downloadSelectedQR('normal')">
+              <i class="bi bi-card-text me-2 text-info"></i>QR Large
+            </button>
+          </li>
+        </ul>
+      </div>
 
       <button type="button" id="btnDeleteSelected" class="btn btn-danger-modern d-flex align-items-center gap-2" onclick="deleteSelected()" disabled>
         <i class="bi bi-trash3"></i> Hapus Semua
@@ -246,10 +274,11 @@
     return Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.value);
   }
 
-  function downloadSelectedQR() {
+  function downloadSelectedQR(type) {
     const ids = getSelectedIds();
     if (ids.length === 0) return;
-    window.location.href = `/admin/check-inventory/bulk-qr?ids=${ids.join(',')}`;
+    // window.location.href = `/admin/check-inventory/bulk-qr?ids=${ids.join(',')}`;
+    window.location.href = `/admin/check-inventory/bulk-qr?ids=${ids.join(',')}&type=${type}`;
   }
 
   async function deleteSelected() {

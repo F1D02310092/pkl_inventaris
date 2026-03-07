@@ -1,7 +1,7 @@
 const BarangModel = require("../models/Barang.js");
 const { getChannel } = require("../config/mq.js");
 const { v4: uuidv4 } = require("uuid");
-const generateQR = require("../config/qrgenerator.js");
+const { generateQR, generateQRSmall } = require("../config/qrgenerator.js");
 const { capitalEachWord } = require("../helper/textModifer.js");
 const redisClient = require("../config/redis.js");
 const Fuse = require("fuse.js");
@@ -392,16 +392,26 @@ const deleteItem = async (req, res) => {
 
 const downloadQR = async (req, res) => {
    const barang = await BarangModel.findOne({ id_barang: req.params.id_barang });
+   const type = req.query.type;
 
    if (!barang) {
       return res.status(404).json({ message: "Barang tidak ditemukan" });
    }
 
-   const qr = await generateQR(barang);
+   let qr;
+   let fileSuffix;
+
+   if (type === "normal") {
+      qr = await generateQR(barang);
+      fileSuffix = "large";
+   } else {
+      qr = await generateQRSmall(barang);
+      fileSuffix = "small";
+   }
 
    res.set({
       "Content-Type": "image/png",
-      "Content-Disposition": `attachment; filename=${barang.nama_barang.trim()}_${barang.ruangan}_QR.png`,
+      "Content-Disposition": `attachment; filename=${barang.nama_barang.trim()}_${barang.ruangan}_QR_${fileSuffix}.png`,
    });
 
    res.send(qr);
@@ -445,6 +455,7 @@ const bulkDelete = async (req, res) => {
 const bulkDownloadQR = async (req, res) => {
    try {
       const ids = req.query.ids;
+      const type = req.query.type;
 
       if (!ids) {
          return res.status(404).json({ message: "Tidak ada barang yang dipilih" });
@@ -461,17 +472,19 @@ const bulkDownloadQR = async (req, res) => {
          zlib: { level: 9 },
       });
 
+      const fileSuffix = type === "small" ? "QR_small" : "QR_large";
+
       res.set({
          "Content-Type": "application/zip",
-         "Content-Disposition": `attachment; filename=QR-CODE_${barang.length}_barang.zip`,
+         "Content-Disposition": `attachment; filename=${fileSuffix}_${barang.length}_barang.zip`,
       });
 
       archive.pipe(res);
 
       for (let b of barang) {
-         const buffer = await generateQR(b);
+         const buffer = type === "small" ? await generateQRSmall(b) : await generateQR(b);
 
-         archive.append(buffer, { name: `${b.nama_barang.trim()}_${b.ruangan}_QR.png` });
+         archive.append(buffer, { name: `${b.nama_barang.trim()}_${b.ruangan}_${fileSuffix}.png` });
       }
 
       await archive.finalize();
