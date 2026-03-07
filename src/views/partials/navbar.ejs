@@ -137,6 +137,26 @@
     font-weight: 700;
     margin: 1.5rem 0 0.5rem 1rem;
   }
+
+  .offcanvas-footer-modern {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid #f1f5f9;
+    background-color: #ffffff;
+    margin-top: auto;
+  }
+
+  .nav-link-danger {
+    color: #ef4444;
+  }
+
+  .nav-link-danger:hover {
+    color: #ef4444;
+    background-color: #fef2f2;
+  }
+
+  .nav-link-danger:hover i {
+    color: #ef4444;
+  }
 </style>
 
 <nav class="modern-navbar">
@@ -199,19 +219,17 @@
     </ul>
   </div>
 
-  <%if(currUser){%>
-  <div>
-    <a class="nav-link-modern <%= currentPath.includes('/admin/input-inventory') ? 'active' : '' %>" href="/logout">
-      <i class="bi bi-plus-circle"></i> <span>Keluar</span>
+  <div class="offcanvas-footer-modern">
+    <% if(currUser) { %>
+    <a class="nav-link-modern nav-link-danger" href="/logout">
+      <i class="bi bi-box-arrow-right"></i> <span>Keluar</span>
     </a>
-  </div>
-  <%} else if (!currUser){%>
-  <div>
-    <a class="nav-link-modern <%= currentPath.includes('/admin/input-inventory') ? 'active' : '' %>" href="/login">
-      <i class="bi bi-plus-circle"></i> <span>Login</span>
+    <% } else { %>
+    <a class="nav-link-modern <%= typeof currentPath !== 'undefined' && currentPath === '/login' ? 'active' : '' %>" href="/login">
+      <i class="bi bi-box-arrow-in-right"></i> <span>Login</span>
     </a>
+    <% } %>
   </div>
-  <% }%>
 
 
 </div>
