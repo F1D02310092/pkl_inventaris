@@ -14,14 +14,31 @@ const storage = multer.diskStorage({
    },
 
    filename: function (req, file, cb) {
-      cb(null, Date.now() + "-" + file.originalname);
+      const cleanFileName = file.originalname.replace(/[^a-zA-Z0-9.]/g, "_");
+      cb(null, Date.now() + "-" + file.cleanFileName);
    },
 });
 
-const upload = multer({ storage: storage });
+const fileFilter = (req, file, cb) => {
+   const allowedExtensions = /jpeg|jpg|png|webp/;
+
+   const extname = allowedExtensions.test(path.extname(file.originalname).toLowerCase());
+
+   const mimetype = allowedExtensions.test(file.mimetype);
+
+   if (extname && mimetype) {
+      return cb(null, true);
+   } else {
+      return cb(new Error("Format file tidak valid!, hanya mendukung JPG, JPEG, PNG, WEBP."), false);
+   }
+};
+
+const upload = multer({
+   storage: storage,
+   limits: {
+      fileSize: 10 * 1024 * 1024,
+   },
+   fileFilter: fileFilter,
+});
 
 module.exports = { upload };
-
-/**
- * Konfigurasi multer untuk handle upload gambar ke storage server
- */

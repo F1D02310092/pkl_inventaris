@@ -1,0 +1,83 @@
+const { z } = require("zod");
+
+const sanitizeHTML = (val) => (typeof val === "string" ? val.replace(/<[^>]*>?/gm, "") : val);
+
+const inventorySchema = z.object({
+   nama_barang: z
+      .string()
+      .min(1, "Nama barang wajib diisi")
+      .transform(sanitizeHTML)
+      .transform((val) => val.trim().toLowerCase()),
+
+   kategori: z
+      .string()
+      .min(1, "Kategori wajib diisi")
+      .transform(sanitizeHTML)
+      .transform((val) => val.trim().toLowerCase()),
+
+   ruangan: z
+      .string()
+      .min(1, "Ruangan wajib diisi")
+      .transform(sanitizeHTML)
+      .transform((val) => val.trim().toLowerCase()),
+
+   jumlah: z.coerce.number().min(0, "Jumlah tidak boleh minus"),
+
+   satuan: z
+      .string()
+      .optional()
+      .default("")
+      .transform(sanitizeHTML)
+      .transform((val) => val.trim().toLowerCase()),
+
+   merek: z
+      .string()
+      .optional()
+      .default("")
+      .transform(sanitizeHTML)
+      .transform((val) => val.trim().toLowerCase()),
+
+   kondisi: z.string().optional().transform(sanitizeHTML),
+   jadwal_pengecekan: z.string().optional().transform(sanitizeHTML),
+   tanggal_pengecekan: z.string().optional().transform(sanitizeHTML),
+
+   catatan_pengecekan: z
+      .string()
+      .optional()
+      .transform(sanitizeHTML)
+      .transform((val) => (val ? val.trim() : "")),
+
+   detailKey: z.union([z.string(), z.array(z.string())]).optional(),
+   detailValue: z.union([z.string(), z.array(z.string())]).optional(),
+});
+
+const loginSchema = z.object({
+   username: z
+      .string()
+      .min(1, "Username wajib diisi")
+      .max(32)
+      .transform((val) => val.trim()),
+   password: z.string().min(8, "Password wajib diisi").max(24),
+});
+
+const validate = (schema) => async (req, res, next) => {
+   try {
+      const validatedData = await schema.parseAsync(req.body);
+      req.body = validatedData;
+      next();
+   } catch (error) {
+      if (error instanceof z.ZodError) {
+         const errorMessages = error.errors.map((err) => err.message).join(", ");
+         req.flash("error", `Validasi Gagal: ${errorMessages}`);
+      } else {
+         req.flash("error", "Terjadi kesalahan pada validasi data.");
+      }
+      return res.redirect("back");
+   }
+};
+
+module.exports = {
+   inventorySchema,
+   loginSchema,
+   validate,
+};

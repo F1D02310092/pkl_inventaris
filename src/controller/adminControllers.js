@@ -6,6 +6,28 @@ const { capitalEachWord } = require("../helper/textModifer.js");
 const redisClient = require("../config/redis.js");
 const Fuse = require("fuse.js");
 const archiver = require("archiver");
+const multer = require("multer");
+const { upload } = require("../config/upload.js");
+
+const uploadMiddleware = (req, res, next) => {
+   const uploadSingle = upload.single("foto_barang");
+
+   uploadSingle(req, res, function (err) {
+      if (err instanceof multer.MulterError) {
+         if (err.code === "LIMIT_FILE_SIZE") {
+            req.flash("error", "Gagal: Ukuran file foto terlalu besar (Maksimal 5MB).");
+         } else {
+            req.flash("error", `Gagal Upload: ${err.message}`);
+         }
+         return res.redirect("back");
+      } else if (err) {
+         req.flash("error", `Gagal: ${err.message}`);
+         return res.redirect("back");
+      }
+
+      next();
+   });
+};
 
 const getInputPage = async (req, res) => {
    try {
@@ -70,8 +92,8 @@ const postInventory = async (req, res) => {
          const values = Array.isArray(detailValue) ? detailValue : [detailValue];
 
          for (let i = 0; i < keys.length; i++) {
-            const key = keys[i].toLowerCase().trim();
-            const val = values[i].toLowerCase().trim();
+            const key = keys[i].trim();
+            const val = values[i].trim();
 
             if (key !== "") {
                detailObj[key] = val;
@@ -82,12 +104,12 @@ const postInventory = async (req, res) => {
       const id_barang = uuidv4();
       const newBarang = {
          id_barang,
-         nama_barang: nama_barang.toLowerCase(),
-         kategori: kategori.toLowerCase(),
+         nama_barang: nama_barang,
+         kategori: kategori,
          jumlah,
-         satuan: satuan.toLowerCase(),
-         ruangan: ruangan.toLowerCase(),
-         merek: merek.toLowerCase(),
+         satuan: satuan,
+         ruangan: ruangan,
+         merek: merek,
          detail: detailObj,
          jadwal_pengecekan: jadwal_pengecekan,
       };
@@ -120,11 +142,11 @@ const postInventory = async (req, res) => {
          await BarangModel.findOneAndUpdate({ id_barang: id_barang }, { status_upload: "DONE" });
       }
 
-      if (ruangan) await redisClient.sAdd("set_ruangan", ruangan.toLowerCase());
-      if (kategori) await redisClient.sAdd("set_kategori", kategori.toLowerCase());
-      if (satuan) await redisClient.sAdd("set_satuan", satuan.toLowerCase());
-      if (merek) await redisClient.sAdd("set_merek", merek.toLowerCase());
-      if (nama_barang) await redisClient.sAdd("set_nama_barang", nama_barang.toLowerCase());
+      if (ruangan) await redisClient.sAdd("set_ruangan", ruangan);
+      if (kategori) await redisClient.sAdd("set_kategori", kategori);
+      if (satuan) await redisClient.sAdd("set_satuan", satuan);
+      if (merek) await redisClient.sAdd("set_merek", merek);
+      if (nama_barang) await redisClient.sAdd("set_nama_barang", nama_barang);
 
       req.flash("success", "Berhasil menambah barang!");
 
@@ -280,12 +302,12 @@ const putItemEdit = async (req, res) => {
 
    let dataBarang = {};
 
-   if (nama_barang) dataBarang.nama_barang = nama_barang.toLowerCase();
-   if (kategori) dataBarang.kategori = kategori.toLowerCase();
+   if (nama_barang) dataBarang.nama_barang = nama_barang;
+   if (kategori) dataBarang.kategori = kategori;
    if (jumlah) dataBarang.jumlah = jumlah;
-   if (satuan) dataBarang.satuan = satuan.toLowerCase();
-   if (ruangan) dataBarang.ruangan = ruangan.toLowerCase();
-   if (merek) dataBarang.merek = merek.toLowerCase();
+   if (satuan) dataBarang.satuan = satuan;
+   if (ruangan) dataBarang.ruangan = ruangan;
+   if (merek) dataBarang.merek = merek;
    if (kondisi) dataBarang.kondisi = kondisi;
    if (jadwal_pengecekan) dataBarang.jadwal_pengecekan = jadwal_pengecekan;
 
@@ -295,8 +317,8 @@ const putItemEdit = async (req, res) => {
       const keys = Array.isArray(detailKey) ? detailKey : [detailKey];
       const values = Array.isArray(detailValue) ? detailValue : [detailValue];
       for (let i = 0; i < keys.length; i++) {
-         const key = keys[i].toLowerCase().trim();
-         const val = values[i].toLowerCase().trim();
+         const key = keys[i].trim();
+         const val = values[i].trim();
          if (key !== "") {
             detailObj[key] = val;
          }
@@ -347,11 +369,11 @@ const putItemEdit = async (req, res) => {
          await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, { status_upload: "PENDING" });
       }
 
-      if (ruangan) await redisClient.sAdd("set_ruangan", ruangan.toLowerCase());
-      if (kategori) await redisClient.sAdd("set_kategori", kategori.toLowerCase());
-      if (satuan) await redisClient.sAdd("set_satuan", satuan.toLowerCase());
-      if (merek) await redisClient.sAdd("set_merek", merek.toLowerCase());
-      if (nama_barang) await redisClient.sAdd("set_nama_barang", nama_barang.toLowerCase());
+      if (ruangan) await redisClient.sAdd("set_ruangan", ruangan);
+      if (kategori) await redisClient.sAdd("set_kategori", kategori);
+      if (satuan) await redisClient.sAdd("set_satuan", satuan);
+      if (merek) await redisClient.sAdd("set_merek", merek);
+      if (nama_barang) await redisClient.sAdd("set_nama_barang", nama_barang);
    } catch (error) {
       console.error("Error update barang:", error);
       req.flash("error", "Gagal menyunting data barang, terjadi kesalahan server!");
@@ -380,7 +402,7 @@ const deleteItem = async (req, res) => {
          await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(payload)));
       }
 
-      await redisClient.sRem("set_nama_barang", barang.nama_barang.toLowerCase());
+      await redisClient.sRem("set_nama_barang", barang.nama_barang);
    } catch (error) {
       console.error(error);
       req.flash("error", "Gagal menghapus barang, terjadi kesalahan server!");
@@ -505,4 +527,5 @@ module.exports = {
    downloadQR,
    bulkDelete,
    bulkDownloadQR,
+   uploadMiddleware,
 };
