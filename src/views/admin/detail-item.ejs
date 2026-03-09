@@ -173,6 +173,7 @@
           </div>
           
     <form action="/admin/item-detail/<%= barang.id_barang %>?_method=PUT" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="mb-3">
       <label class="form-label fw-medium text-modern" style="color: #475569;">Kondisi Terkini</label>
       <select name="kondisi" class="form-select form-control-modern" required>
@@ -246,6 +247,7 @@
 
   <div class="d-flex gap-2 flex-wrap">
     <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <button type="submit" class="btn btn-danger-soft-modern d-flex align-items-center px-3 px-md-4 shadow-sm" onclick="return confirm('Yakin ingin menghapus barang ini?')">
         <i class="bi bi-trash3 me-2"></i> <span class="d-none d-md-inline">Hapus</span>
       </button>

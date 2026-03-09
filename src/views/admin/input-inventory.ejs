@@ -12,7 +12,7 @@
 </div>
 
 <div class="card-modern p-4 p-lg-5 mb-5">
-  <form action="/admin/input-inventory" method="POST" enctype="multipart/form-data" autocomplete="off">
+  <form action="/admin/input-inventory?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data" autocomplete="off">
 
     <div class="d-flex align-items-center mb-4">
       <div class="icon-shape bg-soft-primary me-3" style="width: 40px; height: 40px; border-radius: 10px;">

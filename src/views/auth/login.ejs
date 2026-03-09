@@ -1,25 +1,111 @@
 <% layout('layout/boilerplate.ejs') %>
 
-<div class="row">
-  <h1 class="text-center">Login</h1>
+<style>
+  /* Menyamakan warna background dengan dashboard */
+  body {
+    background-color: #f8fafc;
+  }
 
-  <div class="col-6 mx-auto">
-    <form method="POST" action="/login" class="needs-validation" novalidate>
-      <div class="mb-2">
-        <label class="form-label mb-0" for="username">Username</label>
-        <input class="form-control" type="text" name="username" id="username" required />
+  /* Mengambil style card dari dashboard */
+  .card-modern {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    background: #ffffff;
+  }
 
-        <div class="invalid-feedback">Masukkan username anda.</div>
+  .bg-soft-primary {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+  }
+
+  .text-title-modern {
+    color: #1e293b;
+    font-weight: 700;
+  }
+
+  .text-label-modern {
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  /* Kustomisasi input form agar lebih modern */
+  .form-control-modern {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+  }
+
+  .form-control-modern:focus {
+    background-color: #ffffff;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.15);
+  }
+
+  /* Tombol login modern (Warna Indigo menyesuaikan aksen dashboard) */
+  .btn-modern {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    background-color: #4f46e5;
+    border: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+
+  .btn-modern:hover {
+    background-color: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+    color: white;
+  }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="col-12 col-md-8 col-lg-5">
+
+    <div class="card card-modern p-4 p-md-5">
+
+      <div class="text-center mb-4">
+
+        <h2 class="text-title-modern h4 mb-1">Login</h2>
+
       </div>
 
-      <div class="mb-2">
-        <label class="form-label mb-0" for="password">Password</label>
-        <input class="form-control" type="password" name="password" id="password" required />
+      <form method="POST" action="/login" class="needs-validation" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="mb-4">
+          <label class="form-label text-label-modern mb-2" for="username">Username</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0" style="border-color: #e2e8f0; color: #94a3b8;">
+              <i class="fas fa-user"></i>
+            </span>
+            <input class="form-control form-control-modern border-start-0" type="text" name="username" id="username" placeholder="Masukkan username" required />
+            <div class="invalid-feedback">Masukkan username anda.</div>
+          </div>
+        </div>
 
-        <div class="invalid-feedback">Masukkan password anda.</div>
-      </div>
+        <div class="mb-4">
+          <label class="form-label text-label-modern mb-2" for="password">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0" style="border-color: #e2e8f0; color: #94a3b8;">
+              <i class="fas fa-lock"></i>
+            </span>
+            <input class="form-control form-control-modern border-start-0" type="password" name="password" id="password" placeholder="Masukkan password" required />
+            <div class="invalid-feedback">Masukkan password anda.</div>
+          </div>
+        </div>
 
-      <button class="btn btn-success mt-2">Login</button>
-    </form>
+        <button class="btn btn-modern w-100 mt-3 d-flex justify-content-center align-items-center gap-2">
+          <span>Masuk</span>
+          <i class="fas fa-arrow-right" style="font-size: 0.875rem;"></i>
+        </button>
+
+      </form>
+    </div>
+
   </div>
 </div>

@@ -147,6 +147,7 @@
                 </ul>
               </div>
               <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button type="submit" class="btn btn-icon-only bg-soft-danger border-0" title="Hapus" onclick="return confirm('Yakin ingin menghapus barang ini?')">
                   <i class="bi bi-trash3"></i>
                 </button>
@@ -296,7 +297,8 @@
         const response = await fetch('/admin/check-inventory/bulk-delete', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'x-csrf-token': '<%= csrfToken %>'
           },
           body: JSON.stringify({
             ids: ids

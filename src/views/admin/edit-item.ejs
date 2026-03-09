@@ -13,7 +13,7 @@
 </div>
 
 <div class="card-modern p-4 p-lg-5 mb-5">
-  <form action="/admin/item-detail/<%= barang.id_barang %>?_method=PUT" method="POST" enctype="multipart/form-data">
+  <form action="/admin/item-detail/<%= barang.id_barang %>?_method=PUT?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
 
     <div class="d-flex align-items-center mb-4">
       <div class="icon-shape bg-soft-primary me-3" style="width: 40px; height: 40px; border-radius: 10px;">

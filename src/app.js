@@ -14,6 +14,8 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const MongoStore = require("connect-mongo");
+const helmet = require("helmet");
+const { csrfSynchronisedProtection, generateToken } = require("../src/security/csrfProtection.js");
 
 // init mongosh
 const MONGO_URI = process.env.MONGO_URI;
@@ -39,6 +41,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
+
+// security
+app.use(
+   helmet({
+      contentSecurityPolicy: false,
+   }),
+);
 
 const SESSION_SECRET = process.env.SESSION_SECRET;
 const store = MongoStore.create({
@@ -85,6 +94,23 @@ app.use((req, res, next) => {
    res.locals.successFlashMsg = req.flash("success");
    res.locals.errorFlashMsg = req.flash("error");
    next();
+});
+
+app.use((req, res, next) => {
+   res.locals.csrfToken = generateToken(req);
+   next();
+});
+
+//  hanya mengeblok POST, PUT, DELETE, PATCH
+app.use(csrfSynchronisedProtection);
+
+// Error Handler khusus CSRF (Agar kalau token tidak valid, tidak muncul layar putih)
+app.use((err, req, res, next) => {
+   if (err.code === "EBADCSRFTOKEN") {
+      req.flash("error", "Sesi form tidak valid atau kadaluarsa. Silakan coba lagi.");
+      return res.redirect("back");
+   }
+   next(err);
 });
 
 // home page
