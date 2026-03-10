@@ -146,9 +146,9 @@
                   </li>
                 </ul>
               </div>
-              <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
+              <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0" onsubmit="return handleHapusSubmit(this)">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button type="submit" class="btn btn-icon-only bg-soft-danger border-0" title="Hapus" onclick="return confirm('Yakin ingin menghapus barang ini?')">
+                <button type="submit" class="btn btn-icon-only bg-soft-danger border-0" title="Hapus">
                   <i class="bi bi-trash3"></i>
                 </button>
               </form>
@@ -321,5 +321,21 @@
         btnDelete.innerHTML = originalText;
       }
     }
+  }
+
+  function handleHapusSubmit(form) {
+    if (confirm('Yakin ingin menghapus barang ini?')) {
+      const btn = form.querySelector('button[type="submit"]');
+
+
+      btn.disabled = true;
+
+
+      btn.classList.add('opacity-75');
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+      return true;
+    }
+    return false;
   }
 </script>

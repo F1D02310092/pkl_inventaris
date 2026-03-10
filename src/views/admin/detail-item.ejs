@@ -265,10 +265,11 @@
   </a>
 
   <div class="d-flex gap-2 flex-wrap">
-    <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0">
+    <form action="/admin/item-detail/<%= barang.id_barang %>?_method=DELETE" method="POST" class="m-0" onsubmit="return handleHapusSubmit(this)">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit" class="btn btn-danger-soft-modern d-flex align-items-center px-3 px-md-4 shadow-sm" onclick="return confirm('Yakin ingin menghapus barang ini?')">
-        <i class="bi bi-trash3 me-2"></i> <span class="d-none d-md-inline">Hapus</span>
+      <button type="submit" class="btn btn-danger-soft-modern d-flex align-items-center px-3 px-md-4 shadow-sm">
+        <i class="bi bi-trash3 me-2" id="icon-hapus"></i>
+        <span class="d-none d-md-inline" id="teks-hapus">Hapus</span>
       </button>
     </form>
 
@@ -316,21 +317,21 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // 1. Set Default Tanggal ke Hari Ini
+
     const dateInput = document.getElementById('tanggal_pengecekan');
     if (dateInput) {
-      // Dapatkan tanggal hari ini dengan format YYYY-MM-DD
+
       const today = new Date();
       today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
       dateInput.value = today.toISOString().split('T')[0];
     }
 
-    // 2. Logika Sembunyikan Tanggal Jika "Belum Dicek" (Khusus halaman Input/Edit)
+
     const kondisiSelect = document.querySelector('select[name="kondisi_terkini"]');
     const containerTanggal = document.getElementById('container-tanggal-pengecekan');
 
     if (kondisiSelect && containerTanggal) {
-      // Fungsi untuk mengecek status
+
       const toggleTanggal = () => {
         if (kondisiSelect.value === 'Belum Dicek') {
           containerTanggal.style.display = 'none';
@@ -339,11 +340,32 @@
         }
       };
 
-      // Jalankan saat pertama kali dimuat
+
       toggleTanggal();
 
-      // Jalankan setiap kali pilihan dropdown diubah
+
       kondisiSelect.addEventListener('change', toggleTanggal);
     }
   });
+
+  function handleHapusSubmit(form) {
+
+    if (confirm('Yakin ingin menghapus barang ini?')) {
+
+      const btn = form.querySelector('button[type="submit"]');
+      const icon = document.getElementById('icon-hapus');
+      const teks = document.getElementById('teks-hapus');
+
+      btn.disabled = true;
+
+
+      btn.classList.add('opacity-75');
+      if (icon) icon.className = 'spinner-border spinner-border-sm me-2';
+      if (teks) teks.innerText = 'Menghapus...';
+
+      return true;
+    }
+
+    return false;
+  }
 </script>

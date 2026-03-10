@@ -5,6 +5,9 @@ const UserModel = require("../src/models/User.js");
 
 const MONGO_URI = process.env.MONGO_URI;
 
+// script run di console
+// docker exec -it pkl-web_app-1 node src/seedAkun.js
+
 const createAccount = async () => {
    try {
       await mongoose.connect(MONGO_URI);
@@ -17,8 +20,8 @@ const createAccount = async () => {
       }
 
       const newUser = new UserModel({
-         username: "Admin",
-         password: "adminpassword123",
+         username: "admin",
+         password: "inventaris123",
       });
 
       await newUser.save();

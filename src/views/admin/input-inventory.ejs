@@ -12,7 +12,7 @@
 </div>
 
 <div class="card-modern p-4 p-lg-5 mb-5">
-  <form action="/admin/input-inventory?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data" autocomplete="off">
+  <form action="/admin/input-inventory?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data" autocomplete="off" onsubmit="return handleInputSubmit(this)">
 
     <div class="d-flex align-items-center mb-4">
       <div class="icon-shape bg-soft-primary me-3" style="width: 40px; height: 40px; border-radius: 10px;">
@@ -142,7 +142,8 @@
         Batal
       </a>
       <button type="submit" class="btn btn-primary-modern px-5 py-2 shadow-sm">
-        <i class="bi bi-save me-2"></i> Simpan Barang
+        <i class="bi bi-save me-2" id="icon-submit"></i>
+        <span id="text-submit">Simpan Barang</span>
       </button>
     </div>
 
@@ -181,21 +182,21 @@
   });
 
   document.addEventListener("DOMContentLoaded", function() {
-    // 1. Set Default Tanggal ke Hari Ini
+
     const dateInput = document.getElementById('tanggal_pengecekan');
     if (dateInput) {
-      // Dapatkan tanggal hari ini dengan format YYYY-MM-DD
+
       const today = new Date();
       today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
       dateInput.value = today.toISOString().split('T')[0];
     }
 
-    // 2. Logika Sembunyikan Tanggal Jika "Belum Dicek" (Khusus halaman Input/Edit)
+
     const kondisiSelect = document.querySelector('select[name="kondisi_terkini"]');
     const containerTanggal = document.getElementById('container-tanggal-pengecekan');
 
     if (kondisiSelect && containerTanggal) {
-      // Fungsi untuk mengecek status
+
       const toggleTanggal = () => {
         if (kondisiSelect.value === 'Belum Dicek') {
           containerTanggal.style.display = 'none';
@@ -204,11 +205,35 @@
         }
       };
 
-      // Jalankan saat pertama kali dimuat
+
       toggleTanggal();
 
-      // Jalankan setiap kali pilihan dropdown diubah
+
       kondisiSelect.addEventListener('change', toggleTanggal);
     }
   });
+
+  function handleInputSubmit(form) {
+
+    const btn = form.querySelector('button[type="submit"]');
+    const icon = document.getElementById('icon-submit');
+    const text = document.getElementById('text-submit');
+
+
+    btn.disabled = true;
+    btn.classList.add('opacity-75');
+
+
+    if (icon) {
+      icon.className = 'spinner-border spinner-border-sm me-2';
+    }
+
+
+    if (text) {
+      text.innerText = 'Menyimpan...';
+    }
+
+
+    return true;
+  }
 </script>
