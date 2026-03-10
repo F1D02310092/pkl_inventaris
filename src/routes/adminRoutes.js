@@ -9,13 +9,13 @@ const { validate, inventorySchema } = require("../validation_sanitize/validator.
 // base url: admin/...
 router.route("/input-inventory").get(isLoggedIn, getInputPage).post(isLoggedIn, uploadMiddleware, validate(inventorySchema), postInventory);
 
-router.route("/check-inventory").get(getInventoryPage);
+router.route("/check-inventory").get(isLoggedIn, getInventoryPage);
 
 router.route("/check-inventory/bulk-delete").post(isLoggedIn, bulkDelete);
 
 router.route("/check-inventory/bulk-qr").get(isLoggedIn, bulkDownloadQR);
 
-router.route("/item-detail/:id_barang").get(getItemDetailPage).put(isLoggedIn, uploadMiddleware, validate(inventorySchema), putItemEdit).delete(isLoggedIn, deleteItem);
+router.route("/item-detail/:id_barang").get(isLoggedIn, getItemDetailPage).put(isLoggedIn, uploadMiddleware, validate(inventorySchema), putItemEdit).delete(isLoggedIn, deleteItem);
 
 router.route("/item-detail/:id_barang/qr-code").get(isLoggedIn, downloadQR);
 

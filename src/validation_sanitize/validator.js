@@ -67,12 +67,14 @@ const validate = (schema) => async (req, res, next) => {
       next();
    } catch (error) {
       if (error instanceof z.ZodError) {
-         const errorMessages = error.errors.map((err) => err.message).join(", ");
+         const errorMessages = error.issues.map((err) => err.message).join(", ");
+         console.error(errorMessages);
          req.flash("error", `Validasi Gagal: ${errorMessages}`);
       } else {
          req.flash("error", "Terjadi kesalahan pada validasi data.");
       }
-      return res.redirect("back");
+      const referer = req.get("Referrer") || "/admin/check-inventory";
+      return res.redirect(referer);
    }
 };
 

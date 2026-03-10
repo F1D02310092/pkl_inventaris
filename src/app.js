@@ -107,8 +107,9 @@ app.use(csrfSynchronisedProtection);
 // Error Handler khusus CSRF (Agar kalau token tidak valid, tidak muncul layar putih)
 app.use((err, req, res, next) => {
    if (err.code === "EBADCSRFTOKEN") {
+      console.error(err);
       req.flash("error", "Sesi form tidak valid atau kadaluarsa. Silakan coba lagi.");
-      return res.redirect("back");
+      return res.redirect("/");
    }
    next(err);
 });

@@ -1,0 +1,131 @@
+[33mcommit 79df71567e63120c0d72c5328d95fd1d077e23ac[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/security[m[33m, [m[1;31morigin/main[m[33m, [m[1;32msecurity[m[33m)[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Mon Mar 9 21:35:00 2026 +0800
+
+    feat: helmet, csrf, dan rate limit
+
+[33mcommit 2f2f705a57f9b98336c2e21196fe0574938b9aa8[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Sun Mar 8 11:12:02 2026 +0800
+
+    feat: file upload filtering, input sanitazion dan validation
+
+[33mcommit 1d00afe07e170eba32753e4585382d0ea35bd985[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Sat Mar 7 11:11:41 2026 +0800
+
+    style: navbar login & keluar link style
+
+[33mcommit dd3a948bc1c8747e8e2694c10e37b28c78f2dfb2[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Sat Mar 7 11:06:44 2026 +0800
+
+    feat: opsi qr small dan qr large
+
+[33mcommit c39b75d3e78ccf55e9b4cd7c278a7c86f8dad679[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Fri Mar 6 11:05:23 2026 +0800
+
+    feat: session, flash, dan passport login serta seed akun admin
+
+[33mcommit 9f61e687477fa10fcab3ccab8b087e3d35ca83dd[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Thu Mar 5 19:34:13 2026 +0800
+
+    style: ruangan modals distribusi barang per ruangan, pie chart kondisi barang
+
+[33mcommit c6575e218adb4cf5f7f51610365bbcfd7ffa305d[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Thu Mar 5 09:17:15 2026 +0800
+
+    feat & fix: implementasi filtering berdasarkan ruangan dan kategori, serta minor fixes
+
+[33mcommit e50c24707cfb61970c4ca2fbed59208659f8d203[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Wed Mar 4 06:36:51 2026 +0800
+
+    feat, fix & style: nginx reverse proxy, perbaikan minor bugs, standardisasi inputs, and styling page-page
+
+[33mcommit e77277ce6f7cb4c2746d4429e5c33ce3f52e3ef5[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Mon Mar 2 19:28:18 2026 +0800
+
+    feat & style: form data pengecekkan kondisi, atur flow form, dan styling page-page
+
+[33mcommit fda65a117d2964a9be05b0f51403d3f704bbc33f[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Mon Mar 2 13:47:08 2026 +0800
+
+    style: menyeragamkan style pages
+
+[33mcommit cb2b448b5b954a77bf1b9e0fa62590f0e9623459[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Sun Mar 1 11:10:26 2026 +0800
+
+    feat: implementasi bulk delete dan bulk qr code download, trigger via fetch FE
+
+[33mcommit 54e2788496c92b8859d6a06e3b37531656d0d3b0[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Sun Mar 1 09:49:51 2026 +0800
+
+    feat: implementasi fuzzy search pada search term nama barang
+
+[33mcommit 10e1ef521bd3f4205fab52c13a86764128a86eb1[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Sat Feb 28 11:21:09 2026 +0800
+
+    feat: impelementasi redis caching untuk daftar kategori, ruangan, merek, dan satuan
+
+[33mcommit 45e402a449ad9fc1bda46eaccad7e132258b3f31[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Sat Feb 28 10:07:45 2026 +0800
+
+    style: pagination dan separasi style dgn markup
+
+[33mcommit 92fd648f742e1d66f384f6f51a23a11cdf7fda66[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Fri Feb 27 10:38:16 2026 +0800
+
+    feat: qr code generator utk setiap barang
+
+[33mcommit 7d9efc39ab91fd0f34a7d3841fdbe5658d3e8675[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Tue Feb 24 14:40:09 2026 +0800
+
+    feat: menyesuaikan input form agar cocok dengan data di excel, serta fix proses edit barang agar data foto bersih dan sinkron
+
+[33mcommit 2f2b0d4a0c47e39cb63715dbec99099afb6a0995[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Sun Feb 22 14:56:37 2026 +0800
+
+    feat: styling page frontend, dan handle operasi delete record data dan deletion image dalam minio bucket (background work)
+
+[33mcommit 3d80a84e0bec3bb732970d67d879d210f7b3ace1[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Thu Feb 19 09:57:37 2026 +0800
+
+    feat: worker image compressing dan handle temp files, serta konfigurasi minio bucket
+
+[33mcommit 5a944bccd5339404e7a3d00db81fcdc8793906bf[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Tue Feb 17 10:16:36 2026 +0800
+
+    feat: konfigurasi multer dan MQ, establish koneksi dan channel message queue, dan memastikan MQ aktif sebelum API
+
+[33mcommit 666a314c3d0c85535d84a265bbaba6831774e11b[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Sun Feb 15 16:35:57 2026 +0800
+
+    feat: handle data heterogen dengan dinamis
+
+[33mcommit 2c63f29885e84dd75c369e9fd2eb32db29d6a3cb[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Thu Feb 12 11:15:07 2026 +0800
+
+    feat: membuat basis input data barang & cek inventaris
+
+[33mcommit cf19b1dc8e86901cbbba5d7e9e438052bc5d5e70[m[33m ([m[1;32mmaster[m[33m)[m
+Author: F1D02310092 <mukarams.1111@gmail.com>
+Date:   Tue Feb 10 10:37:02 2026 +0800
+
+    feat: inisialisasi folder project & test koneksi service

@@ -19,10 +19,12 @@ const uploadMiddleware = (req, res, next) => {
          } else {
             req.flash("error", `Gagal Upload: ${err.message}`);
          }
-         return res.redirect("back");
+         const referer = req.get("Referrer") || "/admin/check-inventory";
+         return res.redirect(referer);
       } else if (err) {
          req.flash("error", `Gagal: ${err.message}`);
-         return res.redirect("back");
+         const referer = req.get("Referrer") || "/admin/check-inventory";
+         return res.redirect(referer);
       }
 
       next();
@@ -304,7 +306,7 @@ const putItemEdit = async (req, res) => {
 
    if (nama_barang) dataBarang.nama_barang = nama_barang;
    if (kategori) dataBarang.kategori = kategori;
-   if (jumlah) dataBarang.jumlah = jumlah;
+   if (jumlah !== undefined) dataBarang.jumlah = jumlah;
    if (satuan) dataBarang.satuan = satuan;
    if (ruangan) dataBarang.ruangan = ruangan;
    if (merek) dataBarang.merek = merek;
@@ -332,15 +334,16 @@ const putItemEdit = async (req, res) => {
 
       if (!item) return res.status(404).json({ message: "Barang tidak ditemukan" });
 
-      if (kondisi && jadwal_pengecekan && kondisi !== "Belum Dicek" && jadwal_pengecekan !== "Tak Terjadwal") {
+      if (kondisi !== "Belum Dicek" && jadwal_pengecekan !== "Tak Terjadwal") {
          const tglPengecekan = tanggal_pengecekan ? new Date(tanggal_pengecekan) : new Date();
+
          await BarangModel.findOneAndUpdate(
             { id_barang: req.params.id_barang },
             {
                $push: {
                   riwayat_pengecekan: {
                      tanggal: tglPengecekan,
-                     kondisi: kondisi || item.kondisi,
+                     kondisi: kondisi,
                      catatan: catatan_pengecekan,
                   },
                },
@@ -377,7 +380,7 @@ const putItemEdit = async (req, res) => {
    } catch (error) {
       console.error("Error update barang:", error);
       req.flash("error", "Gagal menyunting data barang, terjadi kesalahan server!");
-      return res.redirect("/admin/item-detail");
+      return res.redirect(`/admin/item-detail/${req.params.id_barang}`);
    }
 
    req.flash("success", "Berhasil menyunting data barang!");

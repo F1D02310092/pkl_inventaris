@@ -116,7 +116,7 @@
                   </span>
                 </td>
               </tr>
-              <td colspan="2" class="py-2">
+              <!-- <td colspan="2" class="py-2">
                 <hr class="m-0" style="border-color: #848484;">
               </td>
               </tr>
@@ -131,7 +131,7 @@
                 <td class="text-modern fw-medium ms-1">
                   <i class="bi bi-calendar3 me-2"></i><%= new Date(barang.updatedAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
                 </td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
@@ -174,6 +174,25 @@
           
     <form action="/admin/item-detail/<%= barang.id_barang %>?_method=PUT" method="POST">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <input type="hidden" name="nama_barang" value="<%= barang.nama_barang %>">
+    <input type="hidden" name="kategori" value="<%= barang.kategori %>">
+    <input type="hidden" name="ruangan" value="<%= barang.ruangan %>">
+    <input type="hidden" name="jumlah" value="<%= barang.jumlah %>">
+
+    <div class="mb-3">
+      <label for="jadwal_pengecekan" class="form-label fw-medium text-modern">Jadwal Cek Rutin</label>
+      <select class="form-select form-control-modern" id="jadwal_pengecekan" name="jadwal_pengecekan" required>
+        <option value="Tak Terjadwal" <%= barang.jadwal_pengecekan === 'Tidak Terjadwal' ? 'selected' : '' %>>Tak Terjadwal</option>
+        <option value="Harian" <%= barang.jadwal_pengecekan === 'Harian' ? 'selected' : '' %>>Harian</option>
+        <option value="Mingguan" <%= barang.jadwal_pengecekan === 'Mingguan' ? 'selected' : '' %>>Mingguan</option>
+        <option value="Bulanan" <%= barang.jadwal_pengecekan === 'Bulanan' ? 'selected' : '' %>>Bulanan</option>
+        <option value="Tahunan" <%= barang.jadwal_pengecekan === 'Tahunan' ? 'selected' : '' %>>Tahunan</option>
+      </select>
+      <div class="form-text mt-1 text-muted-modern" style="font-size: 0.8rem;">
+        <em><i class="bi bi-info-circle me-1"></i>Catatan: Ubah hanya jika diperlukan.</em>
+      </div>
+    </div>
+
     <div class="mb-3">
       <label class="form-label fw-medium text-modern" style="color: #475569;">Kondisi Terkini</label>
       <select name="kondisi" class="form-select form-control-modern" required>
@@ -253,9 +272,23 @@
       </button>
     </form>
 
-    <a href="/admin/item-detail/<%= barang.id_barang %>/qr-code" class="btn btn-secondary-modern d-flex align-items-center px-3 px-md-4">
-      <i class="bi bi-qr-code me-2"></i> <span class="d-none d-md-inline">Unduh QR</span>
-    </a>
+    <div class="dropdown d-inline-block m-0">
+      <button class="btn btn-secondary-modern d-flex align-items-center px-3 px-md-4 dropdown-toggle shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 100%;">
+        <i class="bi bi-qr-code me-2"></i> <span class="d-none d-md-inline">Unduh QR</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="border-radius: 0.5rem; font-size: 0.9rem;">
+        <li>
+          <a class="dropdown-item py-2" href="/admin/item-detail/<%= barang.id_barang %>/qr-code?type=small">
+            <i class="bi bi-qr-code-scan me-2 text-primary"></i>QR Small
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item py-2" href="/admin/item-detail/<%= barang.id_barang %>/qr-code?type=normal">
+            <i class="bi bi-card-text me-2 text-info"></i>QR Large
+          </a>
+        </li>
+      </ul>
+    </div>
 
     <a href="/admin/item-detail/<%= barang.id_barang %>/edit" class="btn btn-primary-modern d-flex align-items-center px-3 px-md-4 shadow-sm">
       <i class="bi bi-pencil-square me-2"></i> <span class="d-none d-md-inline">Edit Barang</span>
