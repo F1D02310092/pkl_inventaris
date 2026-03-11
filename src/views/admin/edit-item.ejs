@@ -30,13 +30,27 @@
 
       <div class="col-md-6 mb-4">
         <label for="kategori" class="form-label modern-label">Kategori <span class="required-star">*</span></label>
+        <% if (currUser && currUser.role === 'admin') { %>
         <input type="text" class="form-control modern-input" id="kategori" name="kategori" list="kategoriOptions" placeholder="Pilih atau ketik kategori baru" required value="<%= capitalizeEachWord(barang.kategori) %>" />
         <datalist id="kategoriOptions">
           <% if (typeof daftarKategori !== 'undefined') { %>
           <% daftarKategori.forEach(kat => { %>
           <option value="<%= capitalizeEachWord(kat) %>"></option>
-          <% }) }%>
+          <% }) %>
+          <% } %>
         </datalist>
+        <% } else { %>
+        <select class="form-select modern-input" id="kategori" name="kategori" required>
+          <option value="" disabled>Pilih kategori yang tersedia</option>
+          <% if (typeof daftarKategori !== 'undefined') { %>
+          <% daftarKategori.forEach(kat => { %>
+          <option value="<%= capitalizeEachWord(kat) %>" <%= barang.kategori.toLowerCase() === kat.toLowerCase() ? 'selected' : '' %>>
+            <%= capitalizeEachWord(kat) %>
+          </option>
+          <% }) %>
+          <% } %>
+        </select>
+        <% } %>
       </div>
 
       <div class="col-md-6 mb-4">
@@ -53,6 +67,7 @@
 
       <div class="col-md-6 mb-4">
         <label for="ruangan" class="form-label modern-label">Ruangan <span class="required-star">*</span></label>
+        <% if (currUser && currUser.role === 'admin') { %>
         <input type="text" class="form-control modern-input" id="ruangan" name="ruangan" list="ruanganOptions" placeholder="Pilih atau ketik ruangan baru" required value="<%= capitalizeEachWord(barang.ruangan) %>" />
         <datalist id="ruanganOptions">
           <% if (typeof daftarRuangan !== 'undefined') { %>
@@ -61,6 +76,18 @@
           <% }) %>
           <% } %>
         </datalist>
+        <% } else { %>
+        <select class="form-select modern-input" id="ruangan" name="ruangan" required>
+          <option value="" disabled>Pilih ruangan yang tersedia</option>
+          <% if (typeof daftarRuangan !== 'undefined') { %>
+          <% daftarRuangan.forEach(rng => { %>
+          <option value="<%= capitalizeEachWord(rng) %>" <%= barang.ruangan.toLowerCase() === rng.toLowerCase() ? 'selected' : '' %>>
+            <%= capitalizeEachWord(rng) %>
+          </option>
+          <% }) %>
+          <% } %>
+        </select>
+        <% } %>
       </div>
 
       <div class="col-md-6 mb-4">
@@ -93,7 +120,7 @@
       <div class="col-md-6 mb-4">
         <label for="jadwal_pengecekan" class="form-label modern-label">Jadwal Cek Rutin <span class="required-star">*</span></label>
         <select class="form-select modern-input" id="jadwal_pengecekan" name="jadwal_pengecekan" required>
-          <option value="Tak Terjadwal" <%= barang.jadwal_pengecekan === 'Tidak Terjadwal' ? 'selected' : '' %>>Tak Terjadwal</option>
+          <option value="Tak Terjadwal" <%= barang.jadwal_pengecekan === 'Tak Terjadwal' ? 'selected' : '' %>>Tak Terjadwal</option>
           <option value="Harian" <%= barang.jadwal_pengecekan === 'Harian' ? 'selected' : '' %>>Harian</option>
           <option value="Mingguan" <%= barang.jadwal_pengecekan === 'Mingguan' ? 'selected' : '' %>>Mingguan</option>
           <option value="Bulanan" <%= barang.jadwal_pengecekan === 'Bulanan' ? 'selected' : '' %>>Bulanan</option>
@@ -108,7 +135,6 @@
           <em><i class="bi bi-calendar-event me-1"></i>Default: Tanggal Hari ini. Ubah melalui menu di atas jika diperlukan.</em>
         </div>
       </div>
-
 
       <div class="col-md-12 mb-4">
         <label for="foto" class="form-label modern-label">Foto Barang</label>
@@ -204,20 +230,16 @@
   });
 
   function handleEditSubmit(form) {
-
     const btn = form.querySelector('button[type="submit"]');
     const icon = document.getElementById('icon-submit');
     const text = document.getElementById('text-submit');
 
-
     btn.disabled = true;
     btn.classList.add('opacity-75');
-
 
     if (icon) {
       icon.className = 'spinner-border spinner-border-sm me-2';
     }
-
 
     if (text) {
       text.innerText = 'Menyimpan...';

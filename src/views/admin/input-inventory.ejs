@@ -29,13 +29,25 @@
 
       <div class="col-md-6 mb-4">
         <label for="kategori" class="form-label modern-label">Kategori <span class="required-star">*</span></label>
+        <% if (currUser && currUser.role === 'admin') { %>
         <input type="text" class="form-control modern-input" id="kategori" name="kategori" list="kategoriOptions" placeholder="Pilih atau ketik kategori baru" required />
         <datalist id="kategoriOptions">
           <% if (typeof daftarKategori !== 'undefined') { %>
           <% daftarKategori.forEach(kat => { %>
           <option value="<%= capitalizeEachWord(kat) %>"></option>
-          <% }) }%>
+          <% }) %>
+          <% } %>
         </datalist>
+        <% } else { %>
+        <select class="form-select modern-input" id="kategori" name="kategori" required>
+          <option value="" disabled selected>Pilih kategori yang tersedia</option>
+          <% if (typeof daftarKategori !== 'undefined') { %>
+          <% daftarKategori.forEach(kat => { %>
+          <option value="<%= capitalizeEachWord(kat) %>"><%= capitalizeEachWord(kat) %></option>
+          <% }) %>
+          <% } %>
+        </select>
+        <% } %>
       </div>
 
       <div class="col-md-6 mb-4">
@@ -52,6 +64,7 @@
 
       <div class="col-md-6 mb-4">
         <label for="ruangan" class="form-label modern-label">Ruangan <span class="required-star">*</span></label>
+        <% if (currUser && currUser.role === 'admin') { %>
         <input type="text" class="form-control modern-input" id="ruangan" name="ruangan" list="ruanganOptions" placeholder="Pilih atau ketik ruangan baru" required />
         <datalist id="ruanganOptions">
           <% if (typeof daftarRuangan !== 'undefined') { %>
@@ -60,6 +73,16 @@
           <% }) %>
           <% } %>
         </datalist>
+        <% } else { %>
+        <select class="form-select modern-input" id="ruangan" name="ruangan" required>
+          <option value="" disabled selected>Pilih ruangan yang tersedia</option>
+          <% if (typeof daftarRuangan !== 'undefined') { %>
+          <% daftarRuangan.forEach(rng => { %>
+          <option value="<%= capitalizeEachWord(rng) %>"><%= capitalizeEachWord(rng) %></option>
+          <% }) %>
+          <% } %>
+        </select>
+        <% } %>
       </div>
 
       <div class="col-md-6 mb-4">
@@ -185,14 +208,13 @@
 
     const dateInput = document.getElementById('tanggal_pengecekan');
     if (dateInput) {
-
       const today = new Date();
       today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
       dateInput.value = today.toISOString().split('T')[0];
     }
 
-
-    const kondisiSelect = document.querySelector('select[name="kondisi_terkini"]');
+    // Perbaikan: mengambil berdasarkan ID "kondisi" agar selaras dengan HTML
+    const kondisiSelect = document.getElementById('kondisi');
     const containerTanggal = document.getElementById('container-tanggal-pengecekan');
 
     if (kondisiSelect && containerTanggal) {
@@ -205,34 +227,27 @@
         }
       };
 
-
       toggleTanggal();
-
 
       kondisiSelect.addEventListener('change', toggleTanggal);
     }
   });
 
   function handleInputSubmit(form) {
-
     const btn = form.querySelector('button[type="submit"]');
     const icon = document.getElementById('icon-submit');
     const text = document.getElementById('text-submit');
 
-
     btn.disabled = true;
     btn.classList.add('opacity-75');
-
 
     if (icon) {
       icon.className = 'spinner-border spinner-border-sm me-2';
     }
 
-
     if (text) {
       text.innerText = 'Menyimpan...';
     }
-
 
     return true;
   }
