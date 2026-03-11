@@ -1,3 +1,103 @@
+# PROD CONFIG
+services:
+   # 1. Database
+   mongo:
+      image: mongo
+      volumes:
+         - ./mongo-data:/data/db
+      healthcheck:
+         test: echo "db.runCommand('ping').ok" | mongosh localhost:27017/test --quiet
+         interval: 10s
+         timeout: 5s
+         retries: 5
+         start_period: 15s
+
+   # 2. Message Queue
+   rabbitmq:
+      image: rabbitmq:3-management
+      hostname: rabbitmq
+      environment:
+         - RABBITMQ_DEFAULT_USER=guest
+         - RABBITMQ_DEFAULT_PASS=guest
+      ports:
+         - "127.0.0.1:15672:15672" # Dashboard MQ
+      healthcheck:
+         test: rabbitmq-diagnostics -q ping
+         interval: 10s
+         timeout: 5s
+         retries: 5
+         start_period: 15s
+      volumes:
+         - rabbitmq_data:/var/lib/rabbitmq/mnesia
+
+   # 3. Object Storage
+   minio:
+      image: minio/minio
+      ports:
+         - "127.0.0.1:9000:9000" # Port API
+         - "127.0.0.1:9001:9001" # Port Console
+      environment:
+         MINIO_ROOT_USER: admin
+         MINIO_ROOT_PASSWORD: password123
+      command: server /data --console-address ":9001"
+      volumes:
+         - minio_data:/data
+      healthcheck:
+         test: curl -f http://localhost:9000/minio/health/live || exit 1
+         interval: 10s
+         timeout: 5s
+         retries: 5
+         start_period: 10s
+
+   redis:
+      image: redis:7-alpine
+      volumes:
+         - redis_data:/data
+      healthcheck:
+         test: ["CMD", "redis-cli", "ping"]
+         interval: 10s
+         timeout: 5s
+         retries: 5
+
+   # 4. Web App (PRODUCTION)
+   web_app:
+      build: .
+      command: npm start # BERUBAH: Gunakan script start standar
+      ports:
+         - "127.0.0.1:3000:3000" # Map ke localhost VPS
+      depends_on:
+         mongo:
+            condition: service_healthy
+         rabbitmq:
+            condition: service_healthy
+         minio:
+            condition: service_healthy
+      env_file: .env # Gunakan file .env
+      volumes:
+         - temp_uploads:/app/temp
+
+   # 5. Background Worker (PRODUCTION)
+   worker_service:
+      build: .
+      command: npm run worker # BERUBAH: Gunakan script worker standar
+      depends_on:
+         mongo:
+            condition: service_healthy
+         rabbitmq:
+            condition: service_healthy
+         minio:
+            condition: service_healthy
+      env_file: .env # Gunakan file .env
+      volumes:
+         - temp_uploads:/app/temp
+
+volumes:
+   temp_uploads:
+   minio_data:
+   redis_data:
+   rabbitmq_data:
+
+# DEVELOPMENT CONFIG
 # services:
 #    #  1. Database
 #    mongo:
@@ -111,95 +211,3 @@
 #    temp_uploads:
 #    minio_data:
 #    redis_data:
-
-# PROD CONFIG
-services:
-   # 1. Database
-   mongo:
-      image: mongo
-      volumes:
-         - ./mongo-data:/data/db
-      healthcheck:
-         test: echo "db.runCommand('ping').ok" | mongosh localhost:27017/test --quiet
-         interval: 10s
-         timeout: 5s
-         retries: 5
-         start_period: 15s
-
-   # 2. Message Queue
-   rabbitmq:
-      image: rabbitmq:3-management
-      ports:
-         - "127.0.0.1:15672:15672" # Dashboard MQ hanya bisa diakses dari local/tunnel
-      healthcheck:
-         test: rabbitmq-diagnostics -q ping
-         interval: 10s
-         timeout: 5s
-         retries: 5
-         start_period: 15s
-
-   # 3. Object Storage
-   minio:
-      image: minio/minio
-      ports:
-         - "127.0.0.1:9000:9000" # Port API
-         - "127.0.0.1:9001:9001" # Port Console
-      environment:
-         MINIO_ROOT_USER: admin
-         MINIO_ROOT_PASSWORD: password123
-      command: server /data --console-address ":9001"
-      volumes:
-         - minio_data:/data
-      healthcheck:
-         test: curl -f http://localhost:9000/minio/health/live || exit 1
-         interval: 10s
-         timeout: 5s
-         retries: 5
-         start_period: 10s
-
-   redis:
-      image: redis:7-alpine
-      volumes:
-         - redis_data:/data
-      healthcheck:
-         test: ["CMD", "redis-cli", "ping"]
-         interval: 10s
-         timeout: 5s
-         retries: 5
-
-   # 4. Web App (PRODUCTION)
-   web_app:
-      build: .
-      command: npm start # BERUBAH: Gunakan script start standar
-      ports:
-         - "127.0.0.1:3000:3000" # Map ke localhost VPS
-      depends_on:
-         mongo:
-            condition: service_healthy
-         rabbitmq:
-            condition: service_healthy
-         minio:
-            condition: service_healthy
-      env_file: .env # Gunakan file .env
-      volumes:
-         - temp_uploads:/app/temp
-
-   # 5. Background Worker (PRODUCTION)
-   worker_service:
-      build: .
-      command: npm run worker # BERUBAH: Gunakan script worker standar
-      depends_on:
-         mongo:
-            condition: service_healthy
-         rabbitmq:
-            condition: service_healthy
-         minio:
-            condition: service_healthy
-      env_file: .env # Gunakan file .env
-      volumes:
-         - temp_uploads:/app/temp
-
-volumes:
-   temp_uploads:
-   minio_data:
-   redis_data:

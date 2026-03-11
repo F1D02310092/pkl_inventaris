@@ -13,7 +13,7 @@ const createAccount = async () => {
       await mongoose.connect(MONGO_URI);
       console.log("Terhubung ke DB untuk Seeding");
 
-      const existingUser = await UserModel.findOne({ username: "Admin" });
+      const existingUser = await UserModel.findOne({ username: "admin" });
       if (existingUser) {
          console.log("Akun Admin sudah ada di database!");
          process.exit(0);
@@ -21,7 +21,7 @@ const createAccount = async () => {
 
       const newUser = new UserModel({
          username: "admin",
-         password: "inventaris_jeranjang_2026",
+         password: "inventaris2026",
       });
 
       await newUser.save();

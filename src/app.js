@@ -62,6 +62,8 @@ store.on("error", (err) => {
    console.log(err);
 });
 
+app.set("trust proxy", 1);
+
 const sessionObject = {
    store,
    name: "inventorysys",
@@ -78,7 +80,6 @@ const sessionObject = {
 };
 
 app.use(session(sessionObject));
-app.set("trust proxy", 1);
 
 // passport
 require("./config/passport")(passport);
