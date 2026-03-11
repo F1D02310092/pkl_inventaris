@@ -88,4 +88,4 @@ const barangSchema = new mongoose.Schema(
 barangSchema.index({ kategori: 1, createdAt: -1 });
 barangSchema.index({ ruangan: 1, createdAt: -1 });
 
-module.exports = mongoose.model("Barang", barangSchema);
+module.exports = mongoose.model("Item", barangSchema);
