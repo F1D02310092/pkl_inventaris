@@ -1,5 +1,120 @@
+# services:
+#    #  1. Database
+#    mongo:
+#       image: mongo
+#       volumes:
+#          - ./mongo-data:/data/db
+#       healthcheck:
+#          test: echo "db.runCommand('ping').ok" | mongosh localhost:27017/test --quiet
+#          interval: 10s
+#          timeout: 5s
+#          retries: 5
+#          start_period: 15s # Memberi waktu ekstra saat Mongo melakukan recovery
+
+#    #  2. Message Queue
+#    rabbitmq:
+#       image: rabbitmq:3-management
+#       ports:
+#          - "15672:15672" # Dashboard admin RabbitMQ
+#       healthcheck:
+#          test: rabbitmq-diagnostics -q ping
+#          interval: 10s
+#          timeout: 5s
+#          retries: 5
+#          start_period: 15s
+
+#    #  3. Object Storage
+#    minio:
+#       image: minio/minio
+#       ports:
+#          - "9000:9000" # Port API
+#          - "9001:9001" # Port Console
+#       environment:
+#          MINIO_ROOT_USER: admin
+#          MINIO_ROOT_PASSWORD: password123
+#       command: server /data --console-address ":9001"
+#       volumes:
+#          - minio_data:/data
+#       healthcheck:
+#          test: curl -f http://localhost:9000/minio/health/live || exit 1
+#          interval: 10s
+#          timeout: 5s
+#          retries: 5
+#          start_period: 10s
+
+#    redis:
+#       image: redis:7-alpine
+#       ports:
+#          - "6379:6379"
+#       volumes:
+#          - redis_data:/data
+#       healthcheck:
+#          test: ["CMD", "redis-cli", "ping"]
+#          interval: 10s
+#          timeout: 5s
+#          retries: 5
+
+#    #  4. Web App
+#    web_app:
+#       build: . # Build dari folder saat ini
+#       command: npm run dev # development
+#       # ports:
+#       #    - "80:3000" # Map port 80 VPS ke port 3000 container (komen jika expose localhost)
+#       depends_on:
+#          mongo:
+#             condition: service_healthy
+#          rabbitmq:
+#             condition: service_healthy
+#          minio:
+#             condition: service_healthy
+#          redis:
+#             condition: service_started
+#       volumes:
+#          - .:/app
+#          - /app/node_modules
+#          - temp_uploads:/app/temp # Shared volume buat simpan foto sementara
+
+#    #  5. Background Worker
+#    worker_service:
+#       build: . # Build dari folder yang sama
+#       command: npm run worker:dev # dev
+#       depends_on:
+#          mongo:
+#             condition: service_healthy
+#          rabbitmq:
+#             condition: service_healthy
+#          minio:
+#             condition: service_healthy
+#       environment:
+#          - MONGO_URI=mongodb://mongo:27017/db_inventaris
+#          - RABBITMQ_URI=amqp://rabbitmq
+#          - MINIO_ENDPOINT=minio
+#          - MINIO_PORT=9000
+#          - MINIO_ACCESS_KEY=admin
+#          - MINIO_SECRET_KEY=password123
+#       volumes:
+#          - .:/app
+#          - /app/node_modules
+#          - temp_uploads:/app/temp
+
+#    nginx:
+#       image: nginx:alpine
+#       ports:
+#          - "80:80" # Nginx jalan di port 80 laptop kamu
+#       volumes:
+#          - ./nginx.conf:/etc/nginx/nginx.conf:ro
+#       depends_on:
+#          - web_app
+#          - minio
+
+# volumes:
+#    temp_uploads:
+#    minio_data:
+#    redis_data:
+
+# PROD CONFIG
 services:
-   #  1. Database
+   # 1. Database
    mongo:
       image: mongo
       volumes:
@@ -9,13 +124,13 @@ services:
          interval: 10s
          timeout: 5s
          retries: 5
-         start_period: 15s # Memberi waktu ekstra saat Mongo melakukan recovery
+         start_period: 15s
 
-   #  2. Message Queue
+   # 2. Message Queue
    rabbitmq:
       image: rabbitmq:3-management
       ports:
-         - "15672:15672" # Dashboard admin RabbitMQ
+         - "127.0.0.1:15672:15672" # Dashboard MQ hanya bisa diakses dari local/tunnel
       healthcheck:
          test: rabbitmq-diagnostics -q ping
          interval: 10s
@@ -23,12 +138,12 @@ services:
          retries: 5
          start_period: 15s
 
-   #  3. Object Storage
+   # 3. Object Storage
    minio:
       image: minio/minio
       ports:
-         - "9000:9000" # Port API
-         - "9001:9001" # Port Console
+         - "127.0.0.1:9000:9000" # Port API
+         - "127.0.0.1:9001:9001" # Port Console
       environment:
          MINIO_ROOT_USER: admin
          MINIO_ROOT_PASSWORD: password123
@@ -44,8 +159,6 @@ services:
 
    redis:
       image: redis:7-alpine
-      ports:
-         - "6379:6379"
       volumes:
          - redis_data:/data
       healthcheck:
@@ -54,12 +167,12 @@ services:
          timeout: 5s
          retries: 5
 
-   #  4. Web App
+   # 4. Web App (PRODUCTION)
    web_app:
-      build: . # Build dari folder saat ini
-      command: npm run dev # development
-      # ports:
-      #    - "80:3000" # Map port 80 VPS ke port 3000 container (komen jika expose localhost)
+      build: .
+      command: npm start # BERUBAH: Gunakan script start standar
+      ports:
+         - "127.0.0.1:3000:3000" # Map ke localhost VPS
       depends_on:
          mongo:
             condition: service_healthy
@@ -67,45 +180,24 @@ services:
             condition: service_healthy
          minio:
             condition: service_healthy
-         redis:
-            condition: service_started
+      env_file: .env # Gunakan file .env
       volumes:
-         - .:/app
-         - /app/node_modules
-         - temp_uploads:/app/temp # Shared volume buat simpan foto sementara
-
-   #  5. Background Worker
-   worker_service:
-      build: . # Build dari folder yang sama
-      command: npm run worker:dev # dev
-      depends_on:
-         mongo:
-            condition: service_healthy
-         rabbitmq:
-            condition: service_healthy
-         minio:
-            condition: service_healthy
-      environment:
-         - MONGO_URI=mongodb://mongo:27017/db_inventaris
-         - RABBITMQ_URI=amqp://rabbitmq
-         - MINIO_ENDPOINT=minio
-         - MINIO_PORT=9000
-         - MINIO_ACCESS_KEY=admin
-         - MINIO_SECRET_KEY=password123
-      volumes:
-         - .:/app
-         - /app/node_modules
          - temp_uploads:/app/temp
 
-   nginx:
-      image: nginx:alpine
-      ports:
-         - "80:80" # Nginx jalan di port 80 laptop kamu
-      volumes:
-         - ./nginx.conf:/etc/nginx/nginx.conf:ro
+   # 5. Background Worker (PRODUCTION)
+   worker_service:
+      build: .
+      command: npm run worker # BERUBAH: Gunakan script worker standar
       depends_on:
-         - web_app
-         - minio
+         mongo:
+            condition: service_healthy
+         rabbitmq:
+            condition: service_healthy
+         minio:
+            condition: service_healthy
+      env_file: .env # Gunakan file .env
+      volumes:
+         - temp_uploads:/app/temp
 
 volumes:
    temp_uploads:
