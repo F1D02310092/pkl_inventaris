@@ -54,6 +54,29 @@
     box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
   }
 
+
+  .role-badge {
+    padding: 0.35rem 0.85rem;
+    border-radius: 50rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .role-badge-admin {
+    background-color: #e0e7ff;
+    color: #475569;
+  }
+
+  .role-badge-user {
+    background-color: #f1f5f9;
+    color: #475569;
+  }
+
+
+
   .offcanvas-modern {
     background-color: #ffffff;
     border-right: none !important;
@@ -78,7 +101,6 @@
   .btn-close-modern:hover {
     color: #ef4444;
   }
-
 
   .nav-modern-list-vertical {
     list-style: none;
@@ -117,7 +139,6 @@
     color: #4f46e5;
   }
 
-
   .nav-link-modern.active {
     color: #4f46e5;
     background-color: #e0e7ff;
@@ -127,7 +148,6 @@
   .nav-link-modern.active i {
     color: #4f46e5;
   }
-
 
   .nav-menu-label {
     font-size: 0.75rem;
@@ -175,7 +195,14 @@
       </a>
     </div>
 
-
+    <% if (typeof currUser !== 'undefined' && currUser) { %>
+    <div class="d-flex align-items-center">
+      <span class="role-badge <%= currUser.role === 'admin' ? 'role-badge-admin' : 'role-badge-user' %> shadow-sm">
+        <i class="bi <%= currUser.role === 'admin' ? 'bi-shield-check' : 'bi-person' %>"></i>
+        <span class="d-none d-sm-inline"><%= currUser.role === 'admin' ? 'Admin' : 'User' %></span>
+      </span>
+    </div>
+    <% } %>
 
   </div>
 </nav>
@@ -206,12 +233,12 @@
 
       <div class="nav-menu-label">Manajemen</div>
       <li>
-        <a class="nav-link-modern <%= currentPath.includes('/admin/check-inventory') || currentPath.includes('/admin/item-detail') ? 'active' : '' %>" href="/admin/check-inventory">
+        <a class="nav-link-modern <%= currentPath && (currentPath.includes('/admin/check-inventory') || currentPath.includes('/admin/item-detail')) ? 'active' : '' %>" href="/admin/check-inventory">
           <i class="bi bi-view-list"></i> <span>Data Inventaris</span>
         </a>
       </li>
       <li>
-        <a class="nav-link-modern <%= currentPath.includes('/admin/input-inventory') ? 'active' : '' %>" href="/admin/input-inventory">
+        <a class="nav-link-modern <%= currentPath && currentPath.includes('/admin/input-inventory') ? 'active' : '' %>" href="/admin/input-inventory">
           <i class="bi bi-plus-circle"></i> <span>Input Barang Baru</span>
         </a>
       </li>
@@ -220,7 +247,7 @@
   </div>
 
   <div class="offcanvas-footer-modern">
-    <% if(currUser) { %>
+    <% if(typeof currUser !== 'undefined' && currUser) { %>
     <a class="nav-link-modern nav-link-danger" href="/logout">
       <i class="bi bi-box-arrow-right"></i> <span>Keluar</span>
     </a>
@@ -230,6 +257,5 @@
     </a>
     <% } %>
   </div>
-
 
 </div>
