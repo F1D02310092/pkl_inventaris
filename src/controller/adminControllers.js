@@ -118,7 +118,7 @@ const postInventory = async (req, res) => {
 
       if (kondisi && jadwal_pengecekan && kondisi !== "Belum Dicek" && jadwal_pengecekan !== "Tak Terjadwal") {
          newBarang.kondisi = kondisi;
-         const tglPengecekan = tanggal_pengecekan ? new Date(tanggal_pengecekan) : new Date();
+         const tglPengecekan = tanggal_pengecekan ? new Date(`${tanggal_pengecekan}T00:00:00`) : new Date();
 
          newBarang.riwayat_pengecekan = [
             {
@@ -335,7 +335,7 @@ const putItemEdit = async (req, res) => {
       if (!item) return res.status(404).json({ message: "Barang tidak ditemukan" });
 
       if (kondisi !== "Belum Dicek" && jadwal_pengecekan !== "Tak Terjadwal") {
-         const tglPengecekan = tanggal_pengecekan ? new Date(tanggal_pengecekan) : new Date();
+         const tglPengecekan = tanggal_pengecekan ? new Date(`${tanggal_pengecekan}T00:00:00`) : new Date();
 
          await BarangModel.findOneAndUpdate(
             { id_barang: req.params.id_barang },
