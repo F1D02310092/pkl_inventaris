@@ -9,6 +9,11 @@ const archiver = require("archiver");
 const multer = require("multer");
 const { upload } = require("../config/upload.js");
 
+const invalidateFormCache = async () => {
+   await redisClient.del("form_cache_flag");
+   await redisClient.del(["set_kategori", "set_merek", "set_satuan", "set_ruangan", "set_nama_barang"]);
+};
+
 const uploadMiddleware = (req, res, next) => {
    const uploadSingle = upload.single("foto_barang");
 
@@ -372,11 +377,13 @@ const putItemEdit = async (req, res) => {
          await BarangModel.findOneAndUpdate({ id_barang: req.params.id_barang }, { status_upload: "PENDING" });
       }
 
-      if (ruangan) await redisClient.sAdd("set_ruangan", ruangan);
-      if (kategori) await redisClient.sAdd("set_kategori", kategori);
-      if (satuan) await redisClient.sAdd("set_satuan", satuan);
-      if (merek) await redisClient.sAdd("set_merek", merek);
-      if (nama_barang) await redisClient.sAdd("set_nama_barang", nama_barang);
+      // if (ruangan) await redisClient.sAdd("set_ruangan", ruangan);
+      // if (kategori) await redisClient.sAdd("set_kategori", kategori);
+      // if (satuan) await redisClient.sAdd("set_satuan", satuan);
+      // if (merek) await redisClient.sAdd("set_merek", merek);
+      // if (nama_barang) await redisClient.sAdd("set_nama_barang", nama_barang);
+
+      await invalidateFormCache();
    } catch (error) {
       console.error("Error update barang:", error);
       req.flash("error", "Gagal menyunting data barang, terjadi kesalahan server!");
@@ -405,7 +412,7 @@ const deleteItem = async (req, res) => {
          await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(payload)));
       }
 
-      await redisClient.sRem("set_nama_barang", barang.nama_barang);
+      await invalidateFormCache();
    } catch (error) {
       console.error(error);
       req.flash("error", "Gagal menghapus barang, terjadi kesalahan server!");
@@ -468,6 +475,9 @@ const bulkDelete = async (req, res) => {
             await channel.sendToQueue("image_deletion", Buffer.from(JSON.stringify(payload)));
          }
       }
+
+      await invalidateFormCache();
+
       req.flash("success", "Berhasil menghapus barang!");
       return res.status(200).json({ message: "Bulk delete berhasil" });
    } catch (error) {

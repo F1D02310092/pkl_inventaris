@@ -7,11 +7,13 @@ const barangSchema = new mongoose.Schema(
          unique: true,
          trim: true,
          required: true,
+         index: true,
       },
       nama_barang: {
          type: String,
          required: true,
          trim: true,
+         index: true,
       },
       image_url: {
          type: String,
@@ -38,19 +40,23 @@ const barangSchema = new mongoose.Schema(
          type: String,
          required: true,
          trim: true,
+         index: true,
       },
       merek: {
          type: String,
          trim: true,
+         index: true,
       },
       kategori: {
          type: String,
          required: true,
          trim: true,
+         index: true,
       },
       satuan: {
          type: String,
          trim: true,
+         index: true,
       },
 
       // pengecekkan kondisi barang
@@ -78,5 +84,8 @@ const barangSchema = new mongoose.Schema(
       timestamps: true,
    },
 );
+
+barangSchema.index({ kategori: 1, createdAt: -1 });
+barangSchema.index({ ruangan: 1, createdAt: -1 });
 
 module.exports = mongoose.model("Barang", barangSchema);
