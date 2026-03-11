@@ -21,7 +21,7 @@ const createAccount = async () => {
 
       const newUser = new UserModel({
          username: "admin",
-         password: "inventaris123",
+         password: "inventaris_jeranjang_2026",
       });
 
       await newUser.save();
