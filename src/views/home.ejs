@@ -237,11 +237,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  function capitalizeEachWord(str) {
-    if (!str) return str;
-    return str.replace(/\b\w/g, char => char.toUpperCase());
-  }
-
   const rawRuangan = <%- chartData.ruangan %>;
   const rawKategori = <%- chartData.kategori %>;
 
@@ -250,7 +245,7 @@
 
 
   const ruanganLabels = rawRuangan.map(item =>
-    item._id ? capitalizeEachWord(item._id) : 'Tanpa Ruangan'
+    item._id ? (item._id) : 'Tanpa Ruangan'
   );
   const ruanganData = rawRuangan.map(item => item.total);
 
@@ -361,7 +356,7 @@
 
 
   const kategoriLabels = rawKategori.map(item =>
-    item._id ? capitalizeEachWord(item._id) : 'Lainnya'
+    item._id ? (item._id) : 'Lainnya'
   );
   const kategoriData = rawKategori.map(item => item.total);
 
@@ -407,7 +402,7 @@
   const rawKondisi = <%- chartData.kondisi %>;
 
   const kondisiLabels = rawKondisi.map(item =>
-    item._id ? capitalizeEachWord(item._id) : 'Belum Dicek'
+    item._id ? (item._id) : 'Belum Dicek'
   );
   const kondisiData = rawKondisi.map(item => item.total);
 

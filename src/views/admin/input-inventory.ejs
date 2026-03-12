@@ -34,7 +34,7 @@
         <datalist id="kategoriOptions">
           <% if (typeof daftarKategori !== 'undefined') { %>
           <% daftarKategori.forEach(kat => { %>
-          <option value="<%= capitalizeEachWord(kat) %>"></option>
+          <option value="<%= (kat) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -43,7 +43,7 @@
           <option value="" disabled selected>Pilih kategori yang tersedia</option>
           <% if (typeof daftarKategori !== 'undefined') { %>
           <% daftarKategori.forEach(kat => { %>
-          <option value="<%= capitalizeEachWord(kat) %>"><%= capitalizeEachWord(kat) %></option>
+          <option value="<%= (kat) %>"><%= (kat) %></option>
           <% }) %>
           <% } %>
         </select>
@@ -56,7 +56,7 @@
         <datalist id="merekOptions">
           <% if (typeof daftarMerek !== 'undefined') { %>
           <% daftarMerek.forEach(merek => { %>
-          <option value="<%= capitalizeEachWord(merek) %>"></option>
+          <option value="<%= (merek) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -69,7 +69,7 @@
         <datalist id="ruanganOptions">
           <% if (typeof daftarRuangan !== 'undefined') { %>
           <% daftarRuangan.forEach(rng => { %>
-          <option value="<%= capitalizeEachWord(rng) %>"></option>
+          <option value="<%= (rng) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -78,7 +78,7 @@
           <option value="" disabled selected>Pilih ruangan yang tersedia</option>
           <% if (typeof daftarRuangan !== 'undefined') { %>
           <% daftarRuangan.forEach(rng => { %>
-          <option value="<%= capitalizeEachWord(rng) %>"><%= capitalizeEachWord(rng) %></option>
+          <option value="<%= (rng) %>"><%= (rng) %></option>
           <% }) %>
           <% } %>
         </select>
@@ -96,7 +96,7 @@
         <datalist id="satuanOptions">
           <% if (typeof daftarSatuan !== 'undefined') { %>
           <% daftarSatuan.forEach(sat => { %>
-          <option value="<%= capitalizeEachWord(sat) %>"></option>
+          <option value="<%= (sat) %>"></option>
           <% }) %>
           <% } %>
         </datalist>

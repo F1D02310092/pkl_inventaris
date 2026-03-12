@@ -25,17 +25,17 @@
     <div class="row">
       <div class="col-md-6 mb-4">
         <label for="nama_barang" class="form-label modern-label">Nama Barang <span class="required-star">*</span></label>
-        <input type="text" class="form-control modern-input" id="nama_barang" name="nama_barang" placeholder="Masukkan nama barang" required value="<%= capitalizeEachWord(barang.nama_barang) %>" />
+        <input type="text" class="form-control modern-input" id="nama_barang" name="nama_barang" placeholder="Masukkan nama barang" required value="<%= (barang.nama_barang) %>" />
       </div>
 
       <div class="col-md-6 mb-4">
         <label for="kategori" class="form-label modern-label">Kategori <span class="required-star">*</span></label>
         <% if (currUser && currUser.role === 'admin') { %>
-        <input type="text" class="form-control modern-input" id="kategori" name="kategori" list="kategoriOptions" placeholder="Pilih atau ketik kategori baru" required value="<%= capitalizeEachWord(barang.kategori) %>" />
+        <input type="text" class="form-control modern-input" id="kategori" name="kategori" list="kategoriOptions" placeholder="Pilih atau ketik kategori baru" required value="<%= (barang.kategori) %>" />
         <datalist id="kategoriOptions">
           <% if (typeof daftarKategori !== 'undefined') { %>
           <% daftarKategori.forEach(kat => { %>
-          <option value="<%= capitalizeEachWord(kat) %>"></option>
+          <option value="<%= (kat) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -44,8 +44,8 @@
           <option value="" disabled>Pilih kategori yang tersedia</option>
           <% if (typeof daftarKategori !== 'undefined') { %>
           <% daftarKategori.forEach(kat => { %>
-          <option value="<%= capitalizeEachWord(kat) %>" <%= barang.kategori.toLowerCase() === kat.toLowerCase() ? 'selected' : '' %>>
-            <%= capitalizeEachWord(kat) %>
+          <option value="<%= (kat) %>" <%= barang.kategori.toLowerCase() === kat.toLowerCase() ? 'selected' : '' %>>
+            <%= (kat) %>
           </option>
           <% }) %>
           <% } %>
@@ -55,11 +55,11 @@
 
       <div class="col-md-6 mb-4">
         <label for="merek" class="form-label modern-label">Merek</label>
-        <input type="text" class="form-control modern-input" id="merek" name="merek" list="merekOptions" placeholder="Pilih atau ketik merek baru" value="<%= capitalizeEachWord(barang.merek) %>" />
+        <input type="text" class="form-control modern-input" id="merek" name="merek" list="merekOptions" placeholder="Pilih atau ketik merek baru" value="<%= (barang.merek) %>" />
         <datalist id="merekOptions">
           <% if (typeof daftarMerek !== 'undefined') { %>
           <% daftarMerek.forEach(merek => { %>
-          <option value="<%= capitalizeEachWord(merek) %>"></option>
+          <option value="<%= (merek) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -68,11 +68,11 @@
       <div class="col-md-6 mb-4">
         <label for="ruangan" class="form-label modern-label">Ruangan <span class="required-star">*</span></label>
         <% if (currUser && currUser.role === 'admin') { %>
-        <input type="text" class="form-control modern-input" id="ruangan" name="ruangan" list="ruanganOptions" placeholder="Pilih atau ketik ruangan baru" required value="<%= capitalizeEachWord(barang.ruangan) %>" />
+        <input type="text" class="form-control modern-input" id="ruangan" name="ruangan" list="ruanganOptions" placeholder="Pilih atau ketik ruangan baru" required value="<%= (barang.ruangan) %>" />
         <datalist id="ruanganOptions">
           <% if (typeof daftarRuangan !== 'undefined') { %>
           <% daftarRuangan.forEach(rng => { %>
-          <option value="<%= capitalizeEachWord(rng) %>"></option>
+          <option value="<%= (rng) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -81,8 +81,8 @@
           <option value="" disabled>Pilih ruangan yang tersedia</option>
           <% if (typeof daftarRuangan !== 'undefined') { %>
           <% daftarRuangan.forEach(rng => { %>
-          <option value="<%= capitalizeEachWord(rng) %>" <%= barang.ruangan.toLowerCase() === rng.toLowerCase() ? 'selected' : '' %>>
-            <%= capitalizeEachWord(rng) %>
+          <option value="<%= (rng) %>" <%= barang.ruangan.toLowerCase() === rng.toLowerCase() ? 'selected' : '' %>>
+            <%= (rng) %>
           </option>
           <% }) %>
           <% } %>
@@ -97,11 +97,11 @@
 
       <div class="col-md-6 mb-4">
         <label for="satuan" class="form-label modern-label">Satuan</label>
-        <input type="text" class="form-control modern-input" id="satuan" name="satuan" list="satuanOptions" placeholder="Pilih satuan (misal: unit, set)" value="<%= capitalizeEachWord(barang.satuan) %>" />
+        <input type="text" class="form-control modern-input" id="satuan" name="satuan" list="satuanOptions" placeholder="Pilih satuan (misal: unit, set)" value="<%= (barang.satuan) %>" />
         <datalist id="satuanOptions">
           <% if (typeof daftarSatuan !== 'undefined') { %>
           <% daftarSatuan.forEach(sat => { %>
-          <option value="<%= capitalizeEachWord(sat) %>"></option>
+          <option value="<%= (sat) %>"></option>
           <% }) %>
           <% } %>
         </datalist>
@@ -166,10 +166,10 @@
       <% for (let key in barang.detail) { %>
       <div class="row mb-3 align-items-center detail-row">
         <div class="col-md-5 mb-2 mb-md-0">
-          <input type="text" class="form-control modern-input" name="detailKey" value="<%= capitalizeEachWord(key) %>" placeholder="Nama Atribut">
+          <input type="text" class="form-control modern-input" name="detailKey" value="<%= (key) %>" placeholder="Nama Atribut">
         </div>
         <div class="col-md-6 mb-2 mb-md-0">
-          <input type="text" class="form-control modern-input" name="detailValue" value="<%= capitalizeEachWord(barang.detail[key]) %>" placeholder="Nilai Atribut">
+          <input type="text" class="form-control modern-input" name="detailValue" value="<%= (barang.detail[key]) %>" placeholder="Nilai Atribut">
         </div>
         <div class="col-md-1 text-end">
           <button class="btn btn-icon-only bg-soft-danger text-danger btn-hapus border-0 shadow-sm" type="button" title="Hapus baris">

@@ -147,10 +147,10 @@ const generateQR = async (barang, res) => {
       return returnY + 20;
    };
 
-   nextY = drawRow("RUANGAN", capitalEachWord(barang.ruangan), nextY);
-   nextY = drawRow("KATEGORI", capitalEachWord(barang.kategori), nextY);
-   nextY = drawRow("MEREK", capitalEachWord(barang.merek), nextY);
-   nextY = drawRow("JUMLAH ASET FISIK", `${barang.jumlah || 0} ${capitalEachWord(barang.satuan) || "Barang"}`, nextY);
+   nextY = drawRow("RUANGAN", barang.ruangan, nextY);
+   nextY = drawRow("KATEGORI", barang.kategori, nextY);
+   nextY = drawRow("MEREK", barang.merek, nextY);
+   nextY = drawRow("JUMLAH ASET FISIK", `${barang.jumlah || 0} ${barang.satuan || "Barang"}`, nextY);
 
    drawDynamicText(ctx, `Sistem Inventaris Barang`, width / 2, 445, width - 60, 2, 13, 9, false, "#bdc3c7", "center");
 
@@ -183,7 +183,7 @@ const generateQRSmall = async (barang, res) => {
 
    drawDynamicText(ctx, barang.nama_barang.toUpperCase(), centerX, 50, maxTextWidth, 1, 32, 12, true, "#000000", "center");
 
-   drawDynamicText(ctx, capitalEachWord(barang.ruangan).toUpperCase(), centerX, 90, maxTextWidth, 1, 32, 12, true, "#000000", "center");
+   drawDynamicText(ctx, barang.ruangan.toUpperCase(), centerX, 90, maxTextWidth, 1, 32, 12, true, "#000000", "center");
 
    const qrSize = 400;
    const qrX = (width - qrSize) / 2;
