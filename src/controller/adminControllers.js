@@ -56,11 +56,6 @@ const getInputPage = async (req, res) => {
          daftarSatuan = satuan.filter(Boolean);
          daftarRuangan = ruangan.filter(Boolean);
 
-         daftarKategori = [...new Set(kategori.filter(Boolean).map((k) => toLowerCase()))];
-         daftarMerek = [...new Set(merek.filter(Boolean).map((m) => toLowerCase()))];
-         daftarSatuan = [...new Set(satuan.filter(Boolean).map((s) => s.trim().toLowerCase()))];
-         daftarRuangan = [...new Set(ruangan.filter(Boolean).map((r) => r.trim().toLowerCase()))];
-
          if (daftarKategori.length > 0) await redisClient.sAdd("set_kategori", daftarKategori);
          if (daftarMerek.length > 0) await redisClient.sAdd("set_merek", daftarMerek);
          if (daftarSatuan.length > 0) await redisClient.sAdd("set_satuan", daftarSatuan);
