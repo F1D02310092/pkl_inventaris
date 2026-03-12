@@ -7,19 +7,19 @@ const inventorySchema = z.object({
       .string()
       .min(1, "Nama barang wajib diisi")
       .transform(sanitizeHTML)
-      .transform((val) => val.trim().toLowerCase()),
+      .transform((val) => val.trim()),
 
    kategori: z
       .string()
       .min(1, "Kategori wajib diisi")
       .transform(sanitizeHTML)
-      .transform((val) => val.trim().toLowerCase()),
+      .transform((val) => val.trim()),
 
    ruangan: z
       .string()
       .min(1, "Ruangan wajib diisi")
       .transform(sanitizeHTML)
-      .transform((val) => val.trim().toLowerCase()),
+      .transform((val) => val.trim()),
 
    jumlah: z.coerce.number().min(0, "Jumlah tidak boleh minus"),
 
@@ -28,24 +28,18 @@ const inventorySchema = z.object({
       .optional()
       .default("")
       .transform(sanitizeHTML)
-      .transform((val) => val.trim().toLowerCase()),
+      .transform((val) => val.trim()),
 
    merek: z
       .string()
       .optional()
       .default("")
       .transform(sanitizeHTML)
-      .transform((val) => val.trim().toLowerCase()),
+      .transform((val) => val.trim()),
 
    kondisi: z.string().optional().transform(sanitizeHTML),
    jadwal_pengecekan: z.string().optional().transform(sanitizeHTML),
    tanggal_pengecekan: z.string().optional().transform(sanitizeHTML),
-
-   catatan_pengecekan: z
-      .string()
-      .optional()
-      .transform(sanitizeHTML)
-      .transform((val) => (val ? val.trim() : "")),
 
    detailKey: z.union([z.string(), z.array(z.string())]).optional(),
    detailValue: z.union([z.string(), z.array(z.string())]).optional(),
