@@ -157,7 +157,7 @@ const postInventory = async (req, res) => {
 
       req.flash("success", "Berhasil menambah barang!");
 
-      return res.redirect("/admin/check-inventory");
+      return res.redirect("/admin/input-inventory");
    } catch (error) {
       console.error("Error posting inventory", error);
       req.flash("error", "Gagal menambah barang, terjadi kesalahan server!");
