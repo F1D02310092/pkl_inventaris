@@ -90,10 +90,15 @@ const processMQ = async () => {
                "content-type": "image/webp",
             });
 
-            // const newImageURL = `http://localhost:${MINIO_PORT}/${BUCKET_NAME}/${newImageName}`;
-            const newImageURL = `/${BUCKET_NAME}/${newImageName}`;
+            const newImageURL = `http://localhost:${MINIO_PORT}/${BUCKET_NAME}/${newImageName}`;
+            // const newImageURL = `/${BUCKET_NAME}/${newImageName}`;
 
-            await BarangModel.findOneAndUpdate({ id_barang: id_barang }, { image_url: newImageURL, image_name: newImageName, status_upload: "DONE" });
+            const updatedBarang = await BarangModel.findOneAndUpdate({ id_barang: id_barang }, { image_url: newImageURL, image_name: newImageName, status_upload: "DONE" });
+
+            if (!updatedBarang) {
+               await minioClient.removeObject(BUCKET_NAME, newImageName);
+               return;
+            }
 
             if (fs.existsSync(file_path)) {
                fs.unlinkSync(file_path);
@@ -104,7 +109,7 @@ const processMQ = async () => {
             channel.ack(data);
          } catch (error) {
             console.error("Something went wrong processing image:", error);
-            channel.nack(data, false, true);
+            channel.nack(data, false, false);
          }
       });
 
@@ -120,7 +125,7 @@ const processMQ = async () => {
             channel.ack(data);
          } catch (error) {
             console.error("Gagal menghapus gambar", error);
-            channel.nack(data, false, true);
+            channel.nack(data, false, false);
          }
       });
    } catch (error) {
